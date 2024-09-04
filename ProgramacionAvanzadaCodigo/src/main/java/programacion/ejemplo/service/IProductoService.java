@@ -6,7 +6,7 @@ import programacion.ejemplo.model.Producto;
 import java.util.List;
 
 public interface IProductoService {
-    Producto createProducto(String nombre, double precio, Integer categoriaId, Integer marcaId);
+    ProductoDTO createProducto(ProductoDTO productoDTO);
 
     ProductoDTO updateProducto(Integer id, ProductoDTO productoDTO);
 

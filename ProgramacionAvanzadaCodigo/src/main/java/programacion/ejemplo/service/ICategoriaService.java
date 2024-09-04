@@ -16,7 +16,6 @@ public interface ICategoriaService {
 
     public Categoria actualizarCategoria (Integer id,Categoria model);
 
-    public Categoria guardar(Categoria model);
 
-    public void eliminar(Categoria model);
+    public void eliminar(Integer Categoria);
 }

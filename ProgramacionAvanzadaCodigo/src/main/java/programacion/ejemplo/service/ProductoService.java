@@ -3,6 +3,7 @@ package programacion.ejemplo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import programacion.ejemplo.DTO.ProductoDTO;
+import programacion.ejemplo.Mapper.ProductoMapper;
 import programacion.ejemplo.model.Categoria;
 import programacion.ejemplo.model.Marca;
 import programacion.ejemplo.model.Producto;
@@ -25,27 +26,24 @@ public class ProductoService implements IProductoService {
     @Autowired
     private MarcaRepository marcaRepository;
 
+    @Autowired
+    private ProductoMapper productoMapper;
+
     @Override
-    public Producto createProducto(String nombre, double precio, Integer categoriaId, Integer marcaId) {
-        // Buscar la categoría por su ID
-        Categoria categoria = categoriaRepository.findById(categoriaId)
+    public ProductoDTO createProducto(ProductoDTO productoDTO) {
+        // Buscar la categoría y marca por sus IDs
+        Categoria categoria = categoriaRepository.findById(productoDTO.getCategoriaId())
                 .orElseThrow(() -> new RuntimeException("Categoria no encontrada"));
 
-        // Buscar la marca por su ID
-        Marca marca = marcaRepository.findById(marcaId)
+        Marca marca = marcaRepository.findById(productoDTO.getMarcaId())
                 .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
 
-        // Crear el nuevo producto
-        Producto producto = new Producto();
-        producto.setNombre(nombre);
-        producto.setPrecio(precio);
-        producto.setCategoria(categoria);
-        producto.setMarca(marca);
+        // Convertir el DTO a entidad Producto
+        Producto producto = productoMapper.toEntity(productoDTO, categoria, marca);
 
-        // Guardar y retornar el producto
-        return productoRepository.save(producto);
+        // Guardar y retornar el producto convertido a DTO
+        return productoMapper.toDto(productoRepository.save(producto));
     }
-
 
     @Override
     public ProductoDTO updateProducto(Integer id, ProductoDTO productoDTO) {

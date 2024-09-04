@@ -16,13 +16,12 @@ public class ProductoController {
     private ProductoService productoService;
 
     @PostMapping
-    public ResponseEntity<Producto> createProducto(@RequestBody ProductoDTO productoDTO) {
-        Producto nuevoProducto = productoService.createProducto(
-                productoDTO.getNombre(),
-                productoDTO.getPrecio(),
-                productoDTO.getCategoriaId(),
-                productoDTO.getMarcaId()
-        );
-        return ResponseEntity.ok(nuevoProducto);
+    public ResponseEntity<ProductoDTO> createProducto(@RequestBody ProductoDTO productoDTO) {
+        try {
+            ProductoDTO nuevoProducto = productoService.createProducto(productoDTO);
+            return ResponseEntity.ok(nuevoProducto);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null); // Maneja el error adecuadamente
+        }
     }
 }

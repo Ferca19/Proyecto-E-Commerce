@@ -60,15 +60,14 @@ public class CategoriaController {
 
     @DeleteMapping("/categoria/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
-
-
         Categoria model = modelService.buscarPorId(id);
-        if (model == null){
+        if (model == null) {
             throw new RecursoNoEncontradoExcepcion("El id recibido no existe: " + id);
         }
 
-        model.asEliminar();
-        modelService.eliminar(model);
+        // Llamar al método eliminar del servicio con solo el ID
+        modelService.eliminar(id);
+
         return ResponseEntity.ok().build();
     }
 }

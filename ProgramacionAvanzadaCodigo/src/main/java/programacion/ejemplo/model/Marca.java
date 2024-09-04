@@ -1,5 +1,6 @@
 package programacion.ejemplo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -30,5 +31,6 @@ public class Marca {
 
 
     @OneToMany(mappedBy = "marca", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Producto> productos;
 }

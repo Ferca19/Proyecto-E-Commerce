@@ -22,6 +22,9 @@ public class Producto {
     @NotNull
     private double precio;
 
+    @NotNull
+    private int stock;
+
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;

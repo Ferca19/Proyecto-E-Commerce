@@ -35,10 +35,7 @@ public class MarcaService implements IMarcaService {
         Marca model = MarcaMapper.toEntity(modelDTO);
         return MarcaMapper.toDTO(modelRepository.save(model));
     }
-    @Override
-    public Marca guardar(Marca model) {
-        return modelRepository.save(model);
-    }
+
 
     @Override
     public void eliminar(Marca model) {

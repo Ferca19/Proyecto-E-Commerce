@@ -13,7 +13,6 @@ public interface IMarcaService {
 
     public MarcaDTO guardar(MarcaDTO model);
 
-    public Marca guardar(Marca model);
 
     public void eliminar(Marca model);
 }

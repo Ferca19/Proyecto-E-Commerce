@@ -8,6 +8,7 @@ import programacion.ejemplo.DTO.CategoriaDTO;
 import programacion.ejemplo.Mapper.CategoriaMapper;
 import programacion.ejemplo.model.Categoria;
 import programacion.ejemplo.repository.CategoriaRepository;
+import programacion.ejemplo.repository.ProductoRepository;
 
 
 import java.util.List;
@@ -18,6 +19,9 @@ public class CategoriaService implements ICategoriaService {
     private static final Logger logger = LoggerFactory.getLogger(CategoriaService.class);
     @Autowired
     private CategoriaRepository modelRepository;
+    @Autowired
+    private ProductoRepository productoRepository;
+
 
     @Override
     public List<CategoriaDTO> listar() {
@@ -36,15 +40,30 @@ public class CategoriaService implements ICategoriaService {
         Categoria model = CategoriaMapper.toEntity(modelDTO);
         return CategoriaMapper.toDTO(modelRepository.save(model));
     }
-    @Override
-    public Categoria guardar(Categoria model) {
-        return modelRepository.save(model);
-    }
+
 
     @Override
-    public void eliminar(Categoria model) {
-        model.asEliminar();
-        modelRepository.save(model);
+    public void eliminar(Integer categoriaId) {
+        // Verificar si la categoría está asociada a algún producto
+        boolean tieneProductos = productoRepository.existsByCategoriaId(categoriaId);
+        if (tieneProductos) {
+            throw new RuntimeException("La categoría no puede eliminarse porque está asociada a uno o más productos.");
+        }
+
+        // Obtener la categoría por ID
+        Categoria categoria = modelRepository.findById(categoriaId)
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+
+        // Verificar si la categoría ya está eliminada
+        if (categoria.getEstado() == Categoria.ELIMINADO) {
+            throw new RuntimeException("La categoría ya está eliminada.");
+        }
+
+        // Cambiar el estado a eliminado
+        categoria.asEliminar();
+
+        // Guardar la categoría con el nuevo estado
+        modelRepository.save(categoria);
     }
 
     @Override
