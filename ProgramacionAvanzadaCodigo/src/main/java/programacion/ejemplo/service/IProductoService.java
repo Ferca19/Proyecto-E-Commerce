@@ -10,7 +10,7 @@ public interface IProductoService {
 
     ProductoDTO updateProducto(Integer id, ProductoDTO productoDTO);
 
-    ProductoDTO getProductoById(Integer id);
+    ProductoDTO obtenerPorId(Integer id);
 
     List<ProductoDTO> getAllProductos();
 

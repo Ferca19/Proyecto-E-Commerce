@@ -10,9 +10,13 @@ import programacion.ejemplo.model.Producto;
 import programacion.ejemplo.repository.CategoriaRepository;
 import programacion.ejemplo.repository.MarcaRepository;
 import programacion.ejemplo.repository.ProductoRepository;
+import programacion.ejemplo.model.ProductoVariante;
+
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductoService implements IProductoService {
@@ -41,6 +45,22 @@ public class ProductoService implements IProductoService {
         // Convertir el DTO a entidad Producto
         Producto producto = productoMapper.toEntity(productoDTO, categoria, marca);
 
+        // Asignar las variantes al producto si existen
+        if (productoDTO.getVariantes() != null) {
+            List<ProductoVariante> variantes = productoDTO.getVariantes().stream()
+                    .map(v -> {
+                        ProductoVariante variante = new ProductoVariante();
+                        variante.setNombreVariante(v.getNombreVariante());
+                        variante.setValorVariante(v.getValorVariante());
+                        variante.setProducto(producto);
+                        return variante;
+                    }).collect(Collectors.toList());
+            producto.setVariantes(variantes);
+        } else {
+            // Si no hay variantes, asegurarse de inicializar la lista como vacía
+            producto.setVariantes(new ArrayList<>());
+        }
+
         // Guardar y retornar el producto convertido a DTO
         return productoMapper.toDto(productoRepository.save(producto));
     }
@@ -51,8 +71,10 @@ public class ProductoService implements IProductoService {
     }
 
     @Override
-    public ProductoDTO getProductoById(Integer id) {
-        return null;
+    public ProductoDTO obtenerPorId(Integer id) {
+        Producto producto = productoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        return productoMapper.toDto(producto);
     }
 
     @Override

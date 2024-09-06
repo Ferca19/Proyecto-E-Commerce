@@ -16,6 +16,7 @@ public class ProductoMapper {
         dto.setDescripcion(producto.getDescripcion());
         dto.setPrecio(producto.getPrecio());
         dto.setStock(producto.getStock());
+        dto.setVariantes(producto.getVariantes().stream().map(ProductoVarianteMapper::toDTO).toList());
         dto.setCategoriaId(producto.getCategoria().getId());
         dto.setMarcaId(producto.getMarca().getId());
         return dto;

@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Data
 @ToString
@@ -24,6 +27,9 @@ public class Producto {
 
     @NotNull
     private int stock;
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductoVariante> variantes;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)
