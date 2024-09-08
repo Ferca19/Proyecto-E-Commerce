@@ -11,7 +11,7 @@ public interface IProductoVariante {
 
     ProductoVarianteDTO obtenerPorId(Integer id);
 
-    ProductoVarianteDTO guardar(ProductoVarianteDTO productoVarianteDTO, Integer productoId);
+    ProductoVarianteDTO guardar(ProductoVarianteDTO dto, List<Integer> productoIds);
 
     void eliminar(Integer id);
 

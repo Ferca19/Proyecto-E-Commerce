@@ -10,8 +10,10 @@ import programacion.ejemplo.repository.ProductoRepository;
 import programacion.ejemplo.repository.ProductoVarianteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.transaction.annotation.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductoVarianteService implements IProductoVariante {
@@ -38,21 +40,21 @@ public class ProductoVarianteService implements IProductoVariante {
         return ProductoVarianteMapper.toDTO(variante);
     }
 
-    @Override
-    public ProductoVarianteDTO guardar(ProductoVarianteDTO productoVarianteDTO, Integer productoId) {
-        // Buscar el producto por ID
-        Producto producto = productoRepository.findById(productoId)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+    @Transactional
+    public ProductoVarianteDTO guardar(ProductoVarianteDTO dto, List<Integer> productoIds) {
+        ProductoVariante productoVariante = ProductoVarianteMapper.toEntity(dto, productoRepository);
 
-        // Mapear DTO a entidad
-        ProductoVariante productoVariante = ProductoVarianteMapper.toEntity(productoVarianteDTO);
+        if (productoIds != null && !productoIds.isEmpty()) {
+            List<Producto> productos = productoRepository.findAllById(productoIds);
+            productoVariante.setProductos(productos);
+        } else {
+            productoVariante.setProductos(new ArrayList<>()); // Asegurarse de inicializar como lista vacía
+        }
 
-        // Asociar el producto con la variante
-        productoVariante.setProducto(producto);
-
-        // Guardar la variante
-        return ProductoVarianteMapper.toDTO(productoVarianteRepository.save(productoVariante));
+        ProductoVariante guardada = productoVarianteRepository.save(productoVariante);
+        return ProductoVarianteMapper.toDTO(guardada);
     }
+
 
     @Override
     public void eliminar(Integer id) {
@@ -63,7 +65,7 @@ public class ProductoVarianteService implements IProductoVariante {
 
     @Override
     public List<ProductoVarianteDTO> obtenerPorProductoId(Integer productoId) {
-        List<ProductoVariante> variantes = productoVarianteRepository.findByProductoId(productoId);
+        List<ProductoVariante> variantes = productoVarianteRepository.findByProductos_Id(productoId);
         return variantes.stream().map(ProductoVarianteMapper::toDTO).toList();
     }
 }

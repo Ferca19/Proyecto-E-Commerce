@@ -11,7 +11,7 @@ import programacion.ejemplo.service.ProductoVarianteService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ejemplo/variantes")
+@RequestMapping("/ejemplo")
 @CrossOrigin("http://localhost:5173")
 public class ProductoVarianteController {
 
@@ -20,10 +20,15 @@ public class ProductoVarianteController {
     @Autowired
     private ProductoVarianteService varianteService;
 
-    @PostMapping
+    @PostMapping("/variantes")
     public ResponseEntity<ProductoVarianteDTO> guardar(@RequestBody ProductoVarianteDTO dto) {
-        logger.info("Creando nueva variante para producto ID: {}", dto.getProductoId());
-        return ResponseEntity.ok(varianteService.guardar(dto, dto.getProductoId()));
+        try {
+            // Llama al servicio con los IDs de productos si se proporcionan
+            ProductoVarianteDTO nuevaVariante = varianteService.guardar(dto, dto.getProductoIds());
+            return ResponseEntity.ok(nuevaVariante);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     @GetMapping("/listar")

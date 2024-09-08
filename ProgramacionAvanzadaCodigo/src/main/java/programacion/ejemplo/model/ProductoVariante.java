@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @ToString
@@ -20,8 +23,12 @@ public class ProductoVariante {
     @NotNull
     private String valorVariante; // Ejemplo: "43\"", "Rojo", "1L"
 
-    @ManyToOne
-    @JoinColumn(name = "producto_id")
-    private Producto producto;
+    @ManyToMany
+    @JoinTable(
+            name = "producto_variante_producto",
+            joinColumns = @JoinColumn(name = "producto_variante_id"),
+            inverseJoinColumns = @JoinColumn(name = "producto_id")
+    )
+    private List<Producto> productos;
 
 }

@@ -1,4 +1,5 @@
 package programacion.ejemplo.service;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import programacion.ejemplo.repository.CategoriaRepository;
 import programacion.ejemplo.repository.MarcaRepository;
 import programacion.ejemplo.repository.ProductoRepository;
 import programacion.ejemplo.model.ProductoVariante;
+import programacion.ejemplo.repository.ProductoVarianteRepository;
 
 
 import java.math.BigDecimal;
@@ -28,12 +30,15 @@ public class ProductoService implements IProductoService {
     private CategoriaRepository categoriaRepository;
 
     @Autowired
+    private ProductoVarianteRepository productoVarianteRepository;
+
+    @Autowired
     private MarcaRepository marcaRepository;
 
     @Autowired
     private ProductoMapper productoMapper;
 
-    @Override
+    @Transactional
     public ProductoDTO createProducto(ProductoDTO productoDTO) {
         // Buscar la categoría y marca por sus IDs
         Categoria categoria = categoriaRepository.findById(productoDTO.getCategoriaId())
@@ -49,20 +54,32 @@ public class ProductoService implements IProductoService {
         if (productoDTO.getVariantes() != null) {
             List<ProductoVariante> variantes = productoDTO.getVariantes().stream()
                     .map(v -> {
-                        ProductoVariante variante = new ProductoVariante();
-                        variante.setNombreVariante(v.getNombreVariante());
-                        variante.setValorVariante(v.getValorVariante());
-                        variante.setProducto(producto);
+                        // Recuperar variante por ID, o lanzar excepción si no existe
+                        ProductoVariante variante = productoVarianteRepository.findById(v.getId())
+                                .orElseThrow(() -> new RuntimeException("Variante no encontrada"));
                         return variante;
                     }).collect(Collectors.toList());
+
+            // Asociar las variantes con el producto
             producto.setVariantes(variantes);
+
+            // Actualizar la relación en las variantes
+            for (ProductoVariante variante : variantes) {
+                if (!variante.getProductos().contains(producto)) {
+                    variante.getProductos().add(producto);
+                    productoVarianteRepository.save(variante); // Guardar la variante con la asociación actualizada
+                }
+            }
         } else {
-            // Si no hay variantes, asegurarse de inicializar la lista como vacía
+            // Si no hay variantes, inicializar la lista como vacía
             producto.setVariantes(new ArrayList<>());
         }
 
-        // Guardar y retornar el producto convertido a DTO
-        return productoMapper.toDto(productoRepository.save(producto));
+        // Guardar el producto
+        Producto nuevoProducto = productoRepository.save(producto);
+
+        // Retornar el producto convertido a DTO
+        return productoMapper.toDto(nuevoProducto);
     }
 
     @Override

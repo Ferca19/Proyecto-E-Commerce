@@ -6,6 +6,7 @@ import java.util.List;
 
 
 public interface ProductoVarianteRepository extends JpaRepository<ProductoVariante, Integer> {
-    List<ProductoVariante> findByProductoId(Integer productoId);
+    List<ProductoVariante> findByProductos_Id(Integer productoId);
+
 
 }
