@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 08-09-2024 a las 23:57:30
+-- Tiempo de generación: 09-09-2024 a las 15:52:05
 -- Versión del servidor: 8.0.39
 -- Versión de PHP: 8.0.30
 
@@ -39,8 +39,9 @@ CREATE TABLE `categoria` (
 --
 
 INSERT INTO `categoria` (`id`, `descripcion`, `estado`, `nombre`) VALUES
-(1, 'Categoria para Calzados', 0, 'Calzado'),
-(2, 'Categoria para Pantalones', 1, 'Pantalones');
+(1, 'Categoria para Calzados', 0, 'Calzados'),
+(2, 'Categoria para Pantalones', 0, 'Pantalones'),
+(3, 'Categoria para Gorras', 0, 'Gorras');
 
 -- --------------------------------------------------------
 
@@ -170,7 +171,7 @@ ALTER TABLE `producto_variante_producto`
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `marca`

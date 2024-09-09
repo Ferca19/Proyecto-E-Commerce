@@ -14,23 +14,25 @@ import programacion.ejemplo.service.ICategoriaService;
 import java.util.List;
 
 @RestController
-@RequestMapping("ejemplo")
+@RequestMapping("categorias")
 @CrossOrigin(value=" http://localhost:5173")
 
 public class CategoriaController {
 
     private static final Logger logger = LoggerFactory.getLogger(CategoriaController.class);
+
+
     @Autowired
     private ICategoriaService modelService;
 
-    @GetMapping({"/categorias"})
+    @GetMapping
     public List<CategoriaDTO> getAll() {
         logger.info("entra y trae todas las categorias");
         return modelService.listar();
 
     }
 
-    @GetMapping("/categoria/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CategoriaDTO> getPorId(@PathVariable Integer id){
         Categoria model = modelService.buscarPorId(id);
 
@@ -43,12 +45,12 @@ public class CategoriaController {
 
 
 
-    @PostMapping("/categoria")
+    @PostMapping
     public CategoriaDTO guardar(@RequestBody CategoriaDTO model){
         return modelService.guardar(model);
     }
 
-    @PutMapping("/categoria/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Categoria> actualizarCategoria(@PathVariable Integer id, @RequestBody Categoria categoria) {
         Categoria actualizarCategoria = modelService.actualizarCategoria(id, categoria);
         if (actualizarCategoria != null) {
@@ -58,7 +60,7 @@ public class CategoriaController {
         }
     }
 
-    @DeleteMapping("/categoria/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         Categoria model = modelService.buscarPorId(id);
         if (model == null) {
@@ -69,5 +71,22 @@ public class CategoriaController {
         modelService.eliminar(id);
 
         return ResponseEntity.ok().build();
+    }
+
+    // Endpoint para listar todas las categorías eliminadas
+    @GetMapping("/eliminadas")
+    public List<Categoria> listarCategoriasEliminadas() {
+        return modelService.listarCategoriasEliminadas();
+    }
+
+    // Endpoint para recuperar una categoría eliminada por ID
+    @PutMapping("/recuperar/{id}")
+    public ResponseEntity<Categoria> recuperarCategoria(@PathVariable Integer id) {
+        Categoria categoria = modelService.recuperarCategoriaEliminada(id);
+        if (categoria != null) {
+            return ResponseEntity.ok(categoria);
+        } else {
+            return ResponseEntity.notFound().build(); // Retorna 404 si no encuentra la categoría eliminada
+        }
     }
 }

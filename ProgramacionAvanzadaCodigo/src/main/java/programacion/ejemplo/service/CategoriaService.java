@@ -16,9 +16,15 @@ import java.util.List;
 @Service
 
 public class CategoriaService implements ICategoriaService {
+
     private static final Logger logger = LoggerFactory.getLogger(CategoriaService.class);
+
+    @Autowired
+    private CategoriaRepository categoriaRepository;
+
     @Autowired
     private CategoriaRepository modelRepository;
+
     @Autowired
     private ProductoRepository productoRepository;
 
@@ -66,6 +72,21 @@ public class CategoriaService implements ICategoriaService {
         modelRepository.save(categoria);
     }
 
+    // Método para listar todas las categorías eliminadas
+    public List<Categoria> listarCategoriasEliminadas() {
+        return categoriaRepository.findAllByEstado(Categoria.ELIMINADO);
+    }
+
+    // Método para recuperar una categoría eliminada por ID
+    public Categoria recuperarCategoriaEliminada(Integer id) {
+        Categoria categoria = categoriaRepository.findByIdAndEstado(id, Categoria.ELIMINADO);
+        if (categoria != null) {
+            categoria.setEstado(Categoria.COMUN); // Cambia el estado de la categoría a común
+            categoriaRepository.save(categoria); // Guarda los cambios
+        }
+        return categoria;
+    }
+
     @Override
     public Categoria actualizarCategoria(Integer id, Categoria categoria) {
         return modelRepository.findById(id)
@@ -78,11 +99,6 @@ public class CategoriaService implements ICategoriaService {
                     // Verifica si la descripción es nula, si no lo es, actualiza
                     if (categoria.getDescripcion() != null) {
                         existingCategoria.setDescripcion(categoria.getDescripcion());
-                    }
-
-                    // Verifica si el estado es distinto del valor por defecto
-                    if (categoria.getEstado() != 0) { // O el valor que consideres por defecto
-                        existingCategoria.setEstado(categoria.getEstado());
                     }
 
                     return modelRepository.save(existingCategoria);
