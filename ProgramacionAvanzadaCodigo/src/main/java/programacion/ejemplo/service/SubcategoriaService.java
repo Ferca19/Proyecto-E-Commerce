@@ -54,35 +54,29 @@ public class SubcategoriaService implements ISubcategoriaService {
             throw new RuntimeException("La subcategoría no puede eliminarse porque está asociada a uno o más productos.");
         }
 
-        // Obtener la subcategoría por ID
         Subcategoria subcategoria = modelRepository.findById(subcategoriaId)
                 .orElseThrow(() -> new RuntimeException("Subcategoría no encontrada"));
 
-        // Verificar si la subcategoría ya está eliminada
         if (subcategoria.getEliminado() == Subcategoria.SI) {
             throw new RuntimeException("La categoría ya está eliminada.");
         }
 
-        // Cambiar el estado a eliminado
         subcategoria.asEliminar();
 
-        // Guardar la subcategoría con el nuevo estado
         modelRepository.save(subcategoria);
     }
 
-    // Método para listar todas las subcategorías eliminadas
     @Override
     public List<Subcategoria> listarSubcategoriasEliminadas() {
         return modelRepository.findAllByEliminado(Subcategoria.SI);
     }
 
-    // Método para recuperar una subcategoría eliminada por ID
     @Override
     public Subcategoria recuperarSubcategoriaEliminada(Integer id) {
         Subcategoria subcategoria = modelRepository.findByIdAndEliminado(id, Subcategoria.SI);
         if (subcategoria != null) {
-            subcategoria.setEliminado(Subcategoria.NO); // Cambia el estado de la categoría a común
-            modelRepository.save(subcategoria); // Guarda los cambios
+            subcategoria.setEliminado(Subcategoria.NO);
+            modelRepository.save(subcategoria);
         }
         return subcategoria;
     }
@@ -90,14 +84,12 @@ public class SubcategoriaService implements ISubcategoriaService {
     @Override
     public Subcategoria actualizarSubcategoria(Integer id, Subcategoria subcategoria) {
         return modelRepository.findById(id)
-                .filter(existingSubcategoria -> existingSubcategoria.getEliminado() == Subcategoria.NO) // Verifica que la subcategoría no esté eliminada
+                .filter(existingSubcategoria -> existingSubcategoria.getEliminado() == Subcategoria.NO)
                 .map(existingSubcategoria -> {
-                    // Verifica si el nombre es nulo, si no lo es, actualiza
                     if (subcategoria.getNombre() != null) {
                         existingSubcategoria.setNombre(subcategoria.getNombre());
                     }
 
-                    // Verifica si la descripción es nula, si no lo es, actualiza
                     if (subcategoria.getDescripcion() != null) {
                         existingSubcategoria.setDescripcion(subcategoria.getDescripcion());
                     }

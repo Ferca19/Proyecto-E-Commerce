@@ -18,9 +18,7 @@ public interface ICategoriaService {
 
     public void eliminar(Integer Categoria);
 
-    // Método para listar todas las categorías eliminadas
     List<Categoria> listarCategoriasEliminadas();
 
-    // Método para recuperar una categoría eliminada por ID
     Categoria recuperarCategoriaEliminada(Integer id);
 }

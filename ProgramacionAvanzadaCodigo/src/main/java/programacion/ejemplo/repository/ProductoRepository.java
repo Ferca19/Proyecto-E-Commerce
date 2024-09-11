@@ -17,9 +17,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 
     List<Producto> findByEliminado(int eliminado);
 
-    // Método para listar productos eliminados
     List<Producto> findAllByEliminado(int eliminado);
 
-    // Método para recuperar un producto eliminado por ID
     Producto findByIdAndEliminado(int id, int eliminado);
 }

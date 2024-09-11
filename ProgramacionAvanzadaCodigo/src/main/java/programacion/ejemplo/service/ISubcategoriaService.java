@@ -18,9 +18,7 @@ public interface ISubcategoriaService {
 
     public void eliminar(Integer Subcategoria);
 
-    // Método para listar todas las subcategorías eliminadas
     List<Subcategoria> listarSubcategoriasEliminadas();
 
-    // Método para recuperar una subcategoría eliminada por ID
     Subcategoria recuperarSubcategoriaEliminada(Integer id);
 }

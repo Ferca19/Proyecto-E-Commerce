@@ -24,18 +24,16 @@ public class ProductoMapper {
         dto.setStock(model.getStock());
         dto.setEliminado(model.getEliminado());
 
-        // Mapear las variantes a DTO si existen
         if (model.getVariantes() != null) {
             dto.setVariantes(model.getVariantes().stream()
-                    .map(variante -> productoVarianteMapper.toDto(variante)) // Usamos la instancia inyectada
-                    .collect(Collectors.toList())); // Usamos collect para obtener una lista
+                    .map(variante -> productoVarianteMapper.toDto(variante))
+                    .collect(Collectors.toList()));
         }
 
-        // Asignar IDs de categoría y marca
         if (model.getCategoria() != null) {
             dto.setCategoriaId(model.getCategoria().getId());
         }
-        if (model.getSubcategoria() != null) { // Agregado para subcategoría
+        if (model.getSubcategoria() != null) {
             dto.setSubcategoriaId(model.getSubcategoria().getId());
         }
         if (model.getMarca() != null) {
@@ -45,7 +43,6 @@ public class ProductoMapper {
         return dto;
     }
 
-    // Convierte de DTO a entidad Producto
     public Producto toEntity(ProductoDTO dto, Categoria categoria, Subcategoria subcategoria, Marca marca) {
         Producto model = new Producto();
         model.setId(dto.getId());

@@ -67,26 +67,26 @@ public class CategoriaController {
             throw new RecursoNoEncontradoExcepcion("El id recibido no existe: " + id);
         }
 
-        // Llamar al método eliminar del servicio con solo el ID
+
         modelService.eliminar(id);
 
         return ResponseEntity.ok().build();
     }
 
-    // Endpoint para listar todas las categorías eliminadas
+
     @GetMapping("/eliminadas")
     public List<Categoria> listarCategoriasEliminadas() {
         return modelService.listarCategoriasEliminadas();
     }
 
-    // Endpoint para recuperar una categoría eliminada por ID
+
     @PutMapping("/recuperar/{id}")
     public ResponseEntity<Categoria> recuperarCategoriaEliminada(@PathVariable Integer id) {
         Categoria categoria = modelService.recuperarCategoriaEliminada(id);
         if (categoria != null) {
             return ResponseEntity.ok(categoria);
         } else {
-            return ResponseEntity.notFound().build(); // Retorna 404 si no encuentra la categoría eliminada
+            return ResponseEntity.notFound().build();
         }
     }
 }

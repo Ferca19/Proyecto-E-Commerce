@@ -23,7 +23,6 @@ public class ProductoVarianteController {
     @PostMapping("/variantes")
     public ResponseEntity<ProductoVarianteDTO> guardar(@RequestBody ProductoVarianteDTO dto) {
         try {
-            // Llama al servicio con los IDs de productos si se proporcionan
             ProductoVarianteDTO nuevaVariante = varianteService.guardar(dto, dto.getProductoIds());
             return ResponseEntity.ok(nuevaVariante);
         } catch (RuntimeException e) {

@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface MarcaRepository extends JpaRepository  <Marca,Integer>{
     List<Marca> findByEliminado(int eliminado);
-    // Método para recuperar una marca eliminada por ID
+
     Marca findByIdAndEliminado(int id, int eliminado);
-    // Método para listar marcas eliminadas
+
     List<Marca> findAllByEliminado(int eliminado);
 }
 

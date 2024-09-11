@@ -53,6 +53,5 @@ public class Producto {
     @JoinColumn(name = "marca_id", nullable = false)
     private Marca marca;
 
-    // Getters y Setters
 
 }

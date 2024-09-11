@@ -74,20 +74,20 @@ public class MarcaController {
         return ResponseEntity.ok().build();
     }
 
-    // Endpoint para listar todas las marcas eliminadas
+
     @GetMapping("/eliminadas")
     public List<Marca> listarMarcasEliminadas() {
         return modelService.listarMarcasEliminadas();
     }
 
-    // Endpoint para recuperar una marca eliminada por ID
+
     @PutMapping("/recuperar/{id}")
     public ResponseEntity<Marca> recuperarMarcaEliminada(@PathVariable Integer id) {
         Marca marca = modelService.recuperarMarcaEliminada(id);
         if (marca != null) {
             return ResponseEntity.ok(marca);
         } else {
-            return ResponseEntity.notFound().build(); // Retorna 404 si no encuentra la categoría eliminada
+            return ResponseEntity.notFound().build();
         }
     }
 }

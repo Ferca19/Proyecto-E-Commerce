@@ -48,41 +48,38 @@ public class CategoriaService implements ICategoriaService {
 
     @Override
     public void eliminar(Integer categoriaId) {
-        // Verificar si la categoría está asociada a algún producto
+
         boolean tieneProductos = productoRepository.existsByCategoriaId(categoriaId);
         if (tieneProductos) {
             throw new RuntimeException("La categoría no puede eliminarse porque está asociada a uno o más productos.");
         }
 
-        // Obtener la categoría por ID
+
         Categoria categoria = modelRepository.findById(categoriaId)
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
-        // Verificar si la categoría ya está eliminada
+
         if (categoria.getEliminado() == Categoria.SI) {
             throw new RuntimeException("La categoría ya está eliminada.");
         }
 
-        // Cambiar el estado a eliminado
         categoria.asEliminar();
 
-        // Guardar la categoría con el nuevo estado
         modelRepository.save(categoria);
     }
 
-    // Método para listar todas las categorías eliminadas
+
     @Override
     public List<Categoria> listarCategoriasEliminadas() {
         return modelRepository.findAllByEliminado(Categoria.SI);
     }
 
-    // Método para recuperar una categoría eliminada por ID
     @Override
     public Categoria recuperarCategoriaEliminada(Integer id) {
         Categoria categoria = modelRepository.findByIdAndEliminado(id, Categoria.SI);
         if (categoria != null) {
-            categoria.setEliminado(Categoria.NO); // Cambia el estado de la categoría a común
-            modelRepository.save(categoria); // Guarda los cambios
+            categoria.setEliminado(Categoria.NO);
+            modelRepository.save(categoria);
         }
         return categoria;
     }
@@ -90,14 +87,14 @@ public class CategoriaService implements ICategoriaService {
     @Override
     public Categoria actualizarCategoria(Integer id, Categoria categoria) {
         return modelRepository.findById(id)
-                .filter(existingCategoria -> existingCategoria.getEliminado() == Categoria.NO) // Verifica que la categoría no esté eliminada
+                .filter(existingCategoria -> existingCategoria.getEliminado() == Categoria.NO)
                 .map(existingCategoria -> {
-                    // Verifica si el nombre es nulo, si no lo es, actualiza
+
                     if (categoria.getNombre() != null) {
                         existingCategoria.setNombre(categoria.getNombre());
                     }
 
-                    // Verifica si la descripción es nula, si no lo es, actualiza
+
                     if (categoria.getDescripcion() != null) {
                         existingCategoria.setDescripcion(categoria.getDescripcion());
                     }

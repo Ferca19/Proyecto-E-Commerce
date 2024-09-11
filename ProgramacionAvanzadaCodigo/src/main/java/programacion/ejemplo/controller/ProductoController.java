@@ -37,7 +37,6 @@ public class ProductoController {
             ProductoDTO nuevoProducto = modelService.createProducto(productoDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto);
         } catch (RuntimeException e) {
-            // Agrega el mensaje de error en el cuerpo de la respuesta para facilitar la depuración
             return ResponseEntity.badRequest().body("Error al crear el producto: " + e.getMessage());
         }
     }

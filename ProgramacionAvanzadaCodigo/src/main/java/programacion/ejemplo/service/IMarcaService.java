@@ -18,9 +18,7 @@ public interface IMarcaService {
 
     public void eliminar(Integer Marca);
 
-    // Método para listar todas las marcas eliminadas
     List<Marca> listarMarcasEliminadas();
 
-    // Método para recuperar una marca eliminada por ID
     Marca recuperarMarcaEliminada(Integer id);
 }

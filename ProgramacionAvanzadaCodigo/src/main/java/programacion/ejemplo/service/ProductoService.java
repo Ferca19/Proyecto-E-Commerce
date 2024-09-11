@@ -39,7 +39,7 @@ public class ProductoService implements IProductoService {
 
     @Transactional
     public ProductoDTO createProducto(ProductoDTO productoDTO) {
-        // Buscar la categoría y marca por sus IDs
+
         Categoria categoria = categoriaRepository.findById(productoDTO.getCategoriaId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
@@ -49,39 +49,31 @@ public class ProductoService implements IProductoService {
         Marca marca = marcaRepository.findById(productoDTO.getMarcaId())
                 .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
 
-        // Convertir el DTO a entidad Producto
         Producto producto = productoMapper.toEntity(productoDTO, categoria,subcategoria, marca);
 
-        // Asignar las variantes al producto si existen
         if (productoDTO.getVariantes() != null) {
             List<ProductoVariante> variantes = productoDTO.getVariantes().stream()
                     .map(v -> {
-                        // Recuperar variante por ID, o lanzar excepción si no existe
                         ProductoVariante variante = productoVarianteRepository.findById(v.getId())
                                 .orElseThrow(() -> new RuntimeException("Variante no encontrada"));
                         return variante;
                     }).collect(Collectors.toList());
 
-            // Asociar las variantes con el producto
             producto.setVariantes(variantes);
 
-            // Actualizar la relación en las variantes
             for (ProductoVariante variante : variantes) {
-                // Verifica si el producto ya está en la lista de productos de la variante
+
                 if (!variante.getProductos().contains(producto)) {
                     variante.getProductos().add(producto);
-                    productoVarianteRepository.save(variante); // Guardar la variante con la asociación actualizada
+                    productoVarianteRepository.save(variante);
                 }
             }
         } else {
-            // Si no hay variantes, inicializar la lista como vacía
             producto.setVariantes(new ArrayList<>());
         }
 
-        // Guardar el producto
         Producto nuevoProducto = modelRepository.save(producto);
 
-        // Retornar el producto convertido a DTO
         return productoMapper.toDto(nuevoProducto);
     }
 
@@ -102,7 +94,7 @@ public class ProductoService implements IProductoService {
     public List<ProductoDTO> listar() {
         List<Producto> productos = modelRepository.findAllByEliminado(0);
         return productos.stream()
-                .map(productoMapper::toDto) // Usar el método de instancia toDto del mapper
+                .map(productoMapper::toDto)
                 .collect(Collectors.toList());
     }
 
