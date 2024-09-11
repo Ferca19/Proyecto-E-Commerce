@@ -8,29 +8,31 @@ import org.springframework.web.bind.annotation.*;
 import programacion.ejemplo.DTO.MarcaDTO;
 import programacion.ejemplo.Mapper.MarcaMapper;
 import programacion.ejemplo.exception.RecursoNoEncontradoExcepcion;
+import programacion.ejemplo.model.Categoria;
 import programacion.ejemplo.service.IMarcaService;
 import programacion.ejemplo.model.Marca;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("ejemplo")
+@RequestMapping("marcas")
 @CrossOrigin(value=" http://localhost:5173")
 
 public class MarcaController {
 
     private static final Logger logger = LoggerFactory.getLogger(MarcaController.class);
+
     @Autowired
     private IMarcaService modelService;
 
-    @GetMapping({"/marcas"})
+    @GetMapping
     public List<MarcaDTO> getAll() {
         logger.info("entra y trae todas las marcas");
         return modelService.listar();
 
     }
 
-    @GetMapping("/marca/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<MarcaDTO> getPorId(@PathVariable Integer id){
         Marca model = modelService.buscarPorId(id);
 
@@ -43,18 +45,22 @@ public class MarcaController {
 
 
     
-    @PostMapping("/marca")
+    @PostMapping
     public MarcaDTO guardar(@RequestBody MarcaDTO model){
         return modelService.guardar(model);
     }
 
-    @PutMapping("/marca")
-    public MarcaDTO actualizar(@RequestBody MarcaDTO model){
-
-        return modelService.guardar(model);
+    @PutMapping("/{id}")
+    public ResponseEntity<Marca> actualizarMarca(@PathVariable Integer id, @RequestBody Marca marca) {
+        Marca marcaActualizada = modelService.actualizarMarca(id, marca);
+        if (marcaActualizada != null) {
+            return ResponseEntity.ok(marcaActualizada);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @DeleteMapping("/marca/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
 
 
@@ -64,7 +70,24 @@ public class MarcaController {
         }
 
         model.asEliminar();
-        modelService.eliminar(model);
+        modelService.eliminar(id);
         return ResponseEntity.ok().build();
+    }
+
+    // Endpoint para listar todas las marcas eliminadas
+    @GetMapping("/eliminadas")
+    public List<Marca> listarMarcasEliminadas() {
+        return modelService.listarMarcasEliminadas();
+    }
+
+    // Endpoint para recuperar una marca eliminada por ID
+    @PutMapping("/recuperar/{id}")
+    public ResponseEntity<Marca> recuperarMarcaEliminada(@PathVariable Integer id) {
+        Marca marca = modelService.recuperarMarcaEliminada(id);
+        if (marca != null) {
+            return ResponseEntity.ok(marca);
+        } else {
+            return ResponseEntity.notFound().build(); // Retorna 404 si no encuentra la categoría eliminada
+        }
     }
 }

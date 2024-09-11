@@ -19,8 +19,6 @@ public class CategoriaService implements ICategoriaService {
 
     private static final Logger logger = LoggerFactory.getLogger(CategoriaService.class);
 
-    @Autowired
-    private CategoriaRepository categoriaRepository;
 
     @Autowired
     private CategoriaRepository modelRepository;
@@ -31,7 +29,7 @@ public class CategoriaService implements ICategoriaService {
 
     @Override
     public List<CategoriaDTO> listar() {
-        List<Categoria> categorias = modelRepository.findByEstado(Categoria.COMUN);
+        List<Categoria> categorias = modelRepository.findByEliminado(Categoria.NO);
         return categorias.stream().map(CategoriaMapper::toDTO).toList();
     }
 
@@ -61,7 +59,7 @@ public class CategoriaService implements ICategoriaService {
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
         // Verificar si la categoría ya está eliminada
-        if (categoria.getEstado() == Categoria.ELIMINADO) {
+        if (categoria.getEliminado() == Categoria.SI) {
             throw new RuntimeException("La categoría ya está eliminada.");
         }
 
@@ -73,16 +71,18 @@ public class CategoriaService implements ICategoriaService {
     }
 
     // Método para listar todas las categorías eliminadas
+    @Override
     public List<Categoria> listarCategoriasEliminadas() {
-        return categoriaRepository.findAllByEstado(Categoria.ELIMINADO);
+        return modelRepository.findAllByEliminado(Categoria.SI);
     }
 
     // Método para recuperar una categoría eliminada por ID
+    @Override
     public Categoria recuperarCategoriaEliminada(Integer id) {
-        Categoria categoria = categoriaRepository.findByIdAndEstado(id, Categoria.ELIMINADO);
+        Categoria categoria = modelRepository.findByIdAndEliminado(id, Categoria.SI);
         if (categoria != null) {
-            categoria.setEstado(Categoria.COMUN); // Cambia el estado de la categoría a común
-            categoriaRepository.save(categoria); // Guarda los cambios
+            categoria.setEliminado(Categoria.NO); // Cambia el estado de la categoría a común
+            modelRepository.save(categoria); // Guarda los cambios
         }
         return categoria;
     }
@@ -90,6 +90,7 @@ public class CategoriaService implements ICategoriaService {
     @Override
     public Categoria actualizarCategoria(Integer id, Categoria categoria) {
         return modelRepository.findById(id)
+                .filter(existingCategoria -> existingCategoria.getEliminado() == Categoria.NO) // Verifica que la categoría no esté eliminada
                 .map(existingCategoria -> {
                     // Verifica si el nombre es nulo, si no lo es, actualiza
                     if (categoria.getNombre() != null) {
@@ -105,4 +106,5 @@ public class CategoriaService implements ICategoriaService {
                 })
                 .orElse(null);
     }
+
 }

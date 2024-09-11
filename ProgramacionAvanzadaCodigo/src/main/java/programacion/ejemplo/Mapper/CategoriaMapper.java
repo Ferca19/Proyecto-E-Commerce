@@ -10,7 +10,7 @@ public class CategoriaMapper {
         dto.setId(model.getId());
         dto.setNombre(model.getNombre());
         dto.setDescripcion(model.getDescripcion());
-        dto.setEstado(model.getEstado());
+        dto.setEliminado(model.getEliminado());
         return dto;
     }
 
@@ -19,7 +19,7 @@ public class CategoriaMapper {
         model.setId(dto.getId());
         model.setNombre(dto.getNombre());
         model.setDescripcion(dto.getDescripcion());
-        model.setEstado(dto.getEstado());
+        model.setEliminado(dto.getEliminado());
         return model;
     }
 

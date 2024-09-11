@@ -11,9 +11,9 @@ import programacion.ejemplo.repository.ProductoVarianteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductoVarianteService implements IProductoVariante {
@@ -26,23 +26,27 @@ public class ProductoVarianteService implements IProductoVariante {
     @Autowired
     private ProductoRepository productoRepository; // Inyecta el repositorio del producto
 
+    @Autowired
+    private ProductoVarianteMapper productoVarianteMapper; // Inyecta el mapper
 
     @Override
     public List<ProductoVarianteDTO> listar() {
         List<ProductoVariante> variantes = productoVarianteRepository.findAll();
-        return variantes.stream().map(ProductoVarianteMapper::toDTO).toList();
+        return variantes.stream()
+                .map(productoVarianteMapper::toDto) // Usar la instancia del mapper
+                .toList();
     }
 
     @Override
     public ProductoVarianteDTO obtenerPorId(Integer id) {
         ProductoVariante variante = productoVarianteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Variante no encontrada"));
-        return ProductoVarianteMapper.toDTO(variante);
+        return productoVarianteMapper.toDto(variante); // Usar la instancia del mapper
     }
 
     @Transactional
     public ProductoVarianteDTO guardar(ProductoVarianteDTO dto, List<Integer> productoIds) {
-        ProductoVariante productoVariante = ProductoVarianteMapper.toEntity(dto, productoRepository);
+        ProductoVariante productoVariante = productoVarianteMapper.toEntity(dto);
 
         if (productoIds != null && !productoIds.isEmpty()) {
             List<Producto> productos = productoRepository.findAllById(productoIds);
@@ -52,9 +56,8 @@ public class ProductoVarianteService implements IProductoVariante {
         }
 
         ProductoVariante guardada = productoVarianteRepository.save(productoVariante);
-        return ProductoVarianteMapper.toDTO(guardada);
+        return productoVarianteMapper.toDto(guardada); // Usar la instancia del mapper
     }
-
 
     @Override
     public void eliminar(Integer id) {
@@ -66,6 +69,8 @@ public class ProductoVarianteService implements IProductoVariante {
     @Override
     public List<ProductoVarianteDTO> obtenerPorProductoId(Integer productoId) {
         List<ProductoVariante> variantes = productoVarianteRepository.findByProductos_Id(productoId);
-        return variantes.stream().map(ProductoVarianteMapper::toDTO).toList();
+        return variantes.stream()
+                .map(productoVarianteMapper::toDto) // Usar la instancia del mapper
+                .toList();
     }
 }

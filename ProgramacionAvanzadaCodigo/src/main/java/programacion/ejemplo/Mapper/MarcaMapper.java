@@ -9,7 +9,7 @@ public class MarcaMapper {
         dto.setId(model.getId());
         dto.setDenominacion(model.getDenominacion());
         dto.setObservaciones(model.getObservaciones());
-        dto.setEstado(model.getEstado());
+        dto.setEliminado(model.getEliminado());
         return dto;
     }
 
@@ -18,7 +18,7 @@ public class MarcaMapper {
         model.setId(dto.getId());
         model.setDenominacion(dto.getDenominacion());
         model.setObservaciones(dto.getObservaciones());
-        model.setEstado(dto.getEstado());
+        model.setEliminado(dto.getEliminado());
         return model;
     }
 

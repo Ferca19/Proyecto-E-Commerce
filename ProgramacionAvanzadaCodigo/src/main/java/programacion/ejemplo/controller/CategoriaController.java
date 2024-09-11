@@ -81,7 +81,7 @@ public class CategoriaController {
 
     // Endpoint para recuperar una categoría eliminada por ID
     @PutMapping("/recuperar/{id}")
-    public ResponseEntity<Categoria> recuperarCategoria(@PathVariable Integer id) {
+    public ResponseEntity<Categoria> recuperarCategoriaEliminada(@PathVariable Integer id) {
         Categoria categoria = modelService.recuperarCategoriaEliminada(id);
         if (categoria != null) {
             return ResponseEntity.ok(categoria);

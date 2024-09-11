@@ -3,16 +3,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import programacion.ejemplo.DTO.CategoriaDTO;
 import programacion.ejemplo.DTO.ProductoDTO;
+import programacion.ejemplo.Mapper.CategoriaMapper;
 import programacion.ejemplo.Mapper.ProductoMapper;
-import programacion.ejemplo.model.Categoria;
-import programacion.ejemplo.model.Marca;
-import programacion.ejemplo.model.Producto;
-import programacion.ejemplo.repository.CategoriaRepository;
-import programacion.ejemplo.repository.MarcaRepository;
-import programacion.ejemplo.repository.ProductoRepository;
-import programacion.ejemplo.model.ProductoVariante;
-import programacion.ejemplo.repository.ProductoVarianteRepository;
+import programacion.ejemplo.model.*;
+import programacion.ejemplo.repository.*;
 
 
 import java.math.BigDecimal;
@@ -24,7 +20,7 @@ import java.util.stream.Collectors;
 public class ProductoService implements IProductoService {
 
     @Autowired
-    private ProductoRepository productoRepository;
+    private ProductoRepository modelRepository;
 
     @Autowired
     private CategoriaRepository categoriaRepository;
@@ -36,19 +32,25 @@ public class ProductoService implements IProductoService {
     private MarcaRepository marcaRepository;
 
     @Autowired
+    private SubcategoriaRepository subcategoriaRepository;
+
+    @Autowired
     private ProductoMapper productoMapper;
 
     @Transactional
     public ProductoDTO createProducto(ProductoDTO productoDTO) {
         // Buscar la categoría y marca por sus IDs
         Categoria categoria = categoriaRepository.findById(productoDTO.getCategoriaId())
-                .orElseThrow(() -> new RuntimeException("Categoria no encontrada"));
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+
+        Subcategoria subcategoria = subcategoriaRepository.findById(productoDTO.getSubcategoriaId())
+                .orElseThrow(() -> new RuntimeException("Subcategoría no encontrada"));
 
         Marca marca = marcaRepository.findById(productoDTO.getMarcaId())
                 .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
 
         // Convertir el DTO a entidad Producto
-        Producto producto = productoMapper.toEntity(productoDTO, categoria, marca);
+        Producto producto = productoMapper.toEntity(productoDTO, categoria,subcategoria, marca);
 
         // Asignar las variantes al producto si existen
         if (productoDTO.getVariantes() != null) {
@@ -65,6 +67,7 @@ public class ProductoService implements IProductoService {
 
             // Actualizar la relación en las variantes
             for (ProductoVariante variante : variantes) {
+                // Verifica si el producto ya está en la lista de productos de la variante
                 if (!variante.getProductos().contains(producto)) {
                     variante.getProductos().add(producto);
                     productoVarianteRepository.save(variante); // Guardar la variante con la asociación actualizada
@@ -76,11 +79,12 @@ public class ProductoService implements IProductoService {
         }
 
         // Guardar el producto
-        Producto nuevoProducto = productoRepository.save(producto);
+        Producto nuevoProducto = modelRepository.save(producto);
 
         // Retornar el producto convertido a DTO
         return productoMapper.toDto(nuevoProducto);
     }
+
 
     @Override
     public ProductoDTO updateProducto(Integer id, ProductoDTO productoDTO) {
@@ -89,14 +93,17 @@ public class ProductoService implements IProductoService {
 
     @Override
     public ProductoDTO obtenerPorId(Integer id) {
-        Producto producto = productoRepository.findById(id)
+        Producto producto = modelRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
         return productoMapper.toDto(producto);
     }
 
     @Override
-    public List<ProductoDTO> getAllProductos() {
-        return List.of();
+    public List<ProductoDTO> listar() {
+        List<Producto> productos = modelRepository.findAllByEliminado(0);
+        return productos.stream()
+                .map(productoMapper::toDto) // Usar el método de instancia toDto del mapper
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -29,12 +29,25 @@ public class Producto {
     @NotNull
     private int stock;
 
+    @NotNull
+    private int eliminado;
+    public static final int NO=0;
+    public static final int SI=1;
+
+    public void asEliminar() {
+        this.setEliminado(1);
+    }
+
     @ManyToMany(mappedBy = "productos")
     private List<ProductoVariante> variantes;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
+
+    @ManyToOne
+    @JoinColumn(name = "subcategoria_id", nullable = false)
+    private Subcategoria subcategoria;
 
     @ManyToOne
     @JoinColumn(name = "marca_id", nullable = false)

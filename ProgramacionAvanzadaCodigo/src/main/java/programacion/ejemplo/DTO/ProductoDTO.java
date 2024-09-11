@@ -12,8 +12,10 @@ public class ProductoDTO {
     private String descripcion;
     private double precio;
     private int stock;
+    private int eliminado;
     private List<ProductoVarianteDTO> variantes;
     private Integer categoriaId;
+    private Integer subcategoriaId;
     private Integer marcaId;
 
 }

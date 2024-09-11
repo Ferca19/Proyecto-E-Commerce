@@ -8,6 +8,6 @@ public class CategoriaDTO {
     private Integer id;
     private String nombre;
     private String descripcion;
-    private int estado;
+    private int eliminado;
 
 }

@@ -21,12 +21,13 @@ public class Marca {
     private String observaciones;
 
     @NotNull
-    private int estado;
-        public static final int COMUN=0;
-        public static final int ELIMINADO=1;
-        public void asEliminar() {
-             this.setEstado(1);
-       }
+    private int eliminado;
+    public static final int NO=0;
+    public static final int SI=1;
+
+    public void asEliminar() {
+        this.setEliminado(1);
+    }
 
 
 

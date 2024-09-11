@@ -6,12 +6,12 @@ import java.util.List;
 
 public interface CategoriaRepository extends JpaRepository  <Categoria,Integer>{
 
-    List<Categoria> findByEstado(int estado);
+    List<Categoria> findByEliminado(int eliminado);
 
     // Método para listar categorías eliminadas
-    List<Categoria> findAllByEstado(int estado);
+    List<Categoria> findAllByEliminado(int eliminado);
 
     // Método para recuperar una categoría eliminada por ID
-    Categoria findByIdAndEstado(int id, int estado);
+    Categoria findByIdAndEliminado(int id, int eliminado);
 
 }
