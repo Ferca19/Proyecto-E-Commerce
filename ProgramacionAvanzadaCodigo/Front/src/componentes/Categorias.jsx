@@ -57,7 +57,7 @@ function Categorias() {
                 </div>
                 <form onSubmit={agregarCategoria}>
                     <div className="mb-3">
-                        <label htmlFor="nombre" className="form-label">Denominación</label>
+                        <label htmlFor="nombre" className="form-label">Nombre</label>
                         <input
                             type="text"
                             id="nombre"
@@ -68,7 +68,7 @@ function Categorias() {
                         />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="descripcion" className="form-label">Categoria</label>
+                        <label htmlFor="descripcion" className="form-label">Descripción</label>
                         <input
                             type="text"
                             id="descripcion"
