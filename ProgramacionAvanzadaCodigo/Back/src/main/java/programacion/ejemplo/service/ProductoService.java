@@ -32,6 +32,18 @@ public class ProductoService implements IProductoService {
     private MarcaRepository marcaRepository;
 
     @Autowired
+    private ICategoriaService categoriaService;
+
+    @Autowired
+    private ISubcategoriaService subcategoriaService;
+
+    @Autowired
+    private IMarcaService marcaService;
+
+    @Autowired
+    private ProductoRepository productoRepository;
+
+    @Autowired
     private SubcategoriaRepository subcategoriaRepository;
 
     @Autowired
@@ -101,5 +113,40 @@ public class ProductoService implements IProductoService {
     @Override
     public void deleteProducto(Integer id) {
 
+    }
+
+    @Override
+    public ProductoDTO actualizarProducto(Producto producto) {
+        // Verificar que la categoría no sea nula
+        if (producto.getCategoria() == null) {
+            throw new IllegalArgumentException("La categoría no puede ser nula");
+        }
+
+        // Si otras propiedades como subcategoría y marca también son obligatorias, verifica igual
+        if (producto.getSubcategoria() == null) {
+            throw new IllegalArgumentException("La subcategoría no puede ser nula");
+        }
+
+        if (producto.getMarca() == null) {
+            throw new IllegalArgumentException("La marca no puede ser nula");
+        }
+
+        Producto productoActualizado = productoRepository.save(producto);
+        return productoMapper.toDto(productoActualizado);
+    }
+
+    @Override
+    public Categoria obtenerCategoria(Integer categoriaId) {
+        return categoriaService.buscarPorId(categoriaId);
+    }
+
+    @Override
+    public Subcategoria obtenerSubcategoria(Integer subcategoriaId) {
+        return subcategoriaService.buscarPorId(subcategoriaId);
+    }
+
+    @Override
+    public Marca obtenerMarca(Integer marcaId) {
+        return marcaService.buscarPorId(marcaId);
     }
 }

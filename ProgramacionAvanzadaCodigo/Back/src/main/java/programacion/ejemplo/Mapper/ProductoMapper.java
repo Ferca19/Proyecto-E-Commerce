@@ -14,6 +14,7 @@ public class ProductoMapper {
     @Autowired
     private ProductoVarianteMapper productoVarianteMapper;
 
+
     // Convierte de entidad a DTO
     public ProductoDTO toDto(Producto model) {
         ProductoDTO dto = new ProductoDTO();

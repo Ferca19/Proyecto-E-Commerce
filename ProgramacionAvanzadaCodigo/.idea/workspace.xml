@@ -49,7 +49,7 @@
     "Spring Boot.EjemploApplication.executor": "Run",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/2fern/EscritorioLocal/Proyecto-Programacion-Avanzada/ProgramacionAvanzadaCodigo/Front",
+    "last_opened_file_path": "D:/USUARIO/Desktop/Proyecto-Programacion-Avanzada/ProgramacionAvanzadaCodigo/Back",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -75,8 +75,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.20224.387" />
-        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-IU-242.20224.387" />
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
       </set>
     </attachedChunks>
   </component>
@@ -104,6 +104,7 @@
       <workItem from="1726937530319" duration="8423000" />
       <workItem from="1727035056308" duration="92000" />
       <workItem from="1727119521373" duration="47000" />
+      <workItem from="1727368715147" duration="27000" />
     </task>
     <servers />
   </component>
