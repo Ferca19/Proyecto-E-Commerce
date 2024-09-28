@@ -5,6 +5,7 @@ import programacion.ejemplo.DTO.CategoriaDTO;
 import programacion.ejemplo.model.Categoria;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ICategoriaService {
 
@@ -21,4 +22,6 @@ public interface ICategoriaService {
     List<Categoria> listarCategoriasEliminadas();
 
     Categoria recuperarCategoriaEliminada(Integer id);
+
+    Optional<Categoria> obtenerPorId(Integer id);
 }

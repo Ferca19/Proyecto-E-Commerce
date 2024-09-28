@@ -14,34 +14,33 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class ProductoVarianteService implements IProductoVariante {
+public class ProductoVarianteService implements IProductoVarianteService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProductoVarianteService.class);
 
     @Autowired
-    private ProductoVarianteRepository productoVarianteRepository;
+    private ProductoVarianteRepository modelRepository;
 
     @Autowired
-    private ProductoRepository productoRepository;
+    private IProductoService productoService;
 
     @Autowired
     private ProductoVarianteMapper productoVarianteMapper;
 
     @Override
     public List<ProductoVarianteDTO> listar() {
-        List<ProductoVariante> variantes = productoVarianteRepository.findAll();
+        List<ProductoVariante> variantes = modelRepository.findAll();
         return variantes.stream()
                 .map(productoVarianteMapper::toDto)
                 .toList();
     }
 
     @Override
-    public ProductoVarianteDTO obtenerPorId(Integer id) {
-        ProductoVariante variante = productoVarianteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Variante no encontrada"));
-        return productoVarianteMapper.toDto(variante);
+    public Optional<ProductoVariante> obtenerPorId(Integer id) {
+        return modelRepository.findById(id);
     }
 
     @Transactional
@@ -49,28 +48,33 @@ public class ProductoVarianteService implements IProductoVariante {
         ProductoVariante productoVariante = productoVarianteMapper.toEntity(dto);
 
         if (productoIds != null && !productoIds.isEmpty()) {
-            List<Producto> productos = productoRepository.findAllById(productoIds);
+            List<Producto> productos = productoService.findAllById(productoIds);
             productoVariante.setProductos(productos);
         } else {
             productoVariante.setProductos(new ArrayList<>());
         }
 
-        ProductoVariante guardada = productoVarianteRepository.save(productoVariante);
+        ProductoVariante guardada = modelRepository.save(productoVariante);
         return productoVarianteMapper.toDto(guardada);
     }
 
     @Override
     public void eliminar(Integer id) {
-        ProductoVariante productoVariante = productoVarianteRepository.findById(id)
+        ProductoVariante productoVariante = modelRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Variante no encontrada"));
-        productoVarianteRepository.delete(productoVariante);
+        modelRepository.delete(productoVariante);
     }
 
     @Override
     public List<ProductoVarianteDTO> obtenerPorProductoId(Integer productoId) {
-        List<ProductoVariante> variantes = productoVarianteRepository.findByProductos_Id(productoId);
+        List<ProductoVariante> variantes = modelRepository.findByProductos_Id(productoId);
         return variantes.stream()
                 .map(productoVarianteMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public ProductoVariante save(ProductoVariante variante) {
+        return modelRepository.save(variante);
     }
 }

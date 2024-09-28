@@ -28,7 +28,7 @@ public class PedidoService implements IPedidoService {
     private static final Logger logger = LoggerFactory.getLogger(PedidoService.class);
 
     @Autowired
-    private PedidoRepository pedidoRepository;
+    private PedidoRepository modelRepository;
 
     @Autowired
     @Lazy
@@ -41,17 +41,12 @@ public class PedidoService implements IPedidoService {
     private IProductoService productoService;
 
     @Autowired
-    private ProductoMapper productoMapper;
-
-    @Autowired
     private IDetallePedidoService detallePedidoService;
 
-    @Autowired
-    private UsuarioMapper usuarioMapper;
 
     public List<PedidoDTO> getAllPedidos() {
         // Obtener todos los pedidos
-        List<Pedido> pedidos = pedidoRepository.findAll();
+        List<Pedido> pedidos = modelRepository.findAll();
 
         // Filtrar solo los pedidos que no están eliminados (eliminado == 0)
         return pedidos.stream()
@@ -74,17 +69,17 @@ public class PedidoService implements IPedidoService {
         nuevoPedido.setEstado(estadoService.obtenerEstadoInicial());
 
         // Guardar el pedido sin el importe total aún
-        Pedido pedidoGuardado = pedidoRepository.save(nuevoPedido);
+        Pedido pedidoGuardado = modelRepository.save(nuevoPedido);
 
         // Calcular el importe total y crear los detalles usando DetallePedidoService
         double importeTotal = detallePedidoService.crearDetallePedido(pedidoGuardado, detallesPedidoDTO);
 
         // Actualizar el importe total del pedido y guardarlo de nuevo
         pedidoGuardado.setImporteTotal(importeTotal);
-        pedidoRepository.save(pedidoGuardado);
+        modelRepository.save(pedidoGuardado);
 
         // Volver a consultar el pedido para asegurarse de que se cargan los detalles y relaciones
-        Pedido pedidoFinalizado = pedidoRepository.findById(pedidoGuardado.getId())
+        Pedido pedidoFinalizado = modelRepository.findById(pedidoGuardado.getId())
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 
         return pedidoFinalizado;
@@ -92,7 +87,7 @@ public class PedidoService implements IPedidoService {
 
     public void eliminarPedido(Integer pedidoId) {
         // Obtener el pedido por ID
-        Pedido pedido = pedidoRepository.findById(pedidoId)
+        Pedido pedido = modelRepository.findById(pedidoId)
                 .orElseThrow(() -> new EntityNotFoundException("Pedido no encontrado con ID: " + pedidoId));
 
         // Cambiar el estado de eliminación a 1 (eliminado)
@@ -111,12 +106,12 @@ public class PedidoService implements IPedidoService {
         }
 
         // Guardar los cambios del pedido
-        pedidoRepository.save(pedido);
+        modelRepository.save(pedido);
     }
 
     public void recuperarPedido(Integer pedidoId) {
         // Obtener el pedido por ID
-        Pedido pedido = pedidoRepository.findById(pedidoId)
+        Pedido pedido = modelRepository.findById(pedidoId)
                 .orElseThrow(() -> new EntityNotFoundException("Pedido no encontrado con ID: " + pedidoId));
 
         // Cambiar el estado de eliminación a 0
@@ -135,7 +130,7 @@ public class PedidoService implements IPedidoService {
         }
 
         // Guardar los cambios del pedido
-        pedidoRepository.save(pedido);
+        modelRepository.save(pedido);
     }
 
 

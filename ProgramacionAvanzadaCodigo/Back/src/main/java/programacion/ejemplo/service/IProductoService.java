@@ -13,14 +13,11 @@ public interface IProductoService {
 
     List<ProductoDTO> listar();
 
+    List<Producto> findAllById(List<Integer> ids);
+
     ProductoDTO createProducto(ProductoDTO productoDTO);
 
-    ProductoDTO updateProducto(Integer id, ProductoDTO productoDTO);
-
     ProductoDTO obtenerPorId(Integer id);
-
-
-    void deleteProducto(Integer id);
 
     ProductoDTO actualizarProducto(Producto producto);
 
@@ -29,4 +26,8 @@ public interface IProductoService {
     Subcategoria obtenerSubcategoria(Integer subcategoriaId);
 
     Marca obtenerMarca(Integer marcaId);
+
+    boolean existePorCategoriaId(Integer categoriaId);
+    boolean existePorMarcaId(Integer marcaId);
+    boolean existePorSubcategoriaId(Integer subcategoriaId);
 }

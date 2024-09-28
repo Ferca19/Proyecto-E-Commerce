@@ -24,11 +24,20 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (usuario == null) {
             throw new UsernameNotFoundException("Usuario no encontrado");
         }
-        return new org.springframework.security.core.userdetails.User(
-                usuario.getMail(),
-                usuario.getContrasena(),
-                // Aquí puedes agregar los roles/authorities si es necesario
-                new ArrayList<>()
-        );
+        return new CustomUserDetails(usuario);
+    }
+
+
+    public static class CustomUserDetails extends org.springframework.security.core.userdetails.User {
+        private final Usuario usuario;
+
+        public CustomUserDetails(Usuario usuario) {
+            super(usuario.getMail(), usuario.getContrasena(), new ArrayList<>());
+            this.usuario = usuario;
+        }
+
+        public Usuario getUsuario() {
+            return usuario;
+        }
     }
 }

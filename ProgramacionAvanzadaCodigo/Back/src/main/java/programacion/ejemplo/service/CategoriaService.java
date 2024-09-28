@@ -12,6 +12,7 @@ import programacion.ejemplo.repository.ProductoRepository;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 
@@ -24,7 +25,7 @@ public class CategoriaService implements ICategoriaService {
     private CategoriaRepository modelRepository;
 
     @Autowired
-    private ProductoRepository productoRepository;
+    private IProductoService productoService;
 
 
     @Override
@@ -49,7 +50,7 @@ public class CategoriaService implements ICategoriaService {
     @Override
     public void eliminar(Integer categoriaId) {
 
-        boolean tieneProductos = productoRepository.existsByCategoriaId(categoriaId);
+        boolean tieneProductos = productoService.existePorCategoriaId(categoriaId);
         if (tieneProductos) {
             throw new RuntimeException("La categoría no puede eliminarse porque está asociada a uno o más productos.");
         }
@@ -102,6 +103,11 @@ public class CategoriaService implements ICategoriaService {
                     return modelRepository.save(existingCategoria);
                 })
                 .orElse(null);
+    }
+
+
+    public Optional<Categoria> obtenerPorId(Integer id) {
+        return modelRepository.findById(id);
     }
 
 }

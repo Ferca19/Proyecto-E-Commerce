@@ -12,6 +12,7 @@ import programacion.ejemplo.repository.MarcaRepository;
 import programacion.ejemplo.repository.ProductoRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 
@@ -22,7 +23,7 @@ public class MarcaService implements IMarcaService {
     private MarcaRepository modelRepository;
 
     @Autowired
-    private ProductoRepository productoRepository;
+    private IProductoService productoService;
 
     @Override
     public List<MarcaDTO> listar() {
@@ -65,7 +66,7 @@ public class MarcaService implements IMarcaService {
     @Override
     public void eliminar(Integer marcaId) {
 
-        boolean tieneProductos = productoRepository.existsByMarcaId(marcaId);
+        boolean tieneProductos = productoService.existePorMarcaId(marcaId);
         if (tieneProductos) {
             throw new RuntimeException("La marca no puede eliminarse porque está asociada a uno o más productos.");
         }
@@ -98,5 +99,9 @@ public class MarcaService implements IMarcaService {
             modelRepository.save(marca);
         }
         return marca;
+    }
+
+    public Optional<Marca> obtenerPorId(Integer id) {
+        return modelRepository.findById(id);
     }
 }

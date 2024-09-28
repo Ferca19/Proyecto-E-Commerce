@@ -32,7 +32,7 @@ public class UsuarioService implements IUsuarioService {
     private IPedidoService pedidoService;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioRepository modelRepository;
 
     @Autowired
     private UsuarioMapper usuarioMapper;
@@ -50,7 +50,7 @@ public class UsuarioService implements IUsuarioService {
     @Override
     public UsuarioDTO obtenerPorId(Integer usuarioId) {
         // Buscar el usuario por ID y asegurarse de que no esté eliminado
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByIdAndEliminadoFalse(usuarioId);
+        Optional<Usuario> usuarioOpt = modelRepository.findByIdAndEliminadoFalse(usuarioId);
 
         if (usuarioOpt.isPresent()) {
             // Si se encuentra, convertirlo en DTO y devolverlo
@@ -63,7 +63,7 @@ public class UsuarioService implements IUsuarioService {
 
     public UsuarioDTO crearUsuario(RegisterDTO registerDTO) {
         // Verificar si el email ya está registrado
-        if (usuarioRepository.existsByMail(registerDTO.getMail())) {
+        if (modelRepository.existsByMail(registerDTO.getMail())) {
             throw new IllegalArgumentException("Email ya registrado");
         }
 
@@ -81,7 +81,7 @@ public class UsuarioService implements IUsuarioService {
         // usuario.setRol(getRoleByName(registerDTO.getRol()));
 
         // Guardar usuario en la base de datos
-        usuarioRepository.save(usuario);
+        modelRepository.save(usuario);
 
         return usuarioMapper.toDTO(usuario);
     }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 28-09-2024 a las 00:24:31
+-- Tiempo de generación: 28-09-2024 a las 02:12:37
 -- Versión del servidor: 8.0.39
 -- Versión de PHP: 8.0.30
 
@@ -278,7 +278,9 @@ CREATE TABLE `usuario` (
 INSERT INTO `usuario` (`id`, `apellido`, `contrasena`, `eliminado`, `mail`, `nombre`) VALUES
 (1, 'Pérez', 'contraseña123', 0, 'juan.perez@example.com', 'Juan'),
 (2, NULL, '$2a$10$uA.pqHcvQJ0mZYmlZW4muuJ0QyJ2WEDklbTUxVM2LpDaMyD6j5ZU2', 0, 'loloblanc@gmail.com', 'Lolo'),
-(3, 'Cagliero', '$2a$10$aPAwoIzEgQwnBDg0A06Iy.KCQPYhczAtZNzpPbomymG6utAsP3BkS', 0, '2fernando2cagliero@gmail.com', 'Fer');
+(3, 'Cagliero', '$2a$10$aPAwoIzEgQwnBDg0A06Iy.KCQPYhczAtZNzpPbomymG6utAsP3BkS', 0, '2fernando2cagliero@gmail.com', 'Fer'),
+(4, NULL, '$2a$10$AbnjIzpdPqrpQQIiynDl1eMMHPKOnmkNbzkyUibMC8CYRKLn7eJa.', 0, '1fernando1cagliero@gmail.com', NULL),
+(5, NULL, '$2a$10$Qp1diIGJUA0Bb5hPr3/Dd.PY9aehJKIPKK.vgHov2.Oe7wPXvf1nC', 0, 'usuariodeprueba@gmail.com', NULL);
 
 --
 -- Índices para tablas volcadas
@@ -408,7 +410,7 @@ ALTER TABLE `subcategoria`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas

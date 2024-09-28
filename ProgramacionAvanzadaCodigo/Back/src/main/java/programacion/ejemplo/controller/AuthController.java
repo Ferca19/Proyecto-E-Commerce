@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import programacion.ejemplo.DTO.LoginDTO;
+import programacion.ejemplo.DTO.LoginResponseDTO;
 import programacion.ejemplo.DTO.RegisterDTO;
 import programacion.ejemplo.DTO.UsuarioDTO;
 import programacion.ejemplo.service.IAuthService;
@@ -34,9 +35,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {
-        String token = authService.login(loginDTO);
-        return ResponseEntity.ok(token); // Devuelve el token como respuesta
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO loginDTO) {
+        LoginResponseDTO response = authService.login(loginDTO);
+        return ResponseEntity.ok(response);
     }
 
 }

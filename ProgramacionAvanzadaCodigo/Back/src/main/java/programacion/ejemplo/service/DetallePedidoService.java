@@ -29,7 +29,7 @@ public class DetallePedidoService implements IDetallePedidoService {
     private static final Logger logger = LoggerFactory.getLogger(DetallePedidoService.class);
 
     @Autowired
-    private DetallePedidoRepository detallePedidoRepository;
+    private DetallePedidoRepository modelRepository;
 
     @Autowired
     private IProductoService productoService;
@@ -74,7 +74,7 @@ public class DetallePedidoService implements IDetallePedidoService {
             detallePedido.setPedido(pedido);
             detallePedido.setProducto(productoMapper.toEntity(productoDTO, null, null, null));
 
-            detallePedidoRepository.save(detallePedido);
+            modelRepository.save(detallePedido);
             listaDetalles.add(detallePedido); // Agregar detalle a la lista
 
             importeTotal += subtotal;

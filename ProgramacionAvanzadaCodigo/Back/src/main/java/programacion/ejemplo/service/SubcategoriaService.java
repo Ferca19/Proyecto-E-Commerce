@@ -6,12 +6,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import programacion.ejemplo.DTO.SubcategoriaDTO;
 import programacion.ejemplo.Mapper.SubcategoriaMapper;
+import programacion.ejemplo.model.Categoria;
 import programacion.ejemplo.model.Subcategoria;
 import programacion.ejemplo.repository.SubcategoriaRepository;
 import programacion.ejemplo.repository.ProductoRepository;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 
@@ -24,7 +26,7 @@ public class SubcategoriaService implements ISubcategoriaService {
     private SubcategoriaRepository modelRepository;
 
     @Autowired
-    private ProductoRepository productoRepository;
+    private IProductoService productoService;
 
 
     @Override
@@ -49,7 +51,7 @@ public class SubcategoriaService implements ISubcategoriaService {
     @Override
     public void eliminar(Integer subcategoriaId) {
         // Verificar si la categoría está asociada a algún producto
-        boolean tieneProductos = productoRepository.existsBySubcategoriaId(subcategoriaId);
+        boolean tieneProductos = productoService.existePorSubcategoriaId(subcategoriaId);
         if (tieneProductos) {
             throw new RuntimeException("La subcategoría no puede eliminarse porque está asociada a uno o más productos.");
         }
@@ -99,5 +101,8 @@ public class SubcategoriaService implements ISubcategoriaService {
                 .orElse(null);
     }
 
+    public Optional<Subcategoria> obtenerPorId(Integer id) {
+        return modelRepository.findById(id);
+    }
 }
 

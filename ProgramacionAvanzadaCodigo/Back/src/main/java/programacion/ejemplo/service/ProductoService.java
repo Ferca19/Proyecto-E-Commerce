@@ -3,15 +3,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import programacion.ejemplo.DTO.CategoriaDTO;
 import programacion.ejemplo.DTO.ProductoDTO;
-import programacion.ejemplo.Mapper.CategoriaMapper;
 import programacion.ejemplo.Mapper.ProductoMapper;
 import programacion.ejemplo.model.*;
 import programacion.ejemplo.repository.*;
-
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,13 +18,7 @@ public class ProductoService implements IProductoService {
     private ProductoRepository modelRepository;
 
     @Autowired
-    private CategoriaRepository categoriaRepository;
-
-    @Autowired
-    private ProductoVarianteRepository productoVarianteRepository;
-
-    @Autowired
-    private MarcaRepository marcaRepository;
+    private IProductoVarianteService productoVarianteService;
 
     @Autowired
     private ICategoriaService categoriaService;
@@ -41,35 +30,27 @@ public class ProductoService implements IProductoService {
     private IMarcaService marcaService;
 
     @Autowired
-    private ProductoRepository productoRepository;
-
-    @Autowired
-    private SubcategoriaRepository subcategoriaRepository;
-
-    @Autowired
     private ProductoMapper productoMapper;
 
     @Transactional
     public ProductoDTO createProducto(ProductoDTO productoDTO) {
 
-        Categoria categoria = categoriaRepository.findById(productoDTO.getCategoriaId())
+        Categoria categoria = categoriaService.obtenerPorId(productoDTO.getCategoriaId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
-        Subcategoria subcategoria = subcategoriaRepository.findById(productoDTO.getSubcategoriaId())
+        Subcategoria subcategoria = subcategoriaService.obtenerPorId(productoDTO.getSubcategoriaId())
                 .orElseThrow(() -> new RuntimeException("Subcategoría no encontrada"));
 
-        Marca marca = marcaRepository.findById(productoDTO.getMarcaId())
+        Marca marca = marcaService.obtenerPorId(productoDTO.getMarcaId())
                 .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
 
-        Producto producto = productoMapper.toEntity(productoDTO, categoria,subcategoria, marca);
+        Producto producto = productoMapper.toEntity(productoDTO, categoria, subcategoria, marca);
 
         if (productoDTO.getVariantes() != null) {
             List<ProductoVariante> variantes = productoDTO.getVariantes().stream()
-                    .map(v -> {
-                        ProductoVariante variante = productoVarianteRepository.findById(v.getId())
-                                .orElseThrow(() -> new RuntimeException("Variante no encontrada"));
-                        return variante;
-                    }).collect(Collectors.toList());
+                    .map(v -> productoVarianteService.obtenerPorId(v.getId()) // Usar servicio para obtener variante
+                            .orElseThrow(() -> new RuntimeException("Variante no encontrada")))
+                    .collect(Collectors.toList());
 
             producto.setVariantes(variantes);
 
@@ -77,7 +58,7 @@ public class ProductoService implements IProductoService {
 
                 if (!variante.getProductos().contains(producto)) {
                     variante.getProductos().add(producto);
-                    productoVarianteRepository.save(variante);
+                    productoVarianteService.save(variante);
                 }
             }
         } else {
@@ -89,11 +70,6 @@ public class ProductoService implements IProductoService {
         return productoMapper.toDto(nuevoProducto);
     }
 
-
-    @Override
-    public ProductoDTO updateProducto(Integer id, ProductoDTO productoDTO) {
-        return null;
-    }
 
     @Override
     public ProductoDTO obtenerPorId(Integer id) {
@@ -110,10 +86,6 @@ public class ProductoService implements IProductoService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public void deleteProducto(Integer id) {
-
-    }
 
     @Override
     public ProductoDTO actualizarProducto(Producto producto) {
@@ -131,7 +103,7 @@ public class ProductoService implements IProductoService {
             throw new IllegalArgumentException("La marca no puede ser nula");
         }
 
-        Producto productoActualizado = productoRepository.save(producto);
+        Producto productoActualizado = modelRepository.save(producto);
         return productoMapper.toDto(productoActualizado);
     }
 
@@ -149,4 +121,25 @@ public class ProductoService implements IProductoService {
     public Marca obtenerMarca(Integer marcaId) {
         return marcaService.buscarPorId(marcaId);
     }
+
+    @Override
+    public boolean existePorCategoriaId(Integer categoriaId) {
+        return modelRepository.existsByCategoriaId(categoriaId);
+    }
+
+    @Override
+    public boolean existePorMarcaId(Integer marcaId) {
+        return modelRepository.existsByMarcaId(marcaId);
+    }
+
+    @Override
+    public boolean existePorSubcategoriaId(Integer subcategoriaId) {
+        return modelRepository.existsBySubcategoriaId(subcategoriaId);
+    }
+
+    @Override
+    public List<Producto> findAllById(List<Integer> ids) {
+        return modelRepository.findAllById(ids);
+    }
+
 }

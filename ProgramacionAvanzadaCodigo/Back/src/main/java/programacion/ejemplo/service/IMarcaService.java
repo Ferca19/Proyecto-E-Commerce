@@ -5,6 +5,7 @@ import programacion.ejemplo.model.Categoria;
 import programacion.ejemplo.model.Marca;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IMarcaService {
 
@@ -21,4 +22,6 @@ public interface IMarcaService {
     List<Marca> listarMarcasEliminadas();
 
     Marca recuperarMarcaEliminada(Integer id);
+
+    Optional<Marca> obtenerPorId(Integer id);
 }
