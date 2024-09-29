@@ -12,4 +12,6 @@ public interface EstadoRepository extends JpaRepository <Estado,Integer>{
     List<Estado> findAllByEliminado(int eliminado);
 
     Estado findByIdAndEliminado(int id, int eliminado);
+
+    boolean existsByNombreIgnoreCase(String nombre);
 }

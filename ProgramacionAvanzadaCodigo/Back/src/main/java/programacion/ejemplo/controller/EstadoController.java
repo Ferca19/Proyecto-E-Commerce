@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("estados")
-@CrossOrigin(value=" http://localhost:5173")
+@CrossOrigin(value="http://localhost:5173")
 
 public class EstadoController {
 

@@ -133,5 +133,10 @@ public class PedidoService implements IPedidoService {
         modelRepository.save(pedido);
     }
 
+    @Override
+    public boolean existePorEstadoId(Integer estadoId) {
+        return modelRepository.existsByEstadoId(estadoId);
+    }
+
 
 }

@@ -4,8 +4,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import programacion.ejemplo.DTO.DetallePedidoDTO;
 import programacion.ejemplo.DTO.PedidoDTO;
@@ -13,6 +11,7 @@ import programacion.ejemplo.DTO.RegisterDTO;
 import programacion.ejemplo.DTO.UsuarioDTO;
 import programacion.ejemplo.Mapper.PedidoMapper;
 import programacion.ejemplo.Mapper.UsuarioMapper;
+import programacion.ejemplo.exception.RecursoNoEncontradoExcepcion;
 import programacion.ejemplo.model.Pedido;
 import programacion.ejemplo.model.Usuario;
 import programacion.ejemplo.repository.UsuarioRepository;
@@ -25,7 +24,6 @@ import java.util.Optional;
 
 public class UsuarioService implements IUsuarioService {
 
-    private static final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
     @Autowired
     @Lazy
@@ -86,6 +84,29 @@ public class UsuarioService implements IUsuarioService {
         return usuarioMapper.toDTO(usuario);
     }
 
+    @Transactional
+    public Usuario actualizarUsuario(Integer usuarioId, UsuarioDTO usuarioDTO) {
+        // Buscar el usuario existente
+        Usuario usuarioExistente = modelRepository.findById(usuarioId)
+                .orElseThrow(() -> new RecursoNoEncontradoExcepcion("Usuario no encontrado"));
+
+        // Actualizar solo los campos que están presentes en el DTO
+        if (usuarioDTO.getNombre() != null) {
+            usuarioExistente.setNombre(usuarioDTO.getNombre());
+        }
+
+        if (usuarioDTO.getApellido() != null) {
+            usuarioExistente.setApellido(usuarioDTO.getApellido());
+        }
+
+        if (usuarioDTO.getMail() != null) {
+            usuarioExistente.setMail(usuarioDTO.getMail());
+        }
+
+        // Guardar los cambios en el repositorio
+        return modelRepository.save(usuarioExistente);
+    }
+
     public void eliminarPedido(Integer pedidoId) {
         pedidoService.eliminarPedido(pedidoId);
     }
@@ -93,4 +114,6 @@ public class UsuarioService implements IUsuarioService {
     public void recuperarPedido(Integer pedidoId) {
         pedidoService.recuperarPedido(pedidoId);
     }
+
+
 }

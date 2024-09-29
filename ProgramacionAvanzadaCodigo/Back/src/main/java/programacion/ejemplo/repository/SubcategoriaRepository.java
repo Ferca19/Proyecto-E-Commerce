@@ -12,4 +12,6 @@ public interface SubcategoriaRepository extends JpaRepository  <Subcategoria,Int
 
     Subcategoria findByIdAndEliminado(int id, int eliminado);
 
+    boolean existsByNombreIgnoreCase(String nombre);
+
 }

@@ -11,33 +11,45 @@ import programacion.ejemplo.DTO.LoginResponseDTO;
 import programacion.ejemplo.DTO.RegisterDTO;
 import programacion.ejemplo.DTO.UsuarioDTO;
 import programacion.ejemplo.service.IAuthService;
-import programacion.ejemplo.service.IUsuarioService;
-import programacion.ejemplo.service.UsuarioService;
 
 @RestController
 @RequestMapping("auth")
-@CrossOrigin(value=" http://localhost:5173")
+@CrossOrigin(value="http://localhost:5173")
 
 public class AuthController {
 
-    @Autowired
-    private IUsuarioService usuarioService;
+    private static final Logger logger = LoggerFactory.getLogger(CategoriaController.class);
+
 
     @Autowired
     private IAuthService authService;
 
-    private static final Logger logger = LoggerFactory.getLogger(CategoriaController.class);
 
     @PostMapping("/register")
     public ResponseEntity<UsuarioDTO> register(@RequestBody RegisterDTO registerDTO) {
-        UsuarioDTO createdUser = usuarioService.crearUsuario(registerDTO);
+        UsuarioDTO createdUser = authService.registrarUsuario(registerDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO loginDTO) {
-        LoginResponseDTO response = authService.login(loginDTO);
-        return ResponseEntity.ok(response);
+        try {
+            LoginResponseDTO response = authService.login(loginDTO);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // o un mensaje más específico
+        }
+    }
+
+    @PutMapping("/actualizar-usuario")
+    public ResponseEntity<UsuarioDTO> actualizarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+        // Extraer el usuario autenticado del token
+        UsuarioDTO usuarioAutenticado = authService.obtenerUsuarioAutenticado();
+
+        // Llamar al servicio para actualizar el usuario con su ID
+        UsuarioDTO usuarioActualizado = authService.actualizarUsuario(usuarioAutenticado.getId(), usuarioDTO);
+
+        return ResponseEntity.ok(usuarioActualizado);
     }
 
 }

@@ -6,17 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import programacion.ejemplo.DTO.CategoriaDTO;
 import programacion.ejemplo.DTO.ProductoDTO;
-import programacion.ejemplo.model.Producto;
-import programacion.ejemplo.service.ICategoriaService;
 import programacion.ejemplo.service.IProductoService;
-import programacion.ejemplo.service.ProductoService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/productos")
+@CrossOrigin(value="http://localhost:5173")
 
 public class ProductoController {
 

@@ -6,9 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import programacion.ejemplo.DTO.CategoriaDTO;
 import programacion.ejemplo.Mapper.CategoriaMapper;
+import programacion.ejemplo.exception.EntidadDuplicadaException;
+import programacion.ejemplo.exception.EntidadFormatoInvalidoException;
 import programacion.ejemplo.model.Categoria;
 import programacion.ejemplo.repository.CategoriaRepository;
-import programacion.ejemplo.repository.ProductoRepository;
 
 
 import java.util.List;
@@ -42,6 +43,9 @@ public class CategoriaService implements ICategoriaService {
 
     @Override
     public CategoriaDTO guardar(CategoriaDTO modelDTO) {
+
+        validarCategoria(modelDTO);
+
         Categoria model = CategoriaMapper.toEntity(modelDTO);
         return CategoriaMapper.toDTO(modelRepository.save(model));
     }
@@ -87,27 +91,56 @@ public class CategoriaService implements ICategoriaService {
 
     @Override
     public Categoria actualizarCategoria(Integer id, Categoria categoria) {
-        return modelRepository.findById(id)
+
+        Categoria categoriaExistente = modelRepository.findById(id)
                 .filter(existingCategoria -> existingCategoria.getEliminado() == Categoria.NO)
-                .map(existingCategoria -> {
-
-                    if (categoria.getNombre() != null) {
-                        existingCategoria.setNombre(categoria.getNombre());
-                    }
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada o ya eliminada."));
 
 
-                    if (categoria.getDescripcion() != null) {
-                        existingCategoria.setDescripcion(categoria.getDescripcion());
-                    }
+        // Validaciones
+        validarCategoria(CategoriaMapper.toDTO(categoria)); // Llamar al método de validación
 
-                    return modelRepository.save(existingCategoria);
-                })
-                .orElse(null);
+        if (categoria.getNombre() != null) {
+            categoriaExistente.setNombre(categoria.getNombre());
+        }
+
+        if (categoria.getDescripcion() != null) {
+            categoriaExistente.setDescripcion(categoria.getDescripcion());
+        }
+
+        return modelRepository.save(categoriaExistente);
     }
-
 
     public Optional<Categoria> obtenerPorId(Integer id) {
         return modelRepository.findById(id);
+    }
+
+    private void validarCategoria(CategoriaDTO modelDTO) {
+        // Verificar si la categoría ya existe
+        if (modelRepository.existsByNombreIgnoreCase(modelDTO.getNombre())) { // Asumiendo que tienes este método en el repositorio
+            throw new EntidadDuplicadaException("La categoría ya existe.");
+        }
+
+        // Verificar espacios en blanco
+        String nombre = modelDTO.getNombre().trim();
+        if (nombre.isEmpty()) {
+            throw new EntidadFormatoInvalidoException("El nombre de la categoría no puede estar vacío.");
+        }
+
+        // Verificar espacios al principio o al final
+        if (!modelDTO.getNombre().equals(nombre)) {
+            throw new EntidadFormatoInvalidoException("El nombre de la categoría no puede tener espacios al principio o al final.");
+        }
+
+        // Convertir a formato correcto (primer letra mayúscula)
+        modelDTO.setNombre(capitalizar(nombre));
+    }
+
+    private String capitalizar(String nombre) {
+        if (nombre == null || nombre.isEmpty()) {
+            return nombre;
+        }
+        return nombre.substring(0, 1).toUpperCase() + nombre.substring(1).toLowerCase();
     }
 
 }

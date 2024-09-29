@@ -13,4 +13,6 @@ public interface IPedidoService {
     void eliminarPedido(Integer pedidoId);
 
     void recuperarPedido(Integer pedidoId);
+
+    boolean existePorEstadoId(Integer estadoId);
 }

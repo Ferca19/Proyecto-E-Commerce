@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("categorias")
-@CrossOrigin(value=" http://localhost:5173")
+@CrossOrigin(value="http://localhost:5173")
 
 public class CategoriaController {
 

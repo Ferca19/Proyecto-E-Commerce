@@ -1,4 +1,5 @@
 package programacion.ejemplo.service;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +19,15 @@ public class ProductoService implements IProductoService {
     private ProductoRepository modelRepository;
 
     @Autowired
-    private IProductoVarianteService productoVarianteService;
-
-    @Autowired
+    @Lazy
     private ICategoriaService categoriaService;
 
     @Autowired
+    @Lazy
     private ISubcategoriaService subcategoriaService;
 
     @Autowired
+    @Lazy
     private IMarcaService marcaService;
 
     @Autowired
@@ -45,25 +46,6 @@ public class ProductoService implements IProductoService {
                 .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
 
         Producto producto = productoMapper.toEntity(productoDTO, categoria, subcategoria, marca);
-
-        if (productoDTO.getVariantes() != null) {
-            List<ProductoVariante> variantes = productoDTO.getVariantes().stream()
-                    .map(v -> productoVarianteService.obtenerPorId(v.getId()) // Usar servicio para obtener variante
-                            .orElseThrow(() -> new RuntimeException("Variante no encontrada")))
-                    .collect(Collectors.toList());
-
-            producto.setVariantes(variantes);
-
-            for (ProductoVariante variante : variantes) {
-
-                if (!variante.getProductos().contains(producto)) {
-                    variante.getProductos().add(producto);
-                    productoVarianteService.save(variante);
-                }
-            }
-        } else {
-            producto.setVariantes(new ArrayList<>());
-        }
 
         Producto nuevoProducto = modelRepository.save(producto);
 

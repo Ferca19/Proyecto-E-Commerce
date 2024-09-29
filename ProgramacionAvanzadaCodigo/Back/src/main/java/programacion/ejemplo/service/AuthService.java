@@ -2,15 +2,20 @@ package programacion.ejemplo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
 import programacion.ejemplo.DTO.LoginDTO;
 import programacion.ejemplo.DTO.LoginResponseDTO;
+import programacion.ejemplo.DTO.RegisterDTO;
 import programacion.ejemplo.DTO.UsuarioDTO;
+import programacion.ejemplo.Mapper.UsuarioMapper;
+import programacion.ejemplo.config.JwtTokenUtil;
 import programacion.ejemplo.model.Usuario;
-import programacion.ejemplo.util.JwtUtil;
+
 
 @Service
 public class AuthService implements IAuthService {
@@ -19,20 +24,34 @@ public class AuthService implements IAuthService {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserDetailsService userDetailsService; // Para cargar los detalles del usuario
+    private CustomUserDetailsService customUserDetailsService; // Para cargar los detalles del usuario
+
 
     @Autowired
-    private JwtUtil jwtUtil; // Utilidad para generar el JWT
+    private JwtTokenUtil jwtUtil; // Utilidad para generar el JWT
+
+    @Autowired
+    private IUsuarioService usuarioService;
+
+    public UsuarioDTO registrarUsuario(RegisterDTO registerDTO) {
+
+        return usuarioService.crearUsuario(registerDTO);
+    }
 
     public LoginResponseDTO login(LoginDTO loginDTO) {
-        // Autenticación
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.getMail(), loginDTO.getContrasena())
-        );
+        try {
+            // Autenticación
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginDTO.getMail(), loginDTO.getContrasena())
+            );
+        } catch (BadCredentialsException e) {
+            // Manejar el caso de credenciales inválidas
+            throw new RuntimeException("Invalid username or password", e);
+        }
 
         // Cargar los detalles del usuario
         CustomUserDetailsService.CustomUserDetails userDetails =
-                (CustomUserDetailsService.CustomUserDetails) userDetailsService.loadUserByUsername(loginDTO.getMail());
+                (CustomUserDetailsService.CustomUserDetails) customUserDetailsService.loadUserByUsername(loginDTO.getMail());
 
         // Obtener el usuario directamente desde CustomUserDetails
         Usuario usuario = userDetails.getUsuario();
@@ -43,7 +62,6 @@ public class AuthService implements IAuthService {
         usuarioDTO.setNombre(usuario.getNombre());
         usuarioDTO.setApellido(usuario.getApellido());
         usuarioDTO.setMail(usuario.getMail());
-        usuarioDTO.setContrasena(usuario.getContrasena()); // Omitir si es sensible
         usuarioDTO.setEliminado(usuario.getEliminado());
 
         // Generar el token
@@ -52,4 +70,36 @@ public class AuthService implements IAuthService {
         // Devolver la respuesta que incluye el token y el usuarioDTO
         return new LoginResponseDTO(token, usuarioDTO);
     }
+
+    public UsuarioDTO actualizarUsuario(Integer usuarioId, UsuarioDTO datosActualizadosDTO) {
+        // Llamar a usuarioService para actualizar los datos del usuario autenticado
+        Usuario usuarioActualizado = usuarioService.actualizarUsuario(usuarioId, datosActualizadosDTO);
+
+        // Convertir el Usuario actualizado a UsuarioDTO
+        return UsuarioMapper.toDTO(usuarioActualizado);
+    }
+
+    public UsuarioDTO obtenerUsuarioAutenticado() {
+        // Cargar los detalles del usuario desde el contexto de seguridad
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("No hay un usuario autenticado en el contexto de seguridad");
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof CustomUserDetailsService.CustomUserDetails) {
+            CustomUserDetailsService.CustomUserDetails userDetails = (CustomUserDetailsService.CustomUserDetails) principal;
+
+            // Obtener el usuario directamente desde CustomUserDetails
+            Usuario usuario = userDetails.getUsuario();
+
+            return UsuarioMapper.toDTO(usuario); // Convertir a DTO
+        } else {
+            throw new IllegalStateException("Usuario autenticado no encontrado o el principal no es del tipo esperado");
+        }
+    }
+
+
 }

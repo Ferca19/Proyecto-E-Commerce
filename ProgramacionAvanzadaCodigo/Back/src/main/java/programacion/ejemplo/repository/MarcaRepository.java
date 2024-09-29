@@ -11,5 +11,7 @@ public interface MarcaRepository extends JpaRepository  <Marca,Integer>{
     Marca findByIdAndEliminado(int id, int eliminado);
 
     List<Marca> findAllByEliminado(int eliminado);
+
+    boolean existsByDenominacionIgnoreCase(String nombre);
 }
 

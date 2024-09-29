@@ -38,8 +38,6 @@ public class Producto {
         this.setEliminado(1);
     }
 
-    @ManyToMany(mappedBy = "productos")
-    private List<ProductoVariante> variantes;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)

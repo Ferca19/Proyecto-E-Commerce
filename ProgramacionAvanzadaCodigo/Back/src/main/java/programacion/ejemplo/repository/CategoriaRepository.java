@@ -12,4 +12,6 @@ public interface CategoriaRepository extends JpaRepository  <Categoria,Integer>{
 
     Categoria findByIdAndEliminado(int id, int eliminado);
 
+    boolean existsByNombreIgnoreCase(String nombre);
+
 }

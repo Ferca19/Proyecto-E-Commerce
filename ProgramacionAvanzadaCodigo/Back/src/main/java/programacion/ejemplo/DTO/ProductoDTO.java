@@ -2,7 +2,6 @@ package programacion.ejemplo.DTO;
 
 import lombok.Data;
 
-import java.util.List;
 
 @Data
 public class ProductoDTO {
@@ -13,7 +12,6 @@ public class ProductoDTO {
     private double precio;
     private int stock;
     private int eliminado;
-    private List<ProductoVarianteDTO> variantes;
     private Integer categoriaId;
     private Integer subcategoriaId;
     private Integer marcaId;
