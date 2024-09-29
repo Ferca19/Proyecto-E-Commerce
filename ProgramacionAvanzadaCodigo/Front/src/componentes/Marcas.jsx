@@ -14,7 +14,12 @@ function Marcas() {
 
     const getMarcas = async () => {
         try {
-            const response = await axios.get(url);
+            const token = localStorage.getItem('token');
+            const response = await axios.get(url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`  // Enviar el token en las cabeceras
+                }
+            });
             setMarcas(response.data);
         } catch (error) {
             console.error("Error al obtener marcas", error);
@@ -24,7 +29,12 @@ function Marcas() {
 
     const eliminar = async (id) => {
         try {
-            await axios.delete(`${url}/${id}`);
+            const token = localStorage.getItem('token');
+            await axios.delete(`${url}/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`  // Enviar el token en las cabeceras
+                }
+            });
             setMarcas(marcas.filter((marca) => marca.id !== id));
         } catch (error) {
             console.error("Error al eliminar la marca", error);
@@ -34,8 +44,13 @@ function Marcas() {
     const agregarMarca = async (e) => {
         e.preventDefault();
         try {
+            const token = localStorage.getItem('token');
             const nuevaMarca = { denominacion, observaciones };
-            const response = await axios.post(url, nuevaMarca);
+            const response = await axios.post(url, nuevaMarca, {
+                headers: {
+                    'Authorization': `Bearer ${token}`  // Enviar el token en las cabeceras
+                }
+            });
             setMarcas([...marcas, response.data]);
             setDenominacion("");
             setObservaciones("");

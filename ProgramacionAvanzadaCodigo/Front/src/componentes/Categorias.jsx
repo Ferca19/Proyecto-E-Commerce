@@ -14,7 +14,12 @@ function Categorias() {
 
     const getCategorias = async () => {
         try {
-            const response = await axios.get(url);
+            const token = localStorage.getItem('token');
+            const response = await axios.get(url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`  // Enviar el token en las cabeceras
+                }
+            });
             setCategorias(response.data);
         } catch (error) {
             console.error("Error al obtener categorias", error);
@@ -24,7 +29,12 @@ function Categorias() {
 
     const eliminar = async (id) => {
         try {
-            await axios.delete(`${url}/${id}`);
+            const token = localStorage.getItem('token');
+            await axios.delete(`${url}/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`  // Enviar el token en las cabeceras
+                }
+            });
             setCategorias(categorias.filter((categoria) => categoria.id !== id));
         } catch (error) {
             console.error("Error al eliminar la categoria", error);
@@ -34,8 +44,13 @@ function Categorias() {
     const agregarCategoria = async (e) => {
         e.preventDefault();
         try {
+            const token = localStorage.getItem('token');
             const nuevaCategoria = { nombre, descripcion };
-            const response = await axios.post(url, nuevaCategoria);
+            const response = await axios.post(url, nuevaCategoria, {
+                headers: {
+                    'Authorization': `Bearer ${token}`  // Enviar el token en las cabeceras
+                }
+            });
             setCategorias([...categorias, response.data]);
             setNombre("");
             setCategoria("");

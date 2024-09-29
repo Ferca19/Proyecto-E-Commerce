@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 28-09-2024 a las 02:12:37
+-- Tiempo de generación: 29-09-2024 a las 21:13:06
 -- Versión del servidor: 8.0.39
 -- Versión de PHP: 8.0.30
 
@@ -41,7 +41,9 @@ CREATE TABLE `categoria` (
 INSERT INTO `categoria` (`id`, `descripcion`, `nombre`, `eliminado`) VALUES
 (1, 'Categoria para Calzados', 'Calzados', 0),
 (2, 'Categoria para Pantalones', 'Pantalones', 0),
-(3, 'Categoria para Gorras', 'Gorras', 1);
+(3, 'Categoria para Gorras', 'Gorras', 1),
+(4, 'Categoria para Calzados', 'Tecnologia', 0),
+(5, 'Categoria para Calzados', 'Electronica', 0);
 
 -- --------------------------------------------------------
 
@@ -90,7 +92,9 @@ INSERT INTO `detalle_pedido` (`id`, `cantidad`, `eliminado`, `subtotal`, `pedido
 (31, 4, 0, 200000, 17, 1),
 (32, 2, 0, 80000, 17, 2),
 (33, 4, 0, 200000, 18, 1),
-(34, 2, 0, 80000, 18, 2);
+(34, 2, 0, 80000, 18, 2),
+(35, 4, 0, 200000, 19, 1),
+(36, 2, 0, 80000, 19, 3);
 
 -- --------------------------------------------------------
 
@@ -110,7 +114,8 @@ CREATE TABLE `estado` (
 --
 
 INSERT INTO `estado` (`id`, `descripcion`, `eliminado`, `nombre`) VALUES
-(1, 'Estado para pedidos Pendientes', 0, 'Pendiente');
+(1, 'Estado para pedidos Pendientes', 0, 'Pendiente'),
+(2, 'Estado para pedidos Completados', 0, 'Completado');
 
 -- --------------------------------------------------------
 
@@ -133,7 +138,12 @@ INSERT INTO `marca` (`id`, `denominacion`, `observaciones`, `eliminado`) VALUES
 (1, 'Nike', 'Marca de vestimenta principalmente deportiva', 0),
 (2, 'Adidas', 'Marca de vestimenta principalmente deportiva', 0),
 (3, 'Topper', 'Marca de vestimenta principalmente deportiva', 0),
-(4, 'Logitech', 'Marca', 0);
+(4, 'Logitech', 'Marca', 0),
+(5, 'Intel', 'Marca', 0),
+(6, 'Intel', 'Marca', 0),
+(7, 'Puma', 'Marca puma', 0),
+(8, 'Asus', 'marca asus', 0),
+(9, 'Samsung', 'marca Samsung', 0);
 
 -- --------------------------------------------------------
 
@@ -168,7 +178,8 @@ INSERT INTO `pedido` (`id`, `eliminado`, `fechayhora`, `importe_total`, `estado_
 (15, 0, '2024-09-27 11:38:41.159000', 420000, 1, 1),
 (16, 1, '2024-09-27 11:54:41.082000', 280000, 1, 1),
 (17, 0, '2024-09-27 11:56:04.688000', 280000, 1, 1),
-(18, 0, '2024-09-27 14:37:44.901000', 280000, 1, 3);
+(18, 0, '2024-09-27 14:37:44.901000', 280000, 1, 3),
+(19, 0, '2024-09-29 14:49:02.130000', 280000, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -193,48 +204,9 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`id`, `descripcion`, `eliminado`, `nombre`, `precio`, `stock`, `categoria_id`, `marca_id`, `subcategoria_id`) VALUES
-(1, 'zapatillas deportivas', 0, 'ZapatillasAir max', 50000, 20, 1, 1, 1),
-(2, 'zapatillas deportivas', 0, 'Zapatillas airforce', 40000, 15, 1, 1, 1);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `producto_variante`
---
-
-CREATE TABLE `producto_variante` (
-  `id` int NOT NULL,
-  `nombre_variante` varchar(255) DEFAULT NULL,
-  `valor_variante` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `producto_variante`
---
-
-INSERT INTO `producto_variante` (`id`, `nombre_variante`, `valor_variante`) VALUES
-(1, 'Talle', '42'),
-(2, 'Talle', '41'),
-(3, 'Color', 'Rosa-Blanco');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `producto_variante_producto`
---
-
-CREATE TABLE `producto_variante_producto` (
-  `producto_variante_id` int NOT NULL,
-  `producto_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `producto_variante_producto`
---
-
-INSERT INTO `producto_variante_producto` (`producto_variante_id`, `producto_id`) VALUES
-(2, 1),
-(3, 1);
+(1, 'zapatillas deportivas', 0, 'ZapatillasAir max', 50000, 16, 1, 1, 1),
+(2, 'zapatillas deportivas', 0, 'Zapatillas airforce', 40000, 15, 1, 1, 1),
+(3, 'zapatillas deportivas', 0, 'Zapatillas running 1', 40000, 18, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -254,7 +226,8 @@ CREATE TABLE `subcategoria` (
 --
 
 INSERT INTO `subcategoria` (`id`, `descripcion`, `eliminado`, `nombre`) VALUES
-(1, 'Subcategoria para calzados, especificamente zapatillas', 0, 'Zapatillas');
+(1, 'Subcategoria para calzados, especificamente zapatillas', 0, 'Zapatillas'),
+(2, 'Subcategoria para remeras', 0, 'Remeras');
 
 -- --------------------------------------------------------
 
@@ -280,7 +253,9 @@ INSERT INTO `usuario` (`id`, `apellido`, `contrasena`, `eliminado`, `mail`, `nom
 (2, NULL, '$2a$10$uA.pqHcvQJ0mZYmlZW4muuJ0QyJ2WEDklbTUxVM2LpDaMyD6j5ZU2', 0, 'loloblanc@gmail.com', 'Lolo'),
 (3, 'Cagliero', '$2a$10$aPAwoIzEgQwnBDg0A06Iy.KCQPYhczAtZNzpPbomymG6utAsP3BkS', 0, '2fernando2cagliero@gmail.com', 'Fer'),
 (4, NULL, '$2a$10$AbnjIzpdPqrpQQIiynDl1eMMHPKOnmkNbzkyUibMC8CYRKLn7eJa.', 0, '1fernando1cagliero@gmail.com', NULL),
-(5, NULL, '$2a$10$Qp1diIGJUA0Bb5hPr3/Dd.PY9aehJKIPKK.vgHov2.Oe7wPXvf1nC', 0, 'usuariodeprueba@gmail.com', NULL);
+(5, NULL, '$2a$10$Qp1diIGJUA0Bb5hPr3/Dd.PY9aehJKIPKK.vgHov2.Oe7wPXvf1nC', 0, 'usuariodeprueba@gmail.com', NULL),
+(6, 'ledo', '$2a$10$bfu457tIv4Gxe/dTc27XbuHg7cJCu5ate3HdLncNgSSsNdCOpmyOO', 0, 'martinledo@gmail.com', 'martin'),
+(7, 'borgo', '$2a$10$A0zt04IjtlMNkEMb9Yd9AuEWAcRjML8nmEqdyQrRm7iyJb0mVQmH2', 0, 'kevinborgo@gmail.com', 'kevin');
 
 --
 -- Índices para tablas volcadas
@@ -330,19 +305,6 @@ ALTER TABLE `producto`
   ADD KEY `FKa571qppf005vbgabojxpwgjwe` (`subcategoria_id`);
 
 --
--- Indices de la tabla `producto_variante`
---
-ALTER TABLE `producto_variante`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `producto_variante_producto`
---
-ALTER TABLE `producto_variante_producto`
-  ADD KEY `FK5k7p82vu3puibbqsk7gk7t9k6` (`producto_id`),
-  ADD KEY `FK1dwypxbg1jvp3lrn6jy0p20yb` (`producto_variante_id`);
-
---
 -- Indices de la tabla `subcategoria`
 --
 ALTER TABLE `subcategoria`
@@ -362,55 +324,49 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_pedido`
 --
 ALTER TABLE `detalle_pedido`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
 --
 ALTER TABLE `estado`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `marca`
 --
 ALTER TABLE `marca`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT de la tabla `producto_variante`
---
-ALTER TABLE `producto_variante`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `subcategoria`
 --
 ALTER TABLE `subcategoria`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Restricciones para tablas volcadas
@@ -437,13 +393,6 @@ ALTER TABLE `producto`
   ADD CONSTRAINT `FK868tnrt85f21kgcvt9bftgr8r` FOREIGN KEY (`marca_id`) REFERENCES `marca` (`id`),
   ADD CONSTRAINT `FKa571qppf005vbgabojxpwgjwe` FOREIGN KEY (`subcategoria_id`) REFERENCES `subcategoria` (`id`),
   ADD CONSTRAINT `FKodqr7965ok9rwquj1utiamt0m` FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`);
-
---
--- Filtros para la tabla `producto_variante_producto`
---
-ALTER TABLE `producto_variante_producto`
-  ADD CONSTRAINT `FK1dwypxbg1jvp3lrn6jy0p20yb` FOREIGN KEY (`producto_variante_id`) REFERENCES `producto_variante` (`id`),
-  ADD CONSTRAINT `FK5k7p82vu3puibbqsk7gk7t9k6` FOREIGN KEY (`producto_id`) REFERENCES `producto` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

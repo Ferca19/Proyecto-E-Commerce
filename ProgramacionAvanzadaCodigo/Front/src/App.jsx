@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Marcas from './componentes/Marcas.jsx';
 import Categorias from './componentes/Categorias.jsx';
+import PrivateRoute from './componentes/PrivateRoute';
+import Login from "./componentes/Login.jsx";
 
 function App() {
     return (
@@ -9,6 +11,9 @@ function App() {
                 {/* Navbar */}
                 <nav className="navbar">
                     <ul>
+                        <li>
+                            <Link to="/login">Login</Link> {/* Enlace para el login */}
+                        </li>
                         <li>
                             <Link to="/marcas">Marcas</Link>
                         </li>
@@ -20,8 +25,23 @@ function App() {
 
                 {/* Rutas */}
                 <Routes>
-                    <Route path="/marcas" element={<Marcas />} />
-                    <Route path="/categorias" element={<Categorias />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route
+                        path="/marcas"
+                        element={
+                        <PrivateRoute>
+                            <Marcas />
+                        </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/categorias"
+                        element={
+                            <PrivateRoute>
+                                <Categorias />
+                            </PrivateRoute>
+                        }
+                    />
                 </Routes>
             </div>
         </Router>
