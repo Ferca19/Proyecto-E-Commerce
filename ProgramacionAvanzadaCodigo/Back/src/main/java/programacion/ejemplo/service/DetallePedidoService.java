@@ -64,7 +64,7 @@ public class DetallePedidoService implements IDetallePedidoService {
             Subcategoria subcategoria = productoService.obtenerSubcategoria(productoDTO.getSubcategoriaId()); // Método para obtener la subcategoría
             Marca marca = productoService.obtenerMarca(productoDTO.getMarcaId());
 
-            productoService.actualizarProducto(productoMapper.toEntity(productoDTO, categoria, subcategoria, marca)); // Guardar el producto con el nuevo stock
+            productoService.actualizarStockProducto(productoMapper.toEntity(productoDTO, categoria, subcategoria, marca)); // Guardar el producto con el nuevo stock
 
             // Crear el detalle del pedido
             DetallePedido detallePedido = DetallePedidoMapper.toEntity(detallePedidoDTO);

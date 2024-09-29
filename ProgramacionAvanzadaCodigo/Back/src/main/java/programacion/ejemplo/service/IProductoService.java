@@ -19,7 +19,7 @@ public interface IProductoService {
 
     ProductoDTO obtenerPorId(Integer id);
 
-    ProductoDTO actualizarProducto(Producto producto);
+    ProductoDTO actualizarStockProducto(Producto producto);
 
     Categoria obtenerCategoria(Integer categoriaId);
 

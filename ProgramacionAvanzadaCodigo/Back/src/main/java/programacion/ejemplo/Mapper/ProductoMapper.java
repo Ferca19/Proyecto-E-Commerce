@@ -17,6 +17,8 @@ public class ProductoMapper {
         dto.setDescripcion(model.getDescripcion());
         dto.setPrecio(model.getPrecio());
         dto.setStock(model.getStock());
+        dto.setTamano(model.getTamano());
+        dto.setColor(model.getColor());
         dto.setEliminado(model.getEliminado());
 
         if (model.getCategoria() != null) {
@@ -39,6 +41,8 @@ public class ProductoMapper {
         model.setDescripcion(dto.getDescripcion());
         model.setPrecio(dto.getPrecio());
         model.setStock(dto.getStock());
+        model.setTamano(dto.getTamano());
+        model.setColor(dto.getColor());
         model.setCategoria(categoria);
         model.setSubcategoria(subcategoria);
         model.setMarca(marca);

@@ -102,7 +102,7 @@ public class PedidoService implements IPedidoService {
             producto.setStock(producto.getStock() + detalle.getCantidad());
 
             // Actualizar el producto en la base de datos
-            productoService.actualizarProducto(producto);
+            productoService.actualizarStockProducto(producto);
         }
 
         // Guardar los cambios del pedido
@@ -126,7 +126,7 @@ public class PedidoService implements IPedidoService {
             producto.setStock(producto.getStock() - detalle.getCantidad());
 
             // Actualizar el producto en la base de datos
-            productoService.actualizarProducto(producto);
+            productoService.actualizarStockProducto(producto);
         }
 
         // Guardar los cambios del pedido

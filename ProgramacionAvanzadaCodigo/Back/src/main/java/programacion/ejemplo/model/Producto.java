@@ -30,6 +30,12 @@ public class Producto {
     private int stock;
 
     @NotNull
+    private String tamano;
+
+    @NotNull
+    private String color;
+
+    @NotNull
     private int eliminado;
     public static final int NO=0;
     public static final int SI=1;

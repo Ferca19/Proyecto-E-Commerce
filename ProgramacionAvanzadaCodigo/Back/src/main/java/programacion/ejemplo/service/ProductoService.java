@@ -36,6 +36,10 @@ public class ProductoService implements IProductoService {
     @Transactional
     public ProductoDTO createProducto(ProductoDTO productoDTO) {
 
+        if (productoDTO.getPrecio() < 0) {
+            throw new IllegalArgumentException("El precio del producto no puede ser negativo");
+        }
+
         Categoria categoria = categoriaService.obtenerPorId(productoDTO.getCategoriaId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
@@ -70,13 +74,12 @@ public class ProductoService implements IProductoService {
 
 
     @Override
-    public ProductoDTO actualizarProducto(Producto producto) {
+    public ProductoDTO actualizarStockProducto(Producto producto) {
         // Verificar que la categoría no sea nula
         if (producto.getCategoria() == null) {
             throw new IllegalArgumentException("La categoría no puede ser nula");
         }
 
-        // Si otras propiedades como subcategoría y marca también son obligatorias, verifica igual
         if (producto.getSubcategoria() == null) {
             throw new IllegalArgumentException("La subcategoría no puede ser nula");
         }

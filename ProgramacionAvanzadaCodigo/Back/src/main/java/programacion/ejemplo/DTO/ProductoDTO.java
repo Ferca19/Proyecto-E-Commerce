@@ -11,6 +11,8 @@ public class ProductoDTO {
     private String descripcion;
     private double precio;
     private int stock;
+    private String tamano;
+    private String color;
     private int eliminado;
     private Integer categoriaId;
     private Integer subcategoriaId;
