@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 29-09-2024 a las 21:13:06
+-- Tiempo de generación: 30-09-2024 a las 18:57:07
 -- Versión del servidor: 8.0.39
 -- Versión de PHP: 8.0.30
 
@@ -43,7 +43,9 @@ INSERT INTO `categoria` (`id`, `descripcion`, `nombre`, `eliminado`) VALUES
 (2, 'Categoria para Pantalones', 'Pantalones', 0),
 (3, 'Categoria para Gorras', 'Gorras', 1),
 (4, 'Categoria para Calzados', 'Tecnologia', 0),
-(5, 'Categoria para Calzados', 'Electronica', 0);
+(5, 'Categoria para Calzados', 'Electronica', 0),
+(6, 'Categoria para Televisores', 'Televisores', 0),
+(7, 'Categoria para Televisores', 'Pedilo ya', 0);
 
 -- --------------------------------------------------------
 
@@ -94,7 +96,9 @@ INSERT INTO `detalle_pedido` (`id`, `cantidad`, `eliminado`, `subtotal`, `pedido
 (33, 4, 0, 200000, 18, 1),
 (34, 2, 0, 80000, 18, 2),
 (35, 4, 0, 200000, 19, 1),
-(36, 2, 0, 80000, 19, 3);
+(36, 2, 0, 80000, 19, 3),
+(37, 4, 0, 200000, 20, 1),
+(38, 2, 0, 80000, 20, 3);
 
 -- --------------------------------------------------------
 
@@ -179,7 +183,8 @@ INSERT INTO `pedido` (`id`, `eliminado`, `fechayhora`, `importe_total`, `estado_
 (16, 1, '2024-09-27 11:54:41.082000', 280000, 1, 1),
 (17, 0, '2024-09-27 11:56:04.688000', 280000, 1, 1),
 (18, 0, '2024-09-27 14:37:44.901000', 280000, 1, 3),
-(19, 0, '2024-09-29 14:49:02.130000', 280000, 1, 3);
+(19, 0, '2024-09-29 14:49:02.130000', 280000, 1, 3),
+(20, 0, '2024-09-29 17:34:44.622000', 280000, 1, 7);
 
 -- --------------------------------------------------------
 
@@ -196,17 +201,20 @@ CREATE TABLE `producto` (
   `stock` int NOT NULL,
   `categoria_id` int NOT NULL,
   `marca_id` int NOT NULL,
-  `subcategoria_id` int NOT NULL
+  `subcategoria_id` int NOT NULL,
+  `color` varchar(255) DEFAULT NULL,
+  `tamano` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `producto`
 --
 
-INSERT INTO `producto` (`id`, `descripcion`, `eliminado`, `nombre`, `precio`, `stock`, `categoria_id`, `marca_id`, `subcategoria_id`) VALUES
-(1, 'zapatillas deportivas', 0, 'ZapatillasAir max', 50000, 16, 1, 1, 1),
-(2, 'zapatillas deportivas', 0, 'Zapatillas airforce', 40000, 15, 1, 1, 1),
-(3, 'zapatillas deportivas', 0, 'Zapatillas running 1', 40000, 18, 1, 1, 1);
+INSERT INTO `producto` (`id`, `descripcion`, `eliminado`, `nombre`, `precio`, `stock`, `categoria_id`, `marca_id`, `subcategoria_id`, `color`, `tamano`) VALUES
+(1, 'zapatillas deportivas', 0, 'ZapatillasAir max', 50000, 12, 1, 1, 1, NULL, NULL),
+(2, 'zapatillas deportivas', 0, 'Zapatillas airforce', 40000, 15, 1, 1, 1, NULL, NULL),
+(3, 'zapatillas deportivas', 0, 'Zapatillas running 1', 40000, 16, 1, 1, 1, NULL, NULL),
+(4, 'zapatillas deportivas', 0, 'Zapatillas running 2', 30000, 10, 1, 1, 1, 'negro', '41');
 
 -- --------------------------------------------------------
 
@@ -324,13 +332,13 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_pedido`
 --
 ALTER TABLE `detalle_pedido`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
@@ -348,13 +356,13 @@ ALTER TABLE `marca`
 -- AUTO_INCREMENT de la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `subcategoria`
