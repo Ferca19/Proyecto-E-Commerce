@@ -21,4 +21,5 @@ public class DetallePedidoDTO {
     // Estado de eliminación (opcional; se puede establecer por defecto)
     private Integer eliminado; // Se agrega el campo de eliminado
 
+
 }

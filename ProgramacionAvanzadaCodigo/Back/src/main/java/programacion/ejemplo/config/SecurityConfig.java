@@ -29,6 +29,7 @@ public class SecurityConfig {
 
     @Bean
     // =============================== con proteccion ==================================
+    /*
 
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -43,12 +44,13 @@ public class SecurityConfig {
 
         return http.build();
     }
+    */
 
 
 
     // =============================== sin proteccion ==================================
 
-    /*
+
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF
@@ -59,7 +61,7 @@ public class SecurityConfig {
 
         return http.build();
     }
-    */
+
 
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {

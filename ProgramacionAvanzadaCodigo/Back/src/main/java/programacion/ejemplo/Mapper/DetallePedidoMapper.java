@@ -22,6 +22,7 @@ public class DetallePedidoMapper {
         // Establecer el estado de eliminación
         dto.setEliminado(model.getEliminado());
 
+
         return dto;
     }
 

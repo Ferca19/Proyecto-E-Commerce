@@ -37,6 +37,8 @@ public class DetallePedido {
     }
 
 
+
+
     // Relación con Pedido (Muchos DetallePedido pertenecen a un Pedido)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_id", nullable = false)

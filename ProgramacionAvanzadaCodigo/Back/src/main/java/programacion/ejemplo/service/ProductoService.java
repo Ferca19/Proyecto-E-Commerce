@@ -4,10 +4,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import programacion.ejemplo.DTO.ActualizarProductoDTO;
 import programacion.ejemplo.DTO.ProductoDTO;
+import programacion.ejemplo.Mapper.CategoriaMapper;
 import programacion.ejemplo.Mapper.ProductoMapper;
 import programacion.ejemplo.model.*;
 import programacion.ejemplo.repository.*;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,12 +62,83 @@ public class ProductoService implements IProductoService {
         return productoMapper.toDto(nuevoProducto);
     }
 
+    @Override
+    public Producto actualizarProducto(Integer id, ActualizarProductoDTO actualizarProductoDTO, MultipartFile file) throws IOException {
+        Producto productoExistente = modelRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+
+        // Actualizar los campos si están presentes en el DTO
+        if (actualizarProductoDTO.getNombre() != null) productoExistente.setNombre(actualizarProductoDTO.getNombre());
+        if (actualizarProductoDTO.getDescripcion() != null) productoExistente.setDescripcion(actualizarProductoDTO.getDescripcion());
+        if (actualizarProductoDTO.getPrecio() != null) productoExistente.setPrecio(actualizarProductoDTO.getPrecio());
+        if (actualizarProductoDTO.getTamano() != null) productoExistente.setTamano(actualizarProductoDTO.getTamano());
+        if (actualizarProductoDTO.getColor() != null) productoExistente.setColor(actualizarProductoDTO.getColor());
+        if (actualizarProductoDTO.getCategoriaId() != null) {
+            Categoria categoria = categoriaService.buscarPorId(actualizarProductoDTO.getCategoriaId());
+            if (categoria == null) {
+                throw new RuntimeException("Categoría no encontrada");
+            }
+            productoExistente.setCategoria(categoria);
+        }
+
+        if (actualizarProductoDTO.getSubcategoriaId() != null) {
+            Subcategoria subcategoria = subcategoriaService.buscarPorId(actualizarProductoDTO.getSubcategoriaId());
+            if (subcategoria == null) {
+                throw new RuntimeException("Subcategoría no encontrada");
+            }
+            productoExistente.setSubcategoria(subcategoria);
+        }
+
+        if (actualizarProductoDTO.getMarcaId() != null) {
+            Marca marca = marcaService.buscarPorId(actualizarProductoDTO.getMarcaId());
+            if (marca == null) {
+                throw new RuntimeException("Marca no encontrada");
+            }
+            productoExistente.setMarca(marca);
+        }
+
+        // Si se envió un archivo de imagen, actualizar la imagen
+        if (file != null && !file.isEmpty()) {
+            String rutaImagen = "D:\\USUARIO\\Desktop\\Proyecto-Programacion-Avanzada\\Imagenes\\" + file.getOriginalFilename();
+            File imageFile = new File(rutaImagen);
+
+            // Guardar la imagen
+            file.transferTo(imageFile);
+            productoExistente.setImagen(file.getOriginalFilename());
+        }
+
+        // Guardar cambios en la base de datos
+        return modelRepository.save(productoExistente);
+    }
+
+    public Producto actualizarImagenProducto(Producto producto, MultipartFile file) throws IOException {
+        if (file != null && !file.isEmpty()) {
+            String rutaImagen = "D:\\USUARIO\\Desktop\\Proyecto-Programacion-Avanzada\\Imagenes\\" + file.getOriginalFilename();
+            File imageFile = new File(rutaImagen);
+
+            // Guardar la imagen
+            file.transferTo(imageFile);
+            producto.setImagen(file.getOriginalFilename());
+
+            // Guardar cambios en la base de datos
+            return modelRepository.save(producto);
+        } else {
+            throw new RuntimeException("El archivo de imagen no puede estar vacío.");
+        }
+    }
+
 
     @Override
     public ProductoDTO obtenerPorId(Integer id) {
         Producto producto = modelRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
         return productoMapper.toDto(producto);
+    }
+
+    @Override
+    public Producto obtenerObjetoPorId(Integer id) {
+        return modelRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
     }
 
     @Override

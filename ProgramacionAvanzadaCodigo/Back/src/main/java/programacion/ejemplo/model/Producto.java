@@ -44,6 +44,8 @@ public class Producto {
         this.setEliminado(1);
     }
 
+    private String imagen; // URL de la imagen
+
 
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)
