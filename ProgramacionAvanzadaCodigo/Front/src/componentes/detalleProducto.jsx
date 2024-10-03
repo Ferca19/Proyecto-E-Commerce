@@ -69,7 +69,7 @@ export default function VistaPrevia() {
   const agregarAlCarrito = () => {
     // Obtener carrito actual del localStorage
     let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
+  
     const productoEnCarrito = {
       productoId: id,
       nombre: producto.nombre,
@@ -77,15 +77,16 @@ export default function VistaPrevia() {
       cantidad: cantidad,
       subtotal: producto.precio * cantidad,
       color: color,
-      tamano: tamano
+      tamano: tamano,
+      imagen: producto.imagen // Añadir la imagen del producto
     };
-
+  
     // Agregar el producto al carrito
     carrito.push(productoEnCarrito);
-
+  
     // Guardar en localStorage
     localStorage.setItem("carrito", JSON.stringify(carrito));
-
+  
     alert(`Producto agregado al carrito: ${cantidad}x ${producto.nombre}`);
   };
 
@@ -96,6 +97,8 @@ export default function VistaPrevia() {
   if (!producto) {
     return <div>Cargando producto...</div>;
   }
+
+  
 
   return (
     <div className="container mx-auto px-4 py-8">
