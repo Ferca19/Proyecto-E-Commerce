@@ -11,6 +11,7 @@ import programacion.ejemplo.Mapper.CategoriaMapper;
 import programacion.ejemplo.Mapper.ProductoMapper;
 import programacion.ejemplo.model.*;
 import programacion.ejemplo.repository.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,9 @@ public class ProductoService implements IProductoService {
 
     @Autowired
     private ProductoMapper productoMapper;
+
+    @Value("${app.images.base-path}")  // Inyecta el path desde application.properties
+    private String baseImagePath;
 
     @Transactional
     public ProductoDTO createProducto(ProductoDTO productoDTO) {
@@ -99,7 +103,8 @@ public class ProductoService implements IProductoService {
 
         // Si se envió un archivo de imagen, actualizar la imagen
         if (file != null && !file.isEmpty()) {
-            String rutaImagen = "D:\\USUARIO\\Desktop\\Proyecto-Programacion-Avanzada\\Imagenes\\" + file.getOriginalFilename();
+            // Construir la ruta completa para la imagen
+            String rutaImagen = baseImagePath + file.getOriginalFilename();
             File imageFile = new File(rutaImagen);
 
             // Guardar la imagen
@@ -113,7 +118,8 @@ public class ProductoService implements IProductoService {
 
     public Producto actualizarImagenProducto(Producto producto, MultipartFile file) throws IOException {
         if (file != null && !file.isEmpty()) {
-            String rutaImagen = "D:\\USUARIO\\Desktop\\Proyecto-Programacion-Avanzada\\Imagenes\\" + file.getOriginalFilename();
+            // Construir la ruta completa para la imagen
+            String rutaImagen = baseImagePath + file.getOriginalFilename();
             File imageFile = new File(rutaImagen);
 
             // Guardar la imagen

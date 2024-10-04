@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 03-10-2024 a las 16:55:53
+-- Tiempo de generación: 04-10-2024 a las 19:13:19
 -- Versión del servidor: 8.0.39
 -- Versión de PHP: 8.0.30
 
@@ -59,50 +59,57 @@ CREATE TABLE `detalle_pedido` (
   `eliminado` int NOT NULL,
   `subtotal` double NOT NULL,
   `pedido_id` int NOT NULL,
-  `producto_id` int NOT NULL,
-  `imagen_producto` varchar(255) DEFAULT NULL
+  `producto_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `detalle_pedido`
 --
 
-INSERT INTO `detalle_pedido` (`id`, `cantidad`, `eliminado`, `subtotal`, `pedido_id`, `producto_id`, `imagen_producto`) VALUES
-(1, 2, 0, 100000, 2, 1, NULL),
-(2, 1, 0, 40000, 2, 2, NULL),
-(3, 3, 0, 150000, 3, 1, NULL),
-(4, 4, 0, 160000, 3, 2, NULL),
-(5, 1, 0, 50000, 4, 1, NULL),
-(6, 1, 0, 40000, 4, 2, NULL),
-(7, 1, 0, 50000, 5, 1, NULL),
-(8, 1, 0, 40000, 5, 2, NULL),
-(9, 1, 0, 50000, 6, 1, NULL),
-(10, 1, 0, 40000, 6, 2, NULL),
-(11, 1, 0, 50000, 7, 1, NULL),
-(12, 1, 0, 40000, 7, 2, NULL),
-(13, 6, 0, 300000, 8, 1, NULL),
-(14, 3, 0, 120000, 8, 2, NULL),
-(15, 6, 0, 300000, 9, 1, NULL),
-(16, 3, 0, 120000, 9, 2, NULL),
-(17, 6, 0, 300000, 10, 1, NULL),
-(18, 3, 0, 120000, 10, 2, NULL),
-(19, 6, 0, 300000, 11, 1, NULL),
-(20, 3, 0, 120000, 11, 2, NULL),
-(27, 6, 0, 300000, 15, 1, NULL),
-(28, 3, 0, 120000, 15, 2, NULL),
-(29, 4, 0, 200000, 16, 1, NULL),
-(30, 2, 0, 80000, 16, 2, NULL),
-(31, 4, 0, 200000, 17, 1, NULL),
-(32, 2, 0, 80000, 17, 2, NULL),
-(33, 4, 0, 200000, 18, 1, NULL),
-(34, 2, 0, 80000, 18, 2, NULL),
-(35, 4, 0, 200000, 19, 1, NULL),
-(36, 2, 0, 80000, 19, 3, NULL),
-(37, 4, 0, 200000, 20, 1, NULL),
-(38, 2, 0, 80000, 20, 3, NULL),
-(39, 2, 0, 100000, 21, 1, NULL),
-(40, 1, 0, 30000, 21, 6, NULL),
-(41, 3, 0, 90000, 21, 5, NULL);
+INSERT INTO `detalle_pedido` (`id`, `cantidad`, `eliminado`, `subtotal`, `pedido_id`, `producto_id`) VALUES
+(1, 2, 0, 100000, 2, 1),
+(2, 1, 0, 40000, 2, 2),
+(3, 3, 0, 150000, 3, 1),
+(4, 4, 0, 160000, 3, 2),
+(5, 1, 0, 50000, 4, 1),
+(6, 1, 0, 40000, 4, 2),
+(7, 1, 0, 50000, 5, 1),
+(8, 1, 0, 40000, 5, 2),
+(9, 1, 0, 50000, 6, 1),
+(10, 1, 0, 40000, 6, 2),
+(11, 1, 0, 50000, 7, 1),
+(12, 1, 0, 40000, 7, 2),
+(13, 6, 0, 300000, 8, 1),
+(14, 3, 0, 120000, 8, 2),
+(15, 6, 0, 300000, 9, 1),
+(16, 3, 0, 120000, 9, 2),
+(17, 6, 0, 300000, 10, 1),
+(18, 3, 0, 120000, 10, 2),
+(19, 6, 0, 300000, 11, 1),
+(20, 3, 0, 120000, 11, 2),
+(27, 6, 0, 300000, 15, 1),
+(28, 3, 0, 120000, 15, 2),
+(29, 4, 0, 200000, 16, 1),
+(30, 2, 0, 80000, 16, 2),
+(31, 4, 0, 200000, 17, 1),
+(32, 2, 0, 80000, 17, 2),
+(33, 4, 0, 200000, 18, 1),
+(34, 2, 0, 80000, 18, 2),
+(35, 4, 0, 200000, 19, 1),
+(36, 2, 0, 80000, 19, 3),
+(37, 4, 0, 200000, 20, 1),
+(38, 2, 0, 80000, 20, 3),
+(39, 2, 0, 100000, 21, 1),
+(40, 1, 0, 30000, 21, 6),
+(41, 3, 0, 90000, 21, 5),
+(42, 1, 0, 30000, 22, 4),
+(43, 1, 0, 50000, 22, 1),
+(44, 1, 0, 40000, 22, 2),
+(45, 1, 0, 40000, 22, 3),
+(46, 1, 0, 30000, 22, 5),
+(47, 1, 0, 30000, 22, 6),
+(48, 1, 0, 35000, 22, 7),
+(49, 1, 0, 35000, 22, 8);
 
 -- --------------------------------------------------------
 
@@ -189,7 +196,8 @@ INSERT INTO `pedido` (`id`, `eliminado`, `fechayhora`, `importe_total`, `estado_
 (18, 0, '2024-09-27 14:37:44.901000', 280000, 1, 3),
 (19, 0, '2024-09-29 14:49:02.130000', 280000, 1, 3),
 (20, 0, '2024-09-29 17:34:44.622000', 280000, 1, 7),
-(21, 0, '2024-10-03 11:46:07.322000', 220000, 1, 1);
+(21, 0, '2024-10-03 11:46:07.322000', 220000, 1, 1),
+(22, 0, '2024-10-04 13:34:02.036000', 290000, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -217,14 +225,14 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`id`, `descripcion`, `eliminado`, `nombre`, `precio`, `stock`, `categoria_id`, `marca_id`, `subcategoria_id`, `color`, `tamano`, `imagen`) VALUES
-(1, 'zapatillas deportivas', 0, 'Zapatillas Nike SB Dunk Low Travis Scott', 50000, 10, 1, 1, 1, 'Marron', '42', 'zapatillas nike SB Dunk Travis Scott.jpg'),
-(2, 'zapatillas deportivas', 0, 'Zapatillas Air Force 1', 40000, 15, 1, 1, 1, 'Blanco', '42', 'zapatillas air force 1.jpg'),
-(3, 'zapatillas deportivas', 0, 'Zapatillas Forum Buckle Low - Bad Bunny', 40000, 16, 1, 1, 1, 'Celeste', '42', 'zapatillas FORUM BUCKLE LOW - BAD BUNNY.jpg'),
-(4, 'zapatillas deportivas', 0, 'Zapatillas Air Force 1 Travis Scott Cactus Jack', 30000, 10, 1, 1, 1, 'Beige', '42', 'zapatillas Air Force 1 Travis Scott Cactus Jack Grey.jpg'),
-(5, 'zapatillas deportivas', 0, 'Zapatillas Adidas Forum Low Bad Bunny ', 30000, 7, 1, 1, 1, 'negro', '41', 'zapatillas Adidas Forum Low Bad Bunny.png'),
-(6, 'zapatillas deportivas', 0, 'Zapatillas Nike LeBron NXXT Gen AMPD', 30000, 9, 1, 1, 1, 'Rojo', '42', 'zapatillas nike lebron.jpeg'),
-(7, 'Zapatillas deportivas', 0, 'Zapatillas running 5', 35000, 30, 1, 1, 1, 'Negro', '42', 'D:\\USUARIO\\Desktop\\Proyecto-Programacion-Avanzada\\Imagenes\\zapatillas1.jpg'),
-(8, 'Zapatillas deportivas', 0, 'Zapatillas running 6', 35000, 30, 1, 1, 1, 'Blanco', '43', 'D:\\USUARIO\\Desktop\\Proyecto-Programacion-Avanzada\\Imagenes\\Zapatillas2.avif');
+(1, 'zapatillas deportivas', 0, 'Zapatillas Nike SB Dunk Low Travis Scott', 50000, 9, 1, 1, 1, 'Marron', '42', 'zapatillas nike SB Dunk Travis Scott.jpg'),
+(2, 'zapatillas deportivas', 0, 'Zapatillas Air Force 1', 40000, 14, 1, 1, 1, 'Blanco', '42', 'zapatillas air force 1.jpg'),
+(3, 'zapatillas deportivas', 0, 'Zapatillas Forum Buckle Low - Bad Bunny', 40000, 15, 1, 1, 1, 'Celeste', '42', 'zapatillas FORUM BUCKLE LOW - BAD BUNNY.jpg'),
+(4, 'zapatillas deportivas', 0, 'Zapatillas Air Force 1 Travis Scott Cactus Jack', 30000, 9, 1, 1, 1, 'Beige', '42', 'zapatillas Air Force 1 Travis Scott Cactus Jack Grey.jpg'),
+(5, 'zapatillas deportivas', 0, 'Zapatillas Adidas Forum Low Bad Bunny ', 30000, 6, 1, 1, 1, 'negro', '41', 'zapatillas Adidas Forum Low Bad Bunny.png'),
+(6, 'zapatillas deportivas', 0, 'Zapatillas Nike LeBron NXXT Gen AMPD', 30000, 8, 1, 1, 1, 'Rojo', '42', 'zapatillas nike lebron.jpeg'),
+(7, 'Zapatillas deportivas', 0, 'Zapatillas running 5', 35000, 29, 1, 1, 1, 'Negro', '42', 'zapatillas1.jpg'),
+(8, 'Zapatillas deportivas', 0, 'Zapatillas running 6', 35000, 29, 1, 1, 1, 'Blanco', '43', 'Zapatillas_de_Running_Alphabounce_Sustainable_Bounce_Verde_IE9767_01_standard.avif');
 
 -- --------------------------------------------------------
 
@@ -348,7 +356,7 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `detalle_pedido`
 --
 ALTER TABLE `detalle_pedido`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
@@ -366,7 +374,7 @@ ALTER TABLE `marca`
 -- AUTO_INCREMENT de la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`

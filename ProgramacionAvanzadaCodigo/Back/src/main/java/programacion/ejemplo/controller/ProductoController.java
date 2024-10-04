@@ -13,6 +13,7 @@ import programacion.ejemplo.DTO.ProductoDTO;
 import programacion.ejemplo.model.Categoria;
 import programacion.ejemplo.model.Producto;
 import programacion.ejemplo.service.IProductoService;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +30,9 @@ public class ProductoController {
     @Autowired
     private IProductoService modelService;
 
+    @Value("${app.images.base-path}")
+    private String baseImagePath;
+
     @GetMapping
     public ResponseEntity<List<ProductoDTO>> listar() {
         List<ProductoDTO> productos = modelService.listar();
@@ -38,22 +42,21 @@ public class ProductoController {
     @PostMapping
     public ResponseEntity<?> createProducto(
             @ModelAttribute ProductoDTO productoDTO,
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam("imagen") MultipartFile file) {
         try {
-            // Ruta donde se guardará la imagen
-            String path = "D:\\USUARIO\\Desktop\\Proyecto-Programacion-Avanzada\\Imagenes\\";
-            File imageFile = new File(path + file.getOriginalFilename());
+            // Construir la ruta completa de la imagen usando la ruta base configurada
+            File imageFile = new File(baseImagePath + file.getOriginalFilename());
 
             // Crear el directorio si no existe
-            if (!new File(path).exists()) {
-                new File(path).mkdirs();
+            if (!new File(baseImagePath).exists()) {
+                new File(baseImagePath).mkdirs();
             }
 
             // Guardar la imagen
             file.transferTo(imageFile);
 
-            // Asignar la ruta de la imagen al DTO
-            productoDTO.setImagen(imageFile.getAbsolutePath());
+            // Asignar solo el nombre del archivo (ruta relativa) al DTO
+            productoDTO.setImagen(file.getOriginalFilename());
 
             // Crear el producto
             ProductoDTO nuevoProducto = modelService.createProducto(productoDTO);

@@ -13,7 +13,7 @@ function Carrito() {
     const token = localStorage.getItem("token");
   
     if (!token) {
-      navigate("/login");
+      navigate("/");
       return;
     }
   
@@ -28,7 +28,7 @@ function Carrito() {
       setTotal(totalCalculado);
     } catch (error) {
       console.error("Error decodificando el token:", error);
-      navigate("/login");
+      navigate("/");
     }
   }, [navigate]);
 
@@ -64,6 +64,18 @@ function Carrito() {
     return <div className="text-2xl">No hay productos en el carrito.</div>;
   }
 
+
+  const vaciarCarrito = () => {
+    localStorage.removeItem('carrito');
+    setCarrito([]);
+    setTotal(0);
+  };
+
+  if (carrito.length === 0) {
+    return <div className="text-2xl">No hay productos en el carrito.</div>;
+  }
+
+
   return (
     <div className="container mx-auto px-4 py-12">
       <h2 className="text-4xl font-bold mb-8">Carrito de Compras</h2>
@@ -71,7 +83,7 @@ function Carrito() {
         {carrito.map((item, index) => (
           <li key={index} className="border-b-2 py-6 flex items-center">
             <img
-              src={`http://localhost:8080/Imagenes/${item.imagen.split('\\').pop()}`}
+              src={item.imagen ? `http://localhost:8080/Imagenes/${item.imagen}` : '/placeholder.svg?height=200&width=200'}
               alt={item.nombre}
               className="w-32 h-32 object-cover mr-8 rounded-lg"
             />
@@ -91,6 +103,13 @@ function Carrito() {
         className="mt-10 px-8 py-4 bg-green-600 text-white text-2xl rounded-lg hover:bg-green-700 w-full"
       >
         Realizar Pedido
+      </button>
+
+      <button
+        onClick={vaciarCarrito}
+        className="mt-4 px-8 py-4 bg-red-600 text-white text-2xl rounded-lg hover:bg-red-700 w-full"
+      >
+        Vaciar Carrito
       </button>
     </div>
   );

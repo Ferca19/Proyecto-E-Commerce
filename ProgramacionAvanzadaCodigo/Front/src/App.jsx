@@ -11,6 +11,7 @@ import Carrito from "./componentes/Carrito";
 import VistaPrevia from './componentes/detalleProducto'; // Importa tu componente de detalle
 import Modal from "./componentes/modal"; // Asegúrate de importar el Modal
 import 'tailwindcss/tailwind.css'; // Asegúrate de que esta línea esté presente
+import AdminProductos from './componentes/adminProductos';
 
 function App() {
     const [showLogin, setShowLogin] = useState(false);  // Estado para manejar la visibilidad del login modal
@@ -44,6 +45,7 @@ function App() {
                         <Route path="/" element={<Home />} />
                         <Route path="/productos/:id" element={<VistaPrevia />} />
                         <Route path="/carrito" element={<Carrito />} />
+                        <Route path="/adminproductos" element={<AdminProductos />} />
                         <Route
                             path="/marcas"
                             element={

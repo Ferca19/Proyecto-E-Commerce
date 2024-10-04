@@ -35,24 +35,24 @@ export default function ProductList() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {products.map((product) => (
-  <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-    <img
-      src={product.imagen ? `http://localhost:8080/Imagenes/${product.imagen.split('\\').pop()}` : '/placeholder.svg?height=200&width=200'} // Usar imagen de marcador de posición si no hay imagen real
-      alt={product.nombre}
-      className="w-full h-48 object-cover"
-    />
-    <div className="p-4">
-      <h3 className="text-lg font-semibold mb-2">{product.nombre}</h3>
-      <p className="text-gray-600 mb-2">${product.precio.toFixed(2)}</p>
-      <Link 
-        to={`/productos/${product.id}`} 
-        className="block w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
-      >
-        Ver Detalles
-      </Link>
-    </div>
-  </div>
-))}
+        <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+          <img
+            src={product.imagen ? `http://localhost:8080/Imagenes/${product.imagen}` : '/placeholder.svg?height=200&width=200'} // Ahora solo usamos la imagen directamente
+            alt={product.nombre}
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-4">
+            <h3 className="text-lg font-semibold mb-2">{product.nombre}</h3>
+            <p className="text-gray-600 mb-2">${product.precio.toFixed(2)}</p>
+            <Link 
+              to={`/productos/${product.id}`} 
+              className="block w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
+            >
+              Ver Detalles
+            </Link>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
