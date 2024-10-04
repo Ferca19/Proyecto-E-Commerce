@@ -1,20 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; 
 
 function Carrito() {
   const [carrito, setCarrito] = useState([]);
   const [total, setTotal] = useState(0);
-  const usuarioId = 1; // ID de usuario (puedes obtenerlo dinámicamente si es necesario)
+  const [usuarioId, setUsuarioId] = useState(null);
+  const navigate = useNavigate(); // Hook para navegar
 
   useEffect(() => {
-    // Obtener carrito del localStorage
-    const carritoGuardado = JSON.parse(localStorage.getItem("carrito")) || [];
-    setCarrito(carritoGuardado);
-
-    // Calcular el total
-    const totalCalculado = carritoGuardado.reduce((acc, item) => acc + item.subtotal, 0);
-    setTotal(totalCalculado);
-  }, []);
+    const token = localStorage.getItem("token");
+  
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+  
+    try {
+      const decodedToken = jwtDecode(token);
+      setUsuarioId(decodedToken.userId); 
+  
+      const carritoGuardado = JSON.parse(localStorage.getItem("carrito")) || [];
+      setCarrito(carritoGuardado);
+  
+      const totalCalculado = carritoGuardado.reduce((acc, item) => acc + item.subtotal, 0);
+      setTotal(totalCalculado);
+    } catch (error) {
+      console.error("Error decodificando el token:", error);
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const realizarPedido = async () => {
     try {
@@ -25,6 +41,7 @@ function Carrito() {
         subtotal: item.subtotal,
       }));
 
+      console.log("Detalles del pedido:", detallesPedido);
       // Enviar el pedido al backend
       const response = await axios.post(`http://localhost:8080/usuarios/${usuarioId}/registrarpedido`, detallesPedido);
 

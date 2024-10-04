@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import programacion.ejemplo.service.CustomUserDetailsService;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -17,9 +18,10 @@ public class JwtTokenUtil {
     private final String SECRET_KEY = "miClaveSecreta"; // Cambia esto por una clave secreta segura
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 horas
 
-    // Generar un token JWT
-    public String generateToken(UserDetails userDetails) {
+    // Generar un token JWT con el ID del usuario
+    public String generateToken(CustomUserDetailsService.CustomUserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userDetails.getUsuario().getId()); // Añadir el ID del usuario como un claim
         return createToken(claims, userDetails.getUsername());
     }
 
