@@ -32,7 +32,7 @@ public interface IProductoService {
 
     Marca obtenerMarca(Integer marcaId);
 
-    Producto actualizarProducto(Integer id, ActualizarProductoDTO actualizarProductoDTO, MultipartFile file) throws IOException;
+    Producto actualizarProducto(Integer id, ActualizarProductoDTO actualizarProductoDTO) throws IOException;
 
     Producto actualizarImagenProducto(Producto producto, MultipartFile file) throws IOException;
 

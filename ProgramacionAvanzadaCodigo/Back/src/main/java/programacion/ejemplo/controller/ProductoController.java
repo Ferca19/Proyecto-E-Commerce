@@ -1,5 +1,6 @@
 package programacion.ejemplo.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +42,13 @@ public class ProductoController {
 
     @PostMapping
     public ResponseEntity<?> createProducto(
-            @ModelAttribute ProductoDTO productoDTO,
-            @RequestParam("imagen") MultipartFile file) {
+            @RequestParam("imagen") MultipartFile file,
+            @RequestParam(value = "producto", required = true) String productoJson) {
         try {
+            // Convertir el JSON a ProductoDTO
+            ObjectMapper objectMapper = new ObjectMapper();
+            ProductoDTO productoDTO = objectMapper.readValue(productoJson, ProductoDTO.class);
+
             // Construir la ruta completa de la imagen usando la ruta base configurada
             File imageFile = new File(baseImagePath + file.getOriginalFilename());
 
@@ -52,11 +57,16 @@ public class ProductoController {
                 new File(baseImagePath).mkdirs();
             }
 
-            // Guardar la imagen
-            file.transferTo(imageFile);
-
-            // Asignar solo el nombre del archivo (ruta relativa) al DTO
-            productoDTO.setImagen(file.getOriginalFilename());
+            // Verificar si la imagen ya existe
+            if (imageFile.exists()) {
+                // La imagen ya existe, asignar solo el nombre del archivo al DTO
+                productoDTO.setImagen(file.getOriginalFilename());
+            } else {
+                // Si no existe, guardar la nueva imagen
+                file.transferTo(imageFile);
+                // Asignar solo el nombre del archivo (ruta relativa) al DTO
+                productoDTO.setImagen(file.getOriginalFilename());
+            }
 
             // Crear el producto
             ProductoDTO nuevoProducto = modelService.createProducto(productoDTO);
@@ -83,27 +93,38 @@ public class ProductoController {
 
             // Si se proporcionó el JSON, conviértelo a DTO
             if (productoJson != null) {
-                // Aquí debes tener un método para convertir el JSON a tu DTO
-                actualizarProductoDTO = new ObjectMapper().readValue(productoJson, ActualizarProductoDTO.class);
+                try {
+                    actualizarProductoDTO = new ObjectMapper().readValue(productoJson, ActualizarProductoDTO.class);
+                } catch (JsonProcessingException e) {
+                    return ResponseEntity.badRequest().body("JSON de producto no válido.");
+                }
             }
 
-            // Si el DTO es nulo, solo actualiza la imagen
-            if (actualizarProductoDTO == null) {
-                Producto productoExistente = modelService.obtenerObjetoPorId(id);
+            Producto productoExistente = modelService.obtenerObjetoPorId(id);
+            if (productoExistente == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Actualizar producto y/o imagen según corresponda
+            if (actualizarProductoDTO != null) {
+                // Actualiza los datos del producto
+                Producto productoActualizado = modelService.actualizarProducto(id, actualizarProductoDTO);
+                // Si hay una imagen, actualizarla
                 if (file != null && !file.isEmpty()) {
-                    return ResponseEntity.ok(modelService.actualizarImagenProducto(productoExistente, file));
+                    modelService.actualizarImagenProducto(productoActualizado, file);
+                }
+                return ResponseEntity.ok(productoActualizado);
+            } else {
+                // Solo actualizar la imagen si no se proporcionó un DTO
+                if (file != null && !file.isEmpty()) {
+                    modelService.actualizarImagenProducto(productoExistente, file);
+                    return ResponseEntity.ok(productoExistente);
                 } else {
                     return ResponseEntity.badRequest().body("Se debe proporcionar una imagen para actualizar.");
                 }
             }
-
-            // Si se proporciona el DTO, actualiza el producto normalmente
-            Producto productoActualizado = modelService.actualizarProducto(id, actualizarProductoDTO, file);
-            return ResponseEntity.ok(productoActualizado);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar la imagen.");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al procesar la solicitud: " + e.getMessage());
         }
     }
 

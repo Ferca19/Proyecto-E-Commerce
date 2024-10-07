@@ -67,7 +67,7 @@ public class ProductoService implements IProductoService {
     }
 
     @Override
-    public Producto actualizarProducto(Integer id, ActualizarProductoDTO actualizarProductoDTO, MultipartFile file) throws IOException {
+    public Producto actualizarProducto(Integer id, ActualizarProductoDTO actualizarProductoDTO) throws IOException {
         Producto productoExistente = modelRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
 
@@ -101,17 +101,6 @@ public class ProductoService implements IProductoService {
             productoExistente.setMarca(marca);
         }
 
-        // Si se envió un archivo de imagen, actualizar la imagen
-        if (file != null && !file.isEmpty()) {
-            // Construir la ruta completa para la imagen
-            String rutaImagen = baseImagePath + file.getOriginalFilename();
-            File imageFile = new File(rutaImagen);
-
-            // Guardar la imagen
-            file.transferTo(imageFile);
-            productoExistente.setImagen(file.getOriginalFilename());
-        }
-
         // Guardar cambios en la base de datos
         return modelRepository.save(productoExistente);
     }
@@ -122,12 +111,19 @@ public class ProductoService implements IProductoService {
             String rutaImagen = baseImagePath + file.getOriginalFilename();
             File imageFile = new File(rutaImagen);
 
-            // Guardar la imagen
-            file.transferTo(imageFile);
-            producto.setImagen(file.getOriginalFilename());
-
-            // Guardar cambios en la base de datos
-            return modelRepository.save(producto);
+            // Verificar si la imagen ya existe
+            if (imageFile.exists()) {
+                // La imagen ya existe, actualiza solo el producto
+                producto.setImagen(file.getOriginalFilename());
+                // Guardar cambios en la base de datos
+                return modelRepository.save(producto);
+            } else {
+                // Si no existe, guardar la nueva imagen
+                file.transferTo(imageFile);
+                producto.setImagen(file.getOriginalFilename());
+                // Guardar cambios en la base de datos
+                return modelRepository.save(producto);
+            }
         } else {
             throw new RuntimeException("El archivo de imagen no puede estar vacío.");
         }
