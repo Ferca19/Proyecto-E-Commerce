@@ -198,7 +198,7 @@ const handleImageChange = (e) => {
             <p>{product.descripcion}</p>
             <p>Color: {product.color}</p>
             <p>Tamaño: {product.tamano}</p>
-            <p>Precio: ${product.precio.toFixed(2)}</p>
+            <p>Precio: ${product.precio.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             <p>Stock: {product.stock}</p>
             <div className="mt-2">
               <button onClick={() => handleEdit(product)} className="bg-yellow-500 text-white px-2 py-1 rounded mr-2">

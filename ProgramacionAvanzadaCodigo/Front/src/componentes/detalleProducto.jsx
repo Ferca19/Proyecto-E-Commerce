@@ -112,7 +112,7 @@ export default function VistaPrevia() {
         </div>
         <div className="space-y-6">
           <h1 className="text-3xl font-bold text-gray-900">{producto.nombre}</h1>
-          <p className="text-2xl font-semibold text-gray-700">${producto.precio.toFixed(2)}</p>
+          <p className="text-2xl font-semibold text-gray-700">${producto.precio.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
           <p className="text-gray-600">{producto.descripcion}</p>
 
           <div className="space-y-4">

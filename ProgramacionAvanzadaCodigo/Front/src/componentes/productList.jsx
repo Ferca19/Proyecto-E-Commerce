@@ -43,7 +43,7 @@ export default function ProductList() {
           />
           <div className="p-4">
             <h3 className="text-lg font-semibold mb-2">{product.nombre}</h3>
-            <p className="text-gray-600 mb-2">${product.precio.toFixed(2)}</p>
+            <p className="text-gray-600 mb-2">${product.precio.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             <Link 
               to={`/productos/${product.id}`} 
               className="block w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
