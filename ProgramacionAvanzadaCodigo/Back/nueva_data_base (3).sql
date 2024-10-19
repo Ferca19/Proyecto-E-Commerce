@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 04-10-2024 a las 19:13:19
+-- Tiempo de generación: 19-10-2024 a las 20:08:49
 -- Versión del servidor: 8.0.39
 -- Versión de PHP: 8.0.30
 
@@ -226,13 +226,34 @@ CREATE TABLE `producto` (
 
 INSERT INTO `producto` (`id`, `descripcion`, `eliminado`, `nombre`, `precio`, `stock`, `categoria_id`, `marca_id`, `subcategoria_id`, `color`, `tamano`, `imagen`) VALUES
 (1, 'zapatillas deportivas', 0, 'Zapatillas Nike SB Dunk Low Travis Scott', 50000, 9, 1, 1, 1, 'Marron', '42', 'zapatillas nike SB Dunk Travis Scott.jpg'),
-(2, 'zapatillas deportivas', 0, 'Zapatillas Air Force 1', 40000, 14, 1, 1, 1, 'Blanco', '42', 'zapatillas air force 1.jpg'),
+(2, 'zapatillas deportivas', 0, 'Zapatillas Air Force 1', 40000, 14, 1, 1, 1, 'Blanco', '42', 'Nike Air Zoom Pegasus 35 Turbo.gif'),
 (3, 'zapatillas deportivas', 0, 'Zapatillas Forum Buckle Low - Bad Bunny', 40000, 15, 1, 1, 1, 'Celeste', '42', 'zapatillas FORUM BUCKLE LOW - BAD BUNNY.jpg'),
 (4, 'zapatillas deportivas', 0, 'Zapatillas Air Force 1 Travis Scott Cactus Jack', 30000, 9, 1, 1, 1, 'Beige', '42', 'zapatillas Air Force 1 Travis Scott Cactus Jack Grey.jpg'),
 (5, 'zapatillas deportivas', 0, 'Zapatillas Adidas Forum Low Bad Bunny ', 30000, 6, 1, 1, 1, 'negro', '41', 'zapatillas Adidas Forum Low Bad Bunny.png'),
 (6, 'zapatillas deportivas', 0, 'Zapatillas Nike LeBron NXXT Gen AMPD', 30000, 8, 1, 1, 1, 'Rojo', '42', 'zapatillas nike lebron.jpeg'),
-(7, 'Zapatillas deportivas', 0, 'Zapatillas running 5', 35000, 29, 1, 1, 1, 'Negro', '42', 'zapatillas1.jpg'),
-(8, 'Zapatillas deportivas', 0, 'Zapatillas running 6', 35000, 29, 1, 1, 1, 'Blanco', '43', 'Zapatillas_de_Running_Alphabounce_Sustainable_Bounce_Verde_IE9767_01_standard.avif');
+(7, 'Zapatillas deportivas', 0, 'Zapatillas running 5', 35000, 29, 1, 1, 1, 'Negro', '42', 'nike1geekersblog.gif'),
+(8, 'Zapatillas deportivas', 1, 'Zapatillas running 6', 35000, 29, 1, 1, 1, 'Blanco', '43', 'Zapatillas2.avif');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `rol`
+--
+
+CREATE TABLE `rol` (
+  `id` int NOT NULL,
+  `descripcion` varchar(255) DEFAULT NULL,
+  `eliminado` int NOT NULL,
+  `nombre` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `rol`
+--
+
+INSERT INTO `rol` (`id`, `descripcion`, `eliminado`, `nombre`) VALUES
+(1, 'Este es un rol para un Administrador', 0, 'Administrador'),
+(2, 'Este es un rol para un Cliente', 0, 'Cliente');
 
 -- --------------------------------------------------------
 
@@ -267,21 +288,22 @@ CREATE TABLE `usuario` (
   `contrasena` varchar(255) DEFAULT NULL,
   `eliminado` int NOT NULL,
   `mail` varchar(255) DEFAULT NULL,
-  `nombre` varchar(255) DEFAULT NULL
+  `nombre` varchar(255) DEFAULT NULL,
+  `rol_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `usuario` (`id`, `apellido`, `contrasena`, `eliminado`, `mail`, `nombre`) VALUES
-(1, 'Pérez', 'contraseña123', 0, 'juan.perez@example.com', 'Juan'),
-(3, 'Cagliero', '$2a$10$aPAwoIzEgQwnBDg0A06Iy.KCQPYhczAtZNzpPbomymG6utAsP3BkS', 0, '2fernando2cagliero@gmail.com', 'Fer'),
-(6, 'ledo', '$2a$10$bfu457tIv4Gxe/dTc27XbuHg7cJCu5ate3HdLncNgSSsNdCOpmyOO', 0, 'martinledo@gmail.com', 'martin'),
-(7, 'borgo', '$2a$10$A0zt04IjtlMNkEMb9Yd9AuEWAcRjML8nmEqdyQrRm7iyJb0mVQmH2', 0, 'kevinborgo@gmail.com', 'kevin'),
-(8, 'Cagliero', '$2a$10$l62RZh9FQquHBz4VXtYUUesOMBi5/47V1b.41NtrH41.VADQoFhE.', 0, '1fernando1cagliero@gmail.com', 'Fernando'),
-(9, 'Blanc', '$2a$10$7LzZhECxZii0uVBSxRu.Ne0KYXP26vrMu6bcF1Z2VrNxGcX8BFtZa', 0, 'loloblanc@gmail.com', 'Lorenzo'),
-(13, 'prueba', '$2a$10$xk2dcHKSihrtvBMY8a8OJ.3ci7JfpWxizQGNKxPGKMKqljwEZOWda', 0, 'usuarioprueba@gmail.com', 'usuario');
+INSERT INTO `usuario` (`id`, `apellido`, `contrasena`, `eliminado`, `mail`, `nombre`, `rol_id`) VALUES
+(1, 'Pérez', 'contraseña123', 0, 'juan.perez@example.com', 'Juan', 2),
+(3, 'Cagliero', '$2a$10$aPAwoIzEgQwnBDg0A06Iy.KCQPYhczAtZNzpPbomymG6utAsP3BkS', 0, '2fernando2cagliero@gmail.com', 'Fer', 1),
+(6, 'ledo', '$2a$10$bfu457tIv4Gxe/dTc27XbuHg7cJCu5ate3HdLncNgSSsNdCOpmyOO', 0, 'martinledo@gmail.com', 'martin', 2),
+(7, 'borgo', '$2a$10$A0zt04IjtlMNkEMb9Yd9AuEWAcRjML8nmEqdyQrRm7iyJb0mVQmH2', 0, 'kevinborgo@gmail.com', 'kevin', 2),
+(8, 'Cagliero', '$2a$10$l62RZh9FQquHBz4VXtYUUesOMBi5/47V1b.41NtrH41.VADQoFhE.', 0, '1fernando1cagliero@gmail.com', 'Fernando', 2),
+(9, 'Blanc', '$2a$10$7LzZhECxZii0uVBSxRu.Ne0KYXP26vrMu6bcF1Z2VrNxGcX8BFtZa', 0, 'loloblanc@gmail.com', 'Lorenzo', 2),
+(13, 'prueba', '$2a$10$xk2dcHKSihrtvBMY8a8OJ.3ci7JfpWxizQGNKxPGKMKqljwEZOWda', 0, 'usuarioprueba@gmail.com', 'usuario', 2);
 
 --
 -- Índices para tablas volcadas
@@ -331,6 +353,12 @@ ALTER TABLE `producto`
   ADD KEY `FKa571qppf005vbgabojxpwgjwe` (`subcategoria_id`);
 
 --
+-- Indices de la tabla `rol`
+--
+ALTER TABLE `rol`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `subcategoria`
 --
 ALTER TABLE `subcategoria`
@@ -340,7 +368,8 @@ ALTER TABLE `subcategoria`
 -- Indices de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKshkwj12wg6vkm6iuwhvcfpct8` (`rol_id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -383,6 +412,12 @@ ALTER TABLE `producto`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
+-- AUTO_INCREMENT de la tabla `rol`
+--
+ALTER TABLE `rol`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT de la tabla `subcategoria`
 --
 ALTER TABLE `subcategoria`
@@ -419,6 +454,12 @@ ALTER TABLE `producto`
   ADD CONSTRAINT `FK868tnrt85f21kgcvt9bftgr8r` FOREIGN KEY (`marca_id`) REFERENCES `marca` (`id`),
   ADD CONSTRAINT `FKa571qppf005vbgabojxpwgjwe` FOREIGN KEY (`subcategoria_id`) REFERENCES `subcategoria` (`id`),
   ADD CONSTRAINT `FKodqr7965ok9rwquj1utiamt0m` FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`);
+
+--
+-- Filtros para la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD CONSTRAINT `FKshkwj12wg6vkm6iuwhvcfpct8` FOREIGN KEY (`rol_id`) REFERENCES `rol` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
