@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import programacion.ejemplo.DTO.ActualizarProductoDTO;
 import programacion.ejemplo.DTO.ProductoDTO;
+import programacion.ejemplo.exception.RecursoNoEncontradoExcepcion;
 import programacion.ejemplo.model.Categoria;
 import programacion.ejemplo.model.Producto;
 import programacion.ejemplo.service.IProductoService;
@@ -34,13 +35,13 @@ public class ProductoController {
     @Value("${app.images.base-path}")
     private String baseImagePath;
 
-    @GetMapping
+    @GetMapping("/public")
     public ResponseEntity<List<ProductoDTO>> listar() {
         List<ProductoDTO> productos = modelService.listar();
         return ResponseEntity.ok(productos);
     }
 
-    @PostMapping
+    @PostMapping("/admin")
     public ResponseEntity<?> createProducto(
             @RequestParam("imagen") MultipartFile file,
             @RequestParam(value = "producto", required = true) String productoJson) {
@@ -78,7 +79,7 @@ public class ProductoController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/admin/{id}")
     public ResponseEntity<?> actualizarProducto(
             @PathVariable Integer id,
             @RequestParam(value = "imagen", required = false) MultipartFile file,
@@ -129,10 +130,22 @@ public class ProductoController {
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/public/{id}")
     public ResponseEntity<ProductoDTO> obtenerPorId(@PathVariable Integer id) {
         logger.info("Obteniendo producto por ID: {}", id);
         ProductoDTO productoDTO = modelService.obtenerPorId(id);
         return ResponseEntity.ok(productoDTO);
+    }
+
+    @DeleteMapping("/admin/{id}")
+    public ResponseEntity<Void> eliminarProducto(@PathVariable Integer id) {
+        ProductoDTO model = modelService.obtenerPorId(id);
+        if (model == null) {
+            throw new RecursoNoEncontradoExcepcion("El id recibido no existe: " + id);
+        }
+
+        modelService.eliminarProducto(id);
+
+        return ResponseEntity.ok().build();
     }
 }

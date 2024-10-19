@@ -172,6 +172,23 @@ public class ProductoService implements IProductoService {
     }
 
     @Override
+    public void eliminarProducto(Integer productoId) {
+
+
+        Producto producto = modelRepository.findById(productoId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+
+        if (producto.getEliminado() == Producto.SI) {
+            throw new RuntimeException("El producto ya está eliminado.");
+        }
+
+        producto.asEliminar();
+
+        modelRepository.save(producto);
+    }
+
+    @Override
     public Categoria obtenerCategoria(Integer categoriaId) {
         return categoriaService.buscarPorId(categoriaId);
     }

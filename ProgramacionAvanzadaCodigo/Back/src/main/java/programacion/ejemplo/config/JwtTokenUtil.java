@@ -25,6 +25,7 @@ public class JwtTokenUtil {
         return createToken(claims, userDetails.getUsername());
     }
 
+
     // Crear el token JWT con claims y el nombre de usuario
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()

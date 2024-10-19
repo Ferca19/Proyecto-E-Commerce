@@ -22,6 +22,8 @@ public interface IProductoService {
 
     ProductoDTO obtenerPorId(Integer id);
 
+    void eliminarProducto(Integer productoId);
+
     Producto obtenerObjetoPorId(Integer id);
 
     ProductoDTO actualizarStockProducto(Producto producto);

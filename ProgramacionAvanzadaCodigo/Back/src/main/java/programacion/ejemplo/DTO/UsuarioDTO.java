@@ -20,4 +20,6 @@ public class UsuarioDTO {
     private String contrasena; // Contraseña del usuario
 
     private int eliminado; // Estado de eliminación (opcional en el DTO)
+
+    private String rol; // Nuevo campo para el nombre del rol del usuario
 }
