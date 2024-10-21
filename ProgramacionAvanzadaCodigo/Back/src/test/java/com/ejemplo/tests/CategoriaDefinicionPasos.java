@@ -32,16 +32,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional  // Revertir cambios al final de cada prueba
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)  // Permitir uso de @BeforeAll no estático
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)  // Esto fuerza el reinicio del contexto de Spring
 public class CategoriaDefinicionPasos {
 
     private final TestRestTemplate restTemplate; // Inyectar TestRestTemplate
 
-    private ResponseEntity<CategoriaDTO> response; // Cambiado a CategoriaDTO
-    private String token;
+    private ResponseEntity<CategoriaDTO> successResponse;
+    private ResponseEntity<String> errorResponse;
 
+    private String token;
     private String nombreCategoria;
     private String descripcionCategoria;
 
@@ -50,7 +48,6 @@ public class CategoriaDefinicionPasos {
         this.restTemplate = restTemplate;
     }
 
-    @BeforeAll
     @Given("El administrador se autentica con usuario {string} y contraseña {string}")
     public void el_administrador_se_autentica_con_usuario_y_contraseña(String mail, String contrasena) {
         // Crear un objeto con las credenciales del administrador
@@ -77,7 +74,6 @@ public class CategoriaDefinicionPasos {
     }
 
     @When("el administrador intenta crear la categoría")
-    @Rollback(true)
     public void el_administrador_intenta_crear_la_categoria() {
         // Crear un objeto JSON o DTO con el nombre y descripción
         CategoriaDTO nuevaCategoria = new CategoriaDTO();
@@ -93,21 +89,20 @@ public class CategoriaDefinicionPasos {
         HttpEntity<CategoriaDTO> requestEntity = new HttpEntity<>(nuevaCategoria, headers);
 
         // Hacer la solicitud POST a la API de creación de categorías
-        response = restTemplate.postForEntity("http://localhost:8080/categorias/admin", requestEntity, CategoriaDTO.class);
+        successResponse = restTemplate.postForEntity("http://localhost:8080/categorias/admin", requestEntity, CategoriaDTO.class);
 
     }
 
     @Then("la categoría se crea correctamente")
     public void la_categoria_se_crea_correctamente() {
         // Verificar que la respuesta es 201 Created
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, successResponse.getStatusCode());
 
         // Realizar la solicitud para eliminar la categoría creada
         eliminarCategoriaCreada();
     }
 
     @Given("el administrador crea la categoría")
-    @Rollback(true)
     public void el_administrador_crea_la_categoria() {
         // Crear un objeto JSON o DTO con el nombre y descripción
         CategoriaDTO nuevaCategoria = new CategoriaDTO();
@@ -123,7 +118,7 @@ public class CategoriaDefinicionPasos {
         HttpEntity<CategoriaDTO> requestEntity = new HttpEntity<>(nuevaCategoria, headers);
 
         // Hacer la solicitud POST a la API de creación de categorías
-        response = restTemplate.postForEntity("http://localhost:8080/categorias/admin", requestEntity, CategoriaDTO.class);
+        successResponse = restTemplate.postForEntity("http://localhost:8080/categorias/admin", requestEntity, CategoriaDTO.class);
     }
 
 
@@ -143,13 +138,13 @@ public class CategoriaDefinicionPasos {
         HttpEntity<CategoriaDTO> requestEntity = new HttpEntity<>(categoriaDuplicada, headers);
 
         // Hacer la solicitud POST a la API de creación de categorías
-        response = restTemplate.postForEntity("http://localhost:8080/categorias/admin", requestEntity, CategoriaDTO.class);
+        errorResponse = restTemplate.postForEntity("http://localhost:8080/categorias/admin", requestEntity, String.class);
     }
 
     @Then("el sistema debe rechazar la creación, indicando que la categoría ya existe")
     public void el_sistema_debe_rechazar_la_creacion_indicando_que_la_categoria_ya_existe() {
         // Verificar que el servidor responde con un 400 o 409
-        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, errorResponse.getStatusCode());
 
         // Realizar la solicitud para eliminar la categoría creada
         eliminarCategoriaCreada();
@@ -157,7 +152,7 @@ public class CategoriaDefinicionPasos {
 
     private void eliminarCategoriaCreada() {
         // Obtener el ID de la categoría creada
-        CategoriaDTO categoriaCreada = response.getBody(); // Asegúrate de que este no sea nulo
+        CategoriaDTO categoriaCreada = successResponse.getBody(); // Asegúrate de que este no sea nulo
         Integer categoriaId = categoriaCreada.getId(); // Obtén el ID
 
         // Configurar los encabezados para la solicitud DELETE
