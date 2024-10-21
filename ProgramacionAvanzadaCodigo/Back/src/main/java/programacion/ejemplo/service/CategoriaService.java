@@ -73,6 +73,27 @@ public class CategoriaService implements ICategoriaService {
         modelRepository.save(categoria);
     }
 
+    @Override
+    public void eliminarFisicamente(Integer categoriaId) {
+
+        boolean tieneProductos = productoService.existePorCategoriaId(categoriaId);
+        if (tieneProductos) {
+            throw new RuntimeException("La categoría no puede eliminarse porque está asociada a uno o más productos.");
+        }
+
+
+        Categoria categoria = modelRepository.findById(categoriaId)
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+
+
+        if (categoria.getEliminado() == Categoria.SI) {
+            throw new RuntimeException("La categoría ya está eliminada.");
+        }
+
+        // Aquí eliminamos la categoría de forma física
+        modelRepository.deleteById(categoriaId); // Eliminar la categoría del repositorio
+    }
+
 
     @Override
     public List<Categoria> listarCategoriasEliminadas() {

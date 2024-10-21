@@ -3,6 +3,7 @@ package programacion.ejemplo.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import programacion.ejemplo.DTO.CategoriaDTO;
@@ -25,14 +26,14 @@ public class CategoriaController {
     @Autowired
     private ICategoriaService modelService;
 
-    @GetMapping
+    @GetMapping("/public")
     public List<CategoriaDTO> getAll() {
         logger.info("entra y trae todas las categorias");
         return modelService.listar();
 
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/public/{id}")
     public ResponseEntity<CategoriaDTO> getPorId(@PathVariable Integer id){
         Categoria model = modelService.buscarPorId(id);
 
@@ -45,12 +46,13 @@ public class CategoriaController {
 
 
 
-    @PostMapping
-    public CategoriaDTO guardar(@RequestBody CategoriaDTO model){
-        return modelService.guardar(model);
+    @PostMapping("/admin")
+    public ResponseEntity<CategoriaDTO> guardar(@RequestBody CategoriaDTO model) {
+        CategoriaDTO categoriaCreada = modelService.guardar(model);
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoriaCreada);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/admin/{id}")
     public ResponseEntity<Categoria> actualizarCategoria(@PathVariable Integer id, @RequestBody Categoria categoria) {
         Categoria actualizarCategoria = modelService.actualizarCategoria(id, categoria);
         if (actualizarCategoria != null) {
@@ -60,7 +62,7 @@ public class CategoriaController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         Categoria model = modelService.buscarPorId(id);
         if (model == null) {
@@ -73,14 +75,26 @@ public class CategoriaController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/admin/fisicamente/{id}")
+    public ResponseEntity<Void> eliminarFisicamente(@PathVariable Integer id) {
+        Categoria model = modelService.buscarPorId(id);
+        if (model == null) {
+            throw new RecursoNoEncontradoExcepcion("El id recibido no existe: " + id);
+        }
 
-    @GetMapping("/eliminadas")
+        modelService.eliminarFisicamente(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("/admin/eliminadas")
     public List<Categoria> listarCategoriasEliminadas() {
         return modelService.listarCategoriasEliminadas();
     }
 
 
-    @PutMapping("/recuperar/{id}")
+    @PutMapping("/admin/recuperar/{id}")
     public ResponseEntity<Categoria> recuperarCategoriaEliminada(@PathVariable Integer id) {
         Categoria categoria = modelService.recuperarCategoriaEliminada(id);
         if (categoria != null) {

@@ -18,6 +18,7 @@ public interface ICategoriaService {
     public Categoria actualizarCategoria (Integer id,Categoria model);
 
     public void eliminar(Integer Categoria);
+    public void eliminarFisicamente(Integer Categoria);
 
     List<Categoria> listarCategoriasEliminadas();
 
