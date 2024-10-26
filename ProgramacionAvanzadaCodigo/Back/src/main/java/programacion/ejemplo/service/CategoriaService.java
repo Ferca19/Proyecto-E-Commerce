@@ -3,7 +3,6 @@ package programacion.ejemplo.service;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import programacion.ejemplo.DTO.CategoriaDTO;
 import programacion.ejemplo.Mapper.CategoriaMapper;
 import programacion.ejemplo.exception.EntidadDuplicadaException;
@@ -22,12 +21,14 @@ public class CategoriaService implements ICategoriaService {
     private static final Logger logger = LoggerFactory.getLogger(CategoriaService.class);
 
 
-    @Autowired
-    private CategoriaRepository modelRepository;
+    private final CategoriaRepository modelRepository;
+    private final IProductoService productoService;
 
-    @Autowired
-    private IProductoService productoService;
-
+    // Constructor para inyección de dependencias
+    public CategoriaService(CategoriaRepository modelRepository, IProductoService productoService) {
+        this.modelRepository = modelRepository;
+        this.productoService = productoService;
+    }
 
     @Override
     public List<CategoriaDTO> listar() {
