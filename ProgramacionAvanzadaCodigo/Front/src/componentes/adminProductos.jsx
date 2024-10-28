@@ -34,7 +34,7 @@ export default function AdminProducts() {
 
   const fetchCategorias = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/categorias'); // Asegúrate de que esta ruta sea correcta
+        const response = await axios.get('http://localhost:8080/categorias/public'); // Asegúrate de que esta ruta sea correcta
         setCategorias(response.data);
     } catch (error) {
         console.error('Error al obtener categorías:', error);
@@ -43,7 +43,7 @@ export default function AdminProducts() {
 
   const fetchSubcategorias = async () => {
       try {
-          const response = await axios.get('http://localhost:8080/subcategorias'); // Asegúrate de que esta ruta sea correcta
+          const response = await axios.get('http://localhost:8080/subcategorias/public'); // Asegúrate de que esta ruta sea correcta
           setSubcategorias(response.data);
       } catch (error) {
           console.error('Error al obtener subcategorías:', error);
@@ -52,7 +52,7 @@ export default function AdminProducts() {
 
   const fetchMarcas = async () => {
       try {
-          const response = await axios.get('http://localhost:8080/marcas'); // Asegúrate de que esta ruta sea correcta
+          const response = await axios.get('http://localhost:8080/marcas/public'); // Asegúrate de que esta ruta sea correcta
           setMarcas(response.data);
       } catch (error) {
           console.error('Error al obtener marcas:', error);
@@ -62,7 +62,7 @@ export default function AdminProducts() {
   // Función para obtener los productos desde la API
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/productos');
+      const response = await axios.get('http://localhost:8080/productos/public');
       setProducts(response.data);
     } catch (error) {
       console.error('Error al obtener productos:', error);
@@ -124,12 +124,12 @@ export default function AdminProducts() {
 
     try {
         const response = currentProduct
-            ? await axios.put(`http://localhost:8080/productos/${currentProduct.id}`, requestFormDataModificar, {
+            ? await axios.put(`http://localhost:8080/productos/admin/${currentProduct.id}`, requestFormDataModificar, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Especifica que el contenido es multipart/form-data
                 },
             })
-            : await axios.post('http://localhost:8080/productos', requestFormDataCrear, {
+            : await axios.post('http://localhost:8080/productos/admin', requestFormDataCrear, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -161,7 +161,7 @@ const handleImageChange = (e) => {
   // Eliminar producto
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/productos/${id}`);
+      await axios.delete(`http://localhost:8080/productos/admin/${id}`);
       fetchProducts();  // Refrescar la lista de productos después de eliminar
     } catch (error) {
       console.error('Error al eliminar el producto:', error);

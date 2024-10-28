@@ -43,7 +43,7 @@ function Carrito() {
 
       console.log("Detalles del pedido:", detallesPedido);
       // Enviar el pedido al backend
-      const response = await axios.post(`http://localhost:8080/usuarios/${usuarioId}/registrarpedido`, detallesPedido);
+      const response = await axios.post(`http://localhost:8080/usuarios/public/${usuarioId}/registrarpedido`, detallesPedido);
 
       if (response.status === 201) {
         alert('Pedido realizado con éxito');

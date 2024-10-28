@@ -45,7 +45,7 @@ export default function VistaPrevia() {
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/productos/${id}`);
+        const response = await axios.get(`http://localhost:8080/productos/public/${id}`);
         const producto = response.data;
         if (!producto) {
           throw new Error("Producto no encontrado");

@@ -34,7 +34,7 @@ public class UsuarioController {
 
 
 
-    @PostMapping("/{usuarioId}/registrarpedido")
+    @PostMapping("public/{usuarioId}/registrarpedido")
     public ResponseEntity<PedidoDTO> crearPedido(@PathVariable Integer usuarioId, @RequestBody List<DetallePedidoDTO> detallesPedidoDTO) {
 
 
@@ -55,7 +55,7 @@ public class UsuarioController {
         }
     }
 
-    @DeleteMapping("/{usuarioId}/pedidos/{pedidoId}/eliminar")
+    @DeleteMapping("admin/{usuarioId}/pedidos/{pedidoId}/eliminar")
     public ResponseEntity<String> eliminarPedido( @PathVariable Integer pedidoId) {
         try {
             usuarioService.eliminarPedido(pedidoId);
@@ -67,7 +67,7 @@ public class UsuarioController {
         }
     }
 
-    @PutMapping("/{usuarioId}/pedidos/{pedidoId}/recuperar")
+    @PutMapping("/admin/{usuarioId}/pedidos/{pedidoId}/recuperar")
     public ResponseEntity<String> recuperarPedido( @PathVariable Integer pedidoId) {
         try {
             usuarioService.recuperarPedido(pedidoId);

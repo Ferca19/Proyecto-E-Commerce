@@ -31,13 +31,13 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register", "/auth/actualizar-usuario").permitAll() // Permitir acceso a login y registro
+                        .requestMatchers("/auth/login", "/auth/register", "/auth/actualizar-usuario","/productos/public/**","/usuarios/public/**").permitAll() // Permitir acceso a login y registro
 
                         .requestMatchers("/roles/admin/**").hasAuthority("Administrador")
                         .requestMatchers("/roles/public/**").hasAnyAuthority("Administrador", "Cliente")
 
                         .requestMatchers("/productos/admin/**").hasAuthority("Administrador")
-                        .requestMatchers("/productos/public/**").hasAnyAuthority("Administrador", "Cliente")
+                        //.requestMatchers("/productos/public/**").hasAnyAuthority("Administrador", "Cliente")
 
                         .requestMatchers("/categorias/admin/**").hasAuthority("Administrador")
                         .requestMatchers("/categorias/public/**").hasAnyAuthority("Administrador", "Cliente")
@@ -55,7 +55,7 @@ public class SecurityConfig {
                         .requestMatchers("/subcategorias/public/**").hasAnyAuthority("Administrador", "Cliente")
 
                         .requestMatchers("/usuarios/admin/**").hasAuthority("Administrador")
-                        .requestMatchers("/usuarios/public/**").hasAnyAuthority("Administrador", "Cliente")
+                        //.requestMatchers("/usuarios/public/**").hasAnyAuthority("Administrador", "Cliente")
 
                         .requestMatchers("/perfil/**").authenticated() // Acceso solo para usuarios autenticados
 

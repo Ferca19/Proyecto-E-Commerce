@@ -9,7 +9,7 @@ export default function ProductList() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/productos'); // Cambia la URL si es necesario
+        const response = await axios.get('http://localhost:8080/productos/public'); // Cambia la URL si es necesario
         console.log('Respuesta de productos:', response.data); // Agregar esta línea para ver la respuesta
         setProducts(response.data); // Establece el estado con los datos obtenidos
       } catch (error) {
