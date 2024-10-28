@@ -1,4 +1,6 @@
 package programacion.ejemplo.service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 @Service
 public class ProductoService implements IProductoService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ProductoService.class);
+
     @Autowired
     private ProductoRepository modelRepository;
 
@@ -43,11 +47,13 @@ public class ProductoService implements IProductoService {
     @Value("${app.images.base-path}")  // Inyecta el path desde application.properties
     private String baseImagePath;
 
+
     @Transactional
     public ProductoDTO createProducto(ProductoDTO productoDTO) {
+        logger.info("Creando producto: {}", productoDTO);
 
-        if (productoDTO.getPrecio() < 0) {
-            throw new IllegalArgumentException("El precio del producto no puede ser negativo");
+        if (productoDTO.getPrecio() <= 0) {
+            throw new IllegalArgumentException("El precio del producto no puede ser 0 o negativo");
         }
 
         Categoria categoria = categoriaService.obtenerPorId(productoDTO.getCategoriaId())
@@ -61,7 +67,10 @@ public class ProductoService implements IProductoService {
 
         Producto producto = productoMapper.toEntity(productoDTO, categoria, subcategoria, marca);
 
+        logger.info("Guardando producto: {}", producto);
+
         Producto nuevoProducto = modelRepository.save(producto);
+        logger.info("Producto guardado exitosamente con ID: {}", nuevoProducto.getId());
 
         return productoMapper.toDto(nuevoProducto);
     }
