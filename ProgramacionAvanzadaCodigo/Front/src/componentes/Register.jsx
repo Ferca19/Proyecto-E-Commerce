@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Modal from './modal';
 import { useNavigate } from 'react-router-dom';
-import './Register.css'; 
+import './Register.css'; // Importa el CSS
 
 function Registro({ isVisible, onClose, onOpenLogin }) {
     const [nombre, setNombre] = useState('');
@@ -11,6 +11,17 @@ function Registro({ isVisible, onClose, onOpenLogin }) {
     const [contrasena, setContrasena] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+
+    const navigate = useNavigate();
+
+    const resetForm = () => {
+        setNombre('');
+        setApellido('');
+        setEmail('');
+        setContrasena('');
+        setError('');
+        setSuccess('');
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,8 +38,14 @@ function Registro({ isVisible, onClose, onOpenLogin }) {
             setSuccess('Registro exitoso. Abriendo el formulario de inicio de sesión...');
             setError('');
 
+            // Reinicia el formulario
+            resetForm();
+
             // Cierra el formulario de registro
             onClose();
+
+            // Redirige a la página de inicio
+            navigate('/');
 
             // Abre el formulario de inicio de sesión
             onOpenLogin();

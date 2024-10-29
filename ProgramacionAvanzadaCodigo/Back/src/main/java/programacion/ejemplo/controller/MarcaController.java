@@ -25,14 +25,14 @@ public class MarcaController {
     @Autowired
     private IMarcaService modelService;
 
-    @GetMapping
+    @GetMapping("/public")
     public List<MarcaDTO> getAll() {
         logger.info("entra y trae todas las marcas");
         return modelService.listar();
 
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/public/{id}")
     public ResponseEntity<MarcaDTO> getPorId(@PathVariable Integer id){
         Marca model = modelService.buscarPorId(id);
 
@@ -45,12 +45,12 @@ public class MarcaController {
 
 
     
-    @PostMapping
+    @PostMapping("/admin")
     public MarcaDTO guardar(@RequestBody MarcaDTO model){
         return modelService.guardar(model);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/admin/{id}")
     public ResponseEntity<Marca> actualizarMarca(@PathVariable Integer id, @RequestBody Marca marca) {
         Marca marcaActualizada = modelService.actualizarMarca(id, marca);
         if (marcaActualizada != null) {
@@ -60,7 +60,7 @@ public class MarcaController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
 
 
@@ -75,13 +75,13 @@ public class MarcaController {
     }
 
 
-    @GetMapping("/eliminadas")
+    @GetMapping("/admin/eliminadas")
     public List<Marca> listarMarcasEliminadas() {
         return modelService.listarMarcasEliminadas();
     }
 
 
-    @PutMapping("/recuperar/{id}")
+    @PutMapping("/admin/recuperar/{id}")
     public ResponseEntity<Marca> recuperarMarcaEliminada(@PathVariable Integer id) {
         Marca marca = modelService.recuperarMarcaEliminada(id);
         if (marca != null) {

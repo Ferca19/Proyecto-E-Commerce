@@ -18,7 +18,7 @@ import programacion.ejemplo.service.IAuthService;
 
 public class AuthController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CategoriaController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
 
     @Autowired

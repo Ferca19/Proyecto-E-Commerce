@@ -25,14 +25,14 @@ public class SubcategoriaController {
     @Autowired
     private ISubcategoriaService modelService;
 
-    @GetMapping
+    @GetMapping("/public")
     public List<SubcategoriaDTO> getAll() {
         logger.info("entra y trae todas las categorias");
         return modelService.listar();
 
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/public/{id}")
     public ResponseEntity<SubcategoriaDTO> getPorId(@PathVariable Integer id){
         Subcategoria model = modelService.buscarPorId(id);
 
@@ -45,12 +45,12 @@ public class SubcategoriaController {
 
 
 
-    @PostMapping
+    @PostMapping("/admin")
     public SubcategoriaDTO guardar(@RequestBody SubcategoriaDTO model){
         return modelService.guardar(model);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/admin/{id}")
     public ResponseEntity<Subcategoria> actualizarSubcategoria(@PathVariable Integer id, @RequestBody Subcategoria categoria) {
         Subcategoria actualizarSubcategoria = modelService.actualizarSubcategoria(id, categoria);
         if (actualizarSubcategoria != null) {
@@ -60,7 +60,7 @@ public class SubcategoriaController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         Subcategoria model = modelService.buscarPorId(id);
         if (model == null) {
@@ -72,12 +72,12 @@ public class SubcategoriaController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/eliminadas")
+    @GetMapping("/admin/eliminadas")
     public List<Subcategoria> listarSubcategoriasEliminadas() {
         return modelService.listarSubcategoriasEliminadas();
     }
 
-    @PutMapping("/recuperar/{id}")
+    @PutMapping("/admin/recuperar/{id}")
     public ResponseEntity<Subcategoria> recuperarSubcategoriaEliminada(@PathVariable Integer id) {
         Subcategoria categoria = modelService.recuperarSubcategoriaEliminada(id);
         if (categoria != null) {

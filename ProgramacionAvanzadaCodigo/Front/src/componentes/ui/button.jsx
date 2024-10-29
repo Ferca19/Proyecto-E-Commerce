@@ -1,8 +1,9 @@
-import * as React from "react"
-import { cva } from "class-variance-authority"
+import * as React from "react";
+import { cva } from "class-variance-authority";
 
+// Define las variantes del botón
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -25,17 +26,21 @@ const buttonVariants = cva(
       size: "default",
     },
   }
-)
+);
 
-const Button = React.forwardRef(({ className, variant, size, ...props }, ref) => {
+// Componente Button con forwardRef
+const Button = React.forwardRef(({ className, variant, size, children, ...props }, ref) => {
   return (
     <button
-      className={buttonVariants({ variant, size, className })}
-      ref={ref}
-      {...props}
-    />
-  )
-})
-Button.displayName = "Button"
+      className={buttonVariants({ variant, size, className })} // Aplicar estilos basados en variantes
+      ref={ref} // Referencia al botón
+      {...props} // Propagar otras props como onClick y type
+    >
+      {children} {/* Renderiza el contenido del botón */}
+    </button>
+  );
+});
 
-export { Button, buttonVariants }
+Button.displayName = "Button"; // Nombre para identificar el componente en dev tools
+
+export { Button, buttonVariants }; // Exportar el componente y las variantes

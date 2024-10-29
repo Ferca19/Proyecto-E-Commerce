@@ -2,6 +2,7 @@ package programacion.ejemplo.Mapper;
 
 import org.springframework.stereotype.Component;
 import programacion.ejemplo.DTO.UsuarioDTO;
+import programacion.ejemplo.model.Rol;
 import programacion.ejemplo.model.Usuario;
 
 @Component
@@ -15,6 +16,12 @@ public class UsuarioMapper {
         dto.setApellido(model.getApellido());
         dto.setMail(model.getMail());
         dto.setContrasena(model.getContrasena()); // Nota: Considera si deseas exponer la contraseña en el DTO
+        // Verificar si el rol no es nulo antes de intentar acceder a su ID
+        if (model.getRol() != null) {
+            dto.setRolId(model.getRol().getId());
+        } else {
+            dto.setRolId(0); // O maneja este caso como prefieras
+        }
 
         // Establecer el estado de eliminación
         dto.setEliminado(model.getEliminado()); // El estado eliminado se mantiene como un entero (0 o 1)
@@ -33,6 +40,15 @@ public class UsuarioMapper {
 
         // Establecer el estado de eliminación
         model.setEliminado(dto.getEliminado()); // Se mantiene como un entero (0 o 1)
+
+        // Manejo del rol
+        if (dto.getRolId() != 0) {
+            Rol rol = new Rol(); //
+            rol.setId(dto.getRolId()); // Establecer solo el ID
+            model.setRol(rol); // Asignar el rol al usuario
+        } else {
+            model.setRol(null); // O puedes manejarlo de otra forma, como lanzar una excepción
+        }
 
         return model;
     }

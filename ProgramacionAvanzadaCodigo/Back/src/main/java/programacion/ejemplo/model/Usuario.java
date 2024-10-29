@@ -44,7 +44,7 @@ public class Usuario {
 
     // Relación con Rol (Un Usuario tiene un solo Rol)
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "rol_id", nullable = false)
+    @JoinColumn(name = "rol_id")  // Eliminado nullable = false
     @ToString.Exclude  // Excluir de toString() para evitar sobrecarga de datos
     private Rol rol;
 }

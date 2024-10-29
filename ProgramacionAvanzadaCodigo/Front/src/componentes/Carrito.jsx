@@ -1,80 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; 
+import React from 'react';
 
-function Carrito() {
-  const [carrito, setCarrito] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [usuarioId, setUsuarioId] = useState(null);
-  const navigate = useNavigate(); // Hook para navegar
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-  
-    if (!token) {
-      navigate("/");
-      return;
-    }
-  
-    try {
-      const decodedToken = jwtDecode(token);
-      setUsuarioId(decodedToken.userId); 
-  
-      const carritoGuardado = JSON.parse(localStorage.getItem("carrito")) || [];
-      setCarrito(carritoGuardado);
-  
-      const totalCalculado = carritoGuardado.reduce((acc, item) => acc + item.subtotal, 0);
-      setTotal(totalCalculado);
-    } catch (error) {
-      console.error("Error decodificando el token:", error);
-      navigate("/");
-    }
-  }, [navigate]);
-
-  const realizarPedido = async () => {
-    try {
-      // Preparar los datos del pedido
-      const detallesPedido = carrito.map(item => ({
-        productoId: item.productoId,
-        cantidad: item.cantidad,
-        subtotal: item.subtotal,
-      }));
-
-      console.log("Detalles del pedido:", detallesPedido);
-      // Enviar el pedido al backend
-      const response = await axios.post(`http://localhost:8080/usuarios/public/${usuarioId}/registrarpedido`, detallesPedido);
-
-      if (response.status === 201) {
-        alert('Pedido realizado con éxito');
-        // Limpiar el carrito después de realizar el pedido
-        localStorage.removeItem('carrito');
-        setCarrito([]);
-        setTotal(0);
-      } else {
-        alert('Hubo un problema al realizar el pedido');
-      }
-    } catch (error) {
-      console.error('Error al realizar el pedido:', error);
-      alert('Error al procesar el pedido. Intenta de nuevo.');
-    }
-  };
-
+function Carrito({ carrito, total, realizarPedido, vaciarCarrito }) {
   if (carrito.length === 0) {
     return <div className="text-2xl">No hay productos en el carrito.</div>;
   }
-
-
-  const vaciarCarrito = () => {
-    localStorage.removeItem('carrito');
-    setCarrito([]);
-    setTotal(0);
-  };
-
-  if (carrito.length === 0) {
-    return <div className="text-2xl">No hay productos en el carrito.</div>;
-  }
-
 
   return (
     <div className="container mx-auto px-4 py-12">

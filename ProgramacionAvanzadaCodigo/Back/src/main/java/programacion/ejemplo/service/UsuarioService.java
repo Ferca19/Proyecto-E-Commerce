@@ -13,7 +13,9 @@ import programacion.ejemplo.Mapper.PedidoMapper;
 import programacion.ejemplo.Mapper.UsuarioMapper;
 import programacion.ejemplo.exception.RecursoNoEncontradoExcepcion;
 import programacion.ejemplo.model.Pedido;
+import programacion.ejemplo.model.Rol;
 import programacion.ejemplo.model.Usuario;
+import programacion.ejemplo.repository.RolRepository;
 import programacion.ejemplo.repository.UsuarioRepository;
 
 
@@ -31,6 +33,9 @@ public class UsuarioService implements IUsuarioService {
 
     @Autowired
     private UsuarioRepository modelRepository;
+
+    @Autowired
+    private RolRepository rolRepository;
 
     @Autowired
     private UsuarioMapper usuarioMapper;
@@ -75,8 +80,10 @@ public class UsuarioService implements IUsuarioService {
         String hashedPassword = passwordEncoder.encode(registerDTO.getContrasena());
         usuario.setContrasena(hashedPassword);
 
-        // Asignar rol si es necesario
-        // usuario.setRol(getRoleByName(registerDTO.getRol()));
+        // Asignar rol por defecto (ID 2)
+        Rol rolPredeterminado = rolRepository.findById(2)
+                .orElseThrow(() -> new RuntimeException("Rol con ID 2 no encontrado"));
+        usuario.setRol(rolPredeterminado);
 
         // Guardar usuario en la base de datos
         modelRepository.save(usuario);

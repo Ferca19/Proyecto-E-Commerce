@@ -50,7 +50,7 @@ public class UsuarioController {
             return new ResponseEntity<>(nuevoPedidoDTO, HttpStatus.CREATED);
 
         } catch (Exception e) {
-
+            logger.error("Error al crear el pedido: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

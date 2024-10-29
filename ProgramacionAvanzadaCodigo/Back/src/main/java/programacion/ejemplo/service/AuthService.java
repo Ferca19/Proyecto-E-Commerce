@@ -64,8 +64,6 @@ public class AuthService implements IAuthService {
         usuarioDTO.setMail(usuario.getMail());
         usuarioDTO.setEliminado(usuario.getEliminado());
 
-        // Aquí añadimos el rol al DTO
-        usuarioDTO.setRol(usuario.getRol().getNombre()); // Asignar el nombre del rol al DTO
 
         // Generar el token
         String token = jwtUtil.generateToken(userDetails);
@@ -100,7 +98,6 @@ public class AuthService implements IAuthService {
 
             // También obtener el rol del usuario
             UsuarioDTO usuarioDTO = UsuarioMapper.toDTO(usuario);
-            usuarioDTO.setRol(usuario.getRol().getNombre()); // Asignar el rol al DTO
 
             return UsuarioMapper.toDTO(usuario); // Convertir a DTO
         } else {

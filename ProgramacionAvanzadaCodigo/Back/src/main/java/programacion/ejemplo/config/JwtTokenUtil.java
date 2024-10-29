@@ -22,6 +22,7 @@ public class JwtTokenUtil {
     public String generateToken(CustomUserDetailsService.CustomUserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userDetails.getUsuario().getId()); // Añadir el ID del usuario como un claim
+        claims.put("rolId", userDetails.getUsuario().getRol().getId()); // Añadir el rolId como un claim
         return createToken(claims, userDetails.getUsername());
     }
 

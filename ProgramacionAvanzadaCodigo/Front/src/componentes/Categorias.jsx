@@ -15,7 +15,7 @@ function Categorias() {
     const getCategorias = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get(url, {
+            const response = await axios.get(url+"/public", {
                 headers: {
                     'Authorization': `Bearer ${token}`  // Enviar el token en las cabeceras
                 }
@@ -30,7 +30,7 @@ function Categorias() {
     const eliminar = async (id) => {
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`${url}/${id}`, {
+            await axios.delete(`${url}/admin/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`  // Enviar el token en las cabeceras
                 }
@@ -46,7 +46,7 @@ function Categorias() {
         try {
             const token = localStorage.getItem('token');
             const nuevaCategoria = { nombre, descripcion };
-            const response = await axios.post(url, nuevaCategoria, {
+            const response = await axios.post(url+"/admin", nuevaCategoria, {
                 headers: {
                     'Authorization': `Bearer ${token}`  // Enviar el token en las cabeceras
                 }
