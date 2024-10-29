@@ -17,8 +17,12 @@ import java.util.List;
 @Service
 public class CustomUserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 
-    @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    public CustomUserDetailsService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

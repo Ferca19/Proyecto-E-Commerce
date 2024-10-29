@@ -45,8 +45,9 @@
 
 		<!-- MySQL Connector -->
 		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.32</version> <!-- Verifica que esta sea la versión que necesitas -->
 			<scope>runtime</scope>
 		</dependency>
 
