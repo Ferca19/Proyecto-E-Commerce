@@ -7,10 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import programacion.ejemplo.DTO.AjusteInventarioDTO;
 import programacion.ejemplo.DTO.DetallePedidoDTO;
 import programacion.ejemplo.DTO.PedidoDTO;
 import programacion.ejemplo.DTO.UsuarioDTO;
 import programacion.ejemplo.Mapper.PedidoMapper;
+import programacion.ejemplo.model.AjusteInventario;
 import programacion.ejemplo.model.Usuario;
 import programacion.ejemplo.repository.UsuarioRepository;
 import programacion.ejemplo.service.IUsuarioService;
@@ -78,6 +80,44 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @PutMapping("/admin/{usuarioId}/asignar-rol/{roleId}")
+    public ResponseEntity<String> asignarRol(
+            @PathVariable Integer usuarioId,
+            @PathVariable Integer roleId) {
+        try {
+            usuarioService.asignarRol(usuarioId, roleId);
+            return ResponseEntity.ok("Rol asignado o modificado exitosamente.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error al asignar o modificar el rol: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor.");
+        }
+    }
+
+    @PostMapping("admin/{usuarioId}/ajuste-inventario")
+    public ResponseEntity<String> realizarAjusteInventario(
+            @PathVariable Integer usuarioId,
+            @RequestBody AjusteInventarioDTO ajusteInventario) {
+        logger.info("Iniciando ajuste de inventario para usuarioId: {}, AjusteInventarioDTO: {}", usuarioId, ajusteInventario);
+        try {
+            usuarioService.realizarAjusteInventario(usuarioId, ajusteInventario);
+            return ResponseEntity.ok("Ajuste de inventario realizado exitosamente.");
+        } catch (EntityNotFoundException e) {
+            logger.error("Usuario no encontrado para usuarioId: {}", usuarioId, e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            logger.error("Argumento ilegal en el ajuste de inventario para usuarioId: {}", usuarioId, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error al realizar ajuste de inventario para usuarioId: {}", usuarioId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor.");
+        }
+    }
+
 
 
 }

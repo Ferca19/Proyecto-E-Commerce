@@ -5,16 +5,12 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import programacion.ejemplo.DTO.DetallePedidoDTO;
-import programacion.ejemplo.DTO.PedidoDTO;
-import programacion.ejemplo.DTO.RegisterDTO;
-import programacion.ejemplo.DTO.UsuarioDTO;
+import programacion.ejemplo.DTO.*;
+import programacion.ejemplo.Mapper.AjusteInventarioMapper;
 import programacion.ejemplo.Mapper.PedidoMapper;
 import programacion.ejemplo.Mapper.UsuarioMapper;
 import programacion.ejemplo.exception.RecursoNoEncontradoExcepcion;
-import programacion.ejemplo.model.Pedido;
-import programacion.ejemplo.model.Rol;
-import programacion.ejemplo.model.Usuario;
+import programacion.ejemplo.model.*;
 import programacion.ejemplo.repository.RolRepository;
 import programacion.ejemplo.repository.UsuarioRepository;
 
@@ -30,6 +26,9 @@ public class UsuarioService implements IUsuarioService {
     @Autowired
     @Lazy
     private IPedidoService pedidoService;
+
+    @Autowired
+    private IAjusteInventarioService AjusteInventarioService;
 
     @Autowired
     private UsuarioRepository modelRepository;
@@ -121,6 +120,28 @@ public class UsuarioService implements IUsuarioService {
     public void recuperarPedido(Integer pedidoId) {
         pedidoService.recuperarPedido(pedidoId);
     }
+
+    public void asignarRol(Integer usuarioId, Integer roleId) {
+
+        Usuario usuario = modelRepository.findById(usuarioId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con id: " + usuarioId));
+
+        Rol rol = rolRepository.findById(roleId)
+                .orElseThrow(() -> new EntityNotFoundException("Rol no encontrado con id: " + roleId));
+
+        usuario.setRol(rol);
+
+        modelRepository.save(usuario);
+    }
+
+    public void realizarAjusteInventario(Integer usuarioId, AjusteInventarioDTO ajusteInventarioDTO) {
+        // Obtener el usuario por su ID
+        Usuario usuario = modelRepository.findById(usuarioId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con id: " + usuarioId));
+
+        AjusteInventarioService.realizarAjusteInventario(usuario,ajusteInventarioDTO);
+    }
+
 
 
 }

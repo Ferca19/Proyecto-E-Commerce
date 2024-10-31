@@ -59,5 +59,7 @@ public class Producto {
     @JoinColumn(name = "marca_id", nullable = false)
     private Marca marca;
 
-
+    // Relación con DetalleAjusteInventario (un producto puede estar en muchos detalles)
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<DetalleAjusteInventario> detallesAjuste;
 }

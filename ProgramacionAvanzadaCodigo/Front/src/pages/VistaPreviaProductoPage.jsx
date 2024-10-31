@@ -8,6 +8,11 @@ export default function VistaPreviaProductoPage() {
   const { id } = useParams();
   const [producto, setProducto] = useState(null);
   const [error, setError] = useState("");
+  const [carrito, setCarrito] = useState(() => {
+    // Cargar carrito desde localStorage al inicializar el estado
+    const storedCarrito = localStorage.getItem("carrito");
+    return storedCarrito ? JSON.parse(storedCarrito) : [];
+  });
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -27,28 +32,22 @@ export default function VistaPreviaProductoPage() {
     fetchProducto();
   }, [id]);
 
-  const agregarAlCarrito = (producto, cantidad, color, tamano) => {
-    // Obtener carrito actual del localStorage
-    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+  const agregarProducto = (nuevoProducto) => {
+    const productoExistenteIndex = carrito.findIndex(item => item.id === nuevoProducto.id);
+    const nuevoCarrito = [...carrito];
 
-    const productoEnCarrito = {
-      productoId: id,
-      nombre: producto.nombre,
-      precio: producto.precio,
-      cantidad: cantidad,
-      subtotal: producto.precio * cantidad,
-      color: color,
-      tamano: tamano,
-      imagen: producto.imagen // Añadir la imagen del producto
-    };
+    if (productoExistenteIndex !== -1) {
+      // Si el producto ya existe, aumentar cantidad
+      nuevoCarrito[productoExistenteIndex].cantidad += nuevoProducto.cantidad || 1;
+      nuevoCarrito[productoExistenteIndex].subtotal = nuevoCarrito[productoExistenteIndex].cantidad * nuevoCarrito[productoExistenteIndex].precio;
+    } else {
+      // Si no existe, añadirlo con la cantidad proporcionada
+      nuevoCarrito.push({ ...nuevoProducto, subtotal: nuevoProducto.precio * nuevoProducto.cantidad });
+    }
 
-    // Agregar el producto al carrito
-    carrito.push(productoEnCarrito);
-
-    // Guardar en localStorage
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-
-    alert(`Producto agregado al carrito: ${cantidad}x ${producto.nombre}`);
+    setCarrito(nuevoCarrito);
+    localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
+    alert(`Producto agregado al carrito: ${nuevoProducto.cantidad}x ${nuevoProducto.nombre}`);
   };
 
   if (error) {
@@ -71,7 +70,7 @@ export default function VistaPreviaProductoPage() {
               className="rounded-lg object-cover w-full h-full"
             />
           </div>
-          <DetalleProducto producto={producto} agregarAlCarrito={agregarAlCarrito} />
+          <DetalleProducto producto={producto} agregarAlCarrito={agregarProducto} />
         </div>
       </div>
     </div>

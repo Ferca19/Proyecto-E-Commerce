@@ -42,7 +42,14 @@ export default function DetalleProducto({ producto, agregarAlCarrito }) {
   };
 
   const handleAgregarAlCarrito = () => {
-    agregarAlCarrito(producto, cantidad, color, tamano);
+    const productoParaCarrito = {
+      ...producto,
+      color,
+      tamano,
+      cantidad,
+      subtotal: cantidad * producto.precio, // Subtotal calculado
+    };
+    agregarAlCarrito(productoParaCarrito);
   };
 
   return (

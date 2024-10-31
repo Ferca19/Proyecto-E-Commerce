@@ -232,4 +232,41 @@ public class ProductoService implements IProductoService {
         return modelRepository.findAllById(ids);
     }
 
+    // Método para ajustar el inventario de un producto específico
+
+    public void ajustarInventarioProducto(Integer productoId, int cantidadAjustada, int tipoAjuste) {
+
+        Producto producto = obtenerObjetoPorId(productoId); // Obtener el producto por ID
+
+        // Verificar si el producto existe
+        if (producto == null) {
+            throw new IllegalArgumentException("El producto con ID " + productoId + " no existe.");
+        }
+
+        // Verificar que la cantidad ajustada sea válida
+        if (cantidadAjustada <= 0) {
+            throw new IllegalArgumentException("La cantidad ajustada debe ser mayor que cero.");
+        }
+
+        if (tipoAjuste == 1) {
+            // Lógica para reducir el inventario
+
+            if (producto.getStock() < cantidadAjustada) {
+                throw new IllegalArgumentException("No se puede reducir el stock. Stock actual: " + producto.getStock() + ", cantidad a ajustar: " + cantidadAjustada);
+            }
+            producto.setStock(producto.getStock() - cantidadAjustada);
+
+        } else if (tipoAjuste == 2) {
+
+            // Lógica para aumentar el inventario
+            producto.setStock(producto.getStock() + cantidadAjustada);
+
+        } else {
+            throw new IllegalArgumentException("Tipo de ajuste inválido. Debe ser 1 (reducción) o 2 (aumento).");
+        }
+
+        // Guarda los cambios en el producto (suponiendo que hay un repositorio de productos)
+        modelRepository.save(producto);
+    }
+
 }

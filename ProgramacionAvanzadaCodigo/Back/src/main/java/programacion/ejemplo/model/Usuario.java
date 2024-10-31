@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Set;
+
 @Entity
 @Data
 @ToString
@@ -47,4 +49,8 @@ public class Usuario {
     @JoinColumn(name = "rol_id")  // Eliminado nullable = false
     @ToString.Exclude  // Excluir de toString() para evitar sobrecarga de datos
     private Rol rol;
+
+    // Relación con AjusteInventario (un usuario puede tener muchos ajustes)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private Set<AjusteInventario> ajustesInventario;
 }

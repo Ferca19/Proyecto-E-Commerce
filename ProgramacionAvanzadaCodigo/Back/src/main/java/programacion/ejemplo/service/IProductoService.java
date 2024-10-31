@@ -41,4 +41,8 @@ public interface IProductoService {
     boolean existePorCategoriaId(Integer categoriaId);
     boolean existePorMarcaId(Integer marcaId);
     boolean existePorSubcategoriaId(Integer subcategoriaId);
+
+    void ajustarInventarioProducto(Integer productoId, int cantidadAjustada, int tipoAjuste);
+
+
 }

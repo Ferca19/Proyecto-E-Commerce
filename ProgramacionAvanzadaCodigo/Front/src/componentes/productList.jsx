@@ -37,12 +37,14 @@ export default function ProductList() {
       {products.map((product) => (
         <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
           <img
-            src={product.imagen ? `http://localhost:8080/Imagenes/${product.imagen}` : '/placeholder.svg?height=200&width=200'} // Ahora solo usamos la imagen directamente
+            src={product.imagen ? `http://localhost:8080/Imagenes/${product.imagen}` : '/placeholder.svg?height=200&width=200'}
             alt={product.nombre}
             className="w-full h-48 object-cover"
           />
-          <div className="p-4">
-            <h3 className="text-lg font-semibold mb-2">{product.nombre}</h3>
+          <div className="p-4 flex flex-col justify-between h-40"> {/* Contenedor ajustado */}
+            <h3 className="text-lg font-semibold mb-2 truncate" style={{ maxHeight: '3rem', overflow: 'hidden' }}>
+              {product.nombre}
+            </h3>
             <p className="text-gray-600 mb-2">${product.precio.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             <Link 
               to={`/productos/${product.id}`} 

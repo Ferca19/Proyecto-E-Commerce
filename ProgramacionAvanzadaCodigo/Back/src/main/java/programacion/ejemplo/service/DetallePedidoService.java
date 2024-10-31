@@ -55,16 +55,8 @@ public class DetallePedidoService implements IDetallePedidoService {
                 throw new IllegalArgumentException("Stock insuficiente para el producto con ID: " + detallePedidoDTO.getProductoId());
             }
 
-            // Restar la cantidad del stock
-            productoDTO.setStock(productoDTO.getStock() - detallePedidoDTO.getCantidad());
-            // Aquí actualiza el producto directamente en la base de datos si es necesario
 
-            // Obtener las entidades necesarias para el mapeo
-            Categoria categoria = productoService.obtenerCategoria(productoDTO.getCategoriaId()); // Método para obtener la categoría
-            Subcategoria subcategoria = productoService.obtenerSubcategoria(productoDTO.getSubcategoriaId()); // Método para obtener la subcategoría
-            Marca marca = productoService.obtenerMarca(productoDTO.getMarcaId());
-
-            productoService.actualizarStockProducto(productoMapper.toEntity(productoDTO, categoria, subcategoria, marca)); // Guardar el producto con el nuevo stock
+            productoService.ajustarInventarioProducto(detallePedidoDTO.getProductoId(),detallePedidoDTO.getCantidad(),1);
 
             // Crear el detalle del pedido
             DetallePedido detallePedido = DetallePedidoMapper.toEntity(detallePedidoDTO);

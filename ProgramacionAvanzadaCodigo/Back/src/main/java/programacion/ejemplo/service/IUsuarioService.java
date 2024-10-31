@@ -17,4 +17,6 @@ public interface IUsuarioService {
     PedidoDTO crearPedido(Integer usuarioId, List<DetallePedidoDTO> detallesPedidoDTO);
 
     UsuarioDTO obtenerPorId(Integer usuarioId);
+
+    void asignarRol(Integer usuarioId, Integer roleId);
 }
