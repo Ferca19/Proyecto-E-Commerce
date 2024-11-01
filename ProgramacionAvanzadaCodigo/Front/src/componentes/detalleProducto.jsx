@@ -1,36 +1,11 @@
 import React, { useState } from "react";
 import { MinusIcon, PlusIcon, ShoppingCart } from "lucide-react";
+import { Button } from "./ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
+import { Label } from "./ui/label"
 
-function Button({ children, onClick, disabled }) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={`px-4 py-2 rounded ${disabled ? "bg-gray-300" : "bg-indigo-600 text-white"} hover:bg-indigo-700`}
-    >
-      {children}
-    </button>
-  );
-}
 
-function Select({ label, value, onChange, options }) {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full border-gray-300 rounded-lg"
-      >
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
+
 
 export default function DetalleProducto({ producto, agregarAlCarrito }) {
   const [color, setColor] = useState(producto.color || "");
@@ -47,36 +22,74 @@ export default function DetalleProducto({ producto, agregarAlCarrito }) {
       color,
       tamano,
       cantidad,
-      subtotal: cantidad * producto.precio, // Subtotal calculado
-    };
-    agregarAlCarrito(productoParaCarrito);
-  };
+      subtotal: cantidad * producto.precio,
+    }
+    agregarAlCarrito(productoParaCarrito)
+  }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-gray-900">{producto.nombre}</h1>
-      <p className="text-2xl font-semibold text-gray-700">${producto.precio.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-      <p className="text-gray-600">{producto.descripcion}</p>
+    <div className="space-y-6 md:space-y-8 w-full max-w-md min-h-[500px] p-4 bg-white border rounded-lg overflow-hidden">
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-900">{producto.nombre}</h1>
+      <p className="text-xl md:text-2xl font-semibold text-gray-700">
+        ${producto.precio.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </p>
+      <p className="text-sm md:text-base text-gray-600">{producto.descripcion}</p>
 
-      <div className="space-y-4">
-        <Select label="Color" value={color} onChange={setColor} options={[color]} />
-        <Select label="Tamaño" value={tamano} onChange={setTamano} options={[tamano]} />
+      <div className="space-y-4 md:space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="color">Color</Label>
+            <Select value={color} onValueChange={setColor}>
+              <SelectTrigger id="color" className="bg-white">
+                <SelectValue placeholder="Selecciona un color" />
+              </SelectTrigger>
+              <SelectContent className="bg-white shadow-md border border-gray-200">
+                <SelectItem value={color}>{color}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="tamano">Tamaño</Label>
+            <Select value={tamano} onValueChange={setTamano}>
+              <SelectTrigger id="tamano" className="bg-white">
+                <SelectValue placeholder="Selecciona un tamaño" />
+              </SelectTrigger>
+              <SelectContent className="bg-white shadow-md border border-gray-200">
+                <SelectItem value={tamano}>{tamano}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
+        <div className="space-y-2">
+          <Label>Cantidad</Label>
           <div className="flex items-center space-x-3">
-            <Button onClick={() => handleCantidadChange(-1)} disabled={cantidad <= 1}>
+            <Button 
+              variant="destructive"
+              size="icon"
+              className="w-10 h-10 rounded-md bg-red-500 hover:bg-red-600"
+              onClick={() => handleCantidadChange(-1)} 
+              disabled={cantidad <= 1}
+            >
               <MinusIcon className="h-4 w-4" />
             </Button>
             <span className="text-xl font-semibold">{cantidad}</span>
-            <Button onClick={() => handleCantidadChange(1)}>
+            <Button 
+              variant="default"
+              size="icon"
+              className="w-10 h-10 rounded-md bg-green-500 hover:bg-green-600"
+              onClick={() => handleCantidadChange(1)}
+            >
               <PlusIcon className="h-4 w-4" />
             </Button>
           </div>
         </div>
       </div>
 
-      <Button onClick={handleAgregarAlCarrito} className="w-full">
+      <Button 
+        onClick={handleAgregarAlCarrito} 
+        className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+      >
         <ShoppingCart className="mr-2 h-5 w-5" />
         Agregar al Carrito
       </Button>

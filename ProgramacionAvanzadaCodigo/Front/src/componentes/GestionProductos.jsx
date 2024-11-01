@@ -6,6 +6,8 @@ import axios from 'axios';
 
 console.log(Dialog, Transition, PencilIcon, TrashIcon);
 
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // Tamaño máximo de archivo en bytes (2 MB)
+
 // Configurar el interceptor para agregar el token en cada solicitud
 axios.interceptors.request.use(
   (config) => {
@@ -20,7 +22,7 @@ axios.interceptors.request.use(
   }
 );
 
-export default function AdminProducts() {
+export default function GestionProductos() {
   const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
@@ -31,19 +33,21 @@ export default function AdminProducts() {
   const [marcas, setMarcas] = useState([]);
   const [confirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false); // Estado para el modal de confirmación
   const [productToDelete, setProductToDelete] = useState(null); // Producto a eliminar
+  const [error, setError] = useState(null);
 
 
   const onDrop = useCallback((acceptedFiles) => {
+    setError(null); // Reiniciar el error al seleccionar un archivo nuevo
     if (acceptedFiles.length > 0) {
       const selectedFile = acceptedFiles[0];
+  
+      if (selectedFile.size > MAX_FILE_SIZE) {
+        setError('La imagen es demasiado pesada. El tamaño máximo es de 2 MB.');
+        return;
+      }
+  
       setImage(selectedFile);
       setImageName(selectedFile.name);
-
-      // Imprimir información del archivo en la consola
-      console.log('Archivo seleccionado:', selectedFile);
-      console.log('Nombre del archivo:', selectedFile.name);
-      console.log('Tamaño del archivo:', selectedFile.size);
-      console.log('Tipo de archivo:', selectedFile.type);
     }
   }, []);
 
@@ -146,6 +150,7 @@ export default function AdminProducts() {
       fetchProducts();
       closeModal();
     } catch (error) {
+      setError(error.response?.data || 'Error al guardar el producto'); // Guardar el mensaje de error
       console.error('Error al guardar el producto:', error.response?.data || error.message);
     }
   };
@@ -199,6 +204,7 @@ export default function AdminProducts() {
       >
         Crear Nuevo Producto
       </button>
+      
   
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {products.map((product) => (
@@ -242,6 +248,11 @@ export default function AdminProducts() {
                 {currentProduct ? 'Editar Producto' : 'Crear Nuevo Producto'}
               </DialogTitle>
               <form onSubmit={handleSubmit} className="mt-4">
+              {error && (
+                <div className="bg-red-100 text-red-800 p-2 rounded mb-4">
+                  {error}
+                </div>
+              )}
                 {/* Campos comunes para crear y editar */}
                 <div className="mb-4">
                   <label className="block mb-1">Nombre del producto</label>

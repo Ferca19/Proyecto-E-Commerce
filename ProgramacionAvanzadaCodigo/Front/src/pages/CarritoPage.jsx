@@ -91,15 +91,18 @@ export default function CarritoPage() {
       <Navbar />
       {carrito.length === 0 ? (
         <div className="container mx-auto px-4 py-8">
-          <div className="text-center">
-            <ShoppingCart className="mx-auto h-12 w-12 text-muted-foreground" />
-            <h2 className="mt-4 text-lg font-semibold">Tu carrito está vacío</h2>
-            <p className="mt-2 text-muted-foreground">¡Agrega algunos productos para comenzar!</p>
-            <Button className="mt-4" onClick={() => window.location.href = "/"}>
-              Continuar comprando
-            </Button>
-          </div>
+        <div className="text-center">
+          <ShoppingCart className="mx-auto h-12 w-12 text-muted-foreground" />
+          <h2 className="mt-4 text-lg font-semibold">Tu carrito está vacío</h2>
+          <p className="mt-2 text-muted-foreground">¡Agrega algunos productos para comenzar!</p>
+          <Button 
+            className="mt-4 bg-green-500 text-white border-none rounded-md w-full md:w-auto hover:bg-green-600 transition-colors"
+            onClick={() => window.location.href = "/"}
+          >
+            Continuar comprando
+          </Button>
         </div>
+      </div>
       ) : (
         <div className="container mx-auto px-4 py-8">
           <Carrito 

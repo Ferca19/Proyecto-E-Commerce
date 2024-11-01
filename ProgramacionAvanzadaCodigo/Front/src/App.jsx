@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Marcas from './componentes/Marcas';
-import Categorias from './componentes/Categorias';
-import Subcategorias from './componentes/Subcategorias';
+import GestionMarcas from './componentes/GestionMarcas';
+import GestionCategorias from './componentes/GestionCategorias';
+import GestionSubcategorias from './componentes/GestionSubcategorias';
 import PrivateRoute from './componentes/PrivateRoute';
 import VistaPreviaProductoPage from './pages/VistaPreviaProductoPage';
 import 'tailwindcss/tailwind.css';
@@ -26,10 +26,10 @@ function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/productos/:id" element={<VistaPreviaProductoPage />} />
                     <Route path="/carrito" element={<CarritoPage />} />
-                    <Route path="/administracion/productos" element={<AdministracionPage />} />
-                    <Route path="/marcas" element={<PrivateRoute><Marcas /></PrivateRoute>} />
-                    <Route path="/categorias" element={<PrivateRoute><Categorias /></PrivateRoute>} />
-                    <Route path="/subcategorias" element={<Subcategorias />} />
+                    <Route path="/administracion" element={<AdministracionPage />} />
+                    <Route path="/marcas" element={<PrivateRoute><GestionMarcas /></PrivateRoute>} />
+                    <Route path="/categorias" element={<PrivateRoute><GestionCategorias /></PrivateRoute>} />
+                    <Route path="/subcategorias" element={<GestionSubcategorias />} />
                 </Routes>
 
                 <footer className="bg-gray-100 py-4 text-center">
