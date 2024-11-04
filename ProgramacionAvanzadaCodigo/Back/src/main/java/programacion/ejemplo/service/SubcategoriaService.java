@@ -48,7 +48,7 @@ public class SubcategoriaService implements ISubcategoriaService {
     @Override
     public SubcategoriaDTO guardar(SubcategoriaDTO modelDTO) {
 
-        validarSubcategoria(modelDTO);
+        validarSubcategoria(modelDTO, modelDTO.getId());
         Subcategoria model = SubcategoriaMapper.toEntity(modelDTO);
         return SubcategoriaMapper.toDTO(modelRepository.save(model));
     }
@@ -95,7 +95,7 @@ public class SubcategoriaService implements ISubcategoriaService {
                 .filter(existingSubcategoria -> existingSubcategoria.getEliminado() == Subcategoria.NO)
                 .map(existingSubcategoria -> {
                     if (subcategoria.getNombre() != null) {
-                        validarSubcategoria(SubcategoriaMapper.toDTO(subcategoria));
+                        validarSubcategoria(SubcategoriaMapper.toDTO(subcategoria), id);
                         existingSubcategoria.setNombre(subcategoria.getNombre());
                     }
 
@@ -112,12 +112,13 @@ public class SubcategoriaService implements ISubcategoriaService {
         return modelRepository.findById(id);
     }
 
-    private void validarSubcategoria(SubcategoriaDTO modelDTO) {
-        // Verificar si la categoría ya existe
-        if (modelRepository.existsByNombreIgnoreCase(modelDTO.getNombre())) { // Asumiendo que tienes este método en el repositorio
-            throw new EntidadDuplicadaException("La subcategoría ya existe.");
-        }
+    private void validarSubcategoria(SubcategoriaDTO modelDTO, Integer subcategoriaId) {
+        // Verificar si el nombre de la categoría ya existe en otra categoría
+        Optional<Subcategoria> subcategoriaExistente = modelRepository.findByNombreIgnoreCase(modelDTO.getNombre());
 
+        if (subcategoriaExistente.isPresent() && !subcategoriaExistente.get().getId().equals(subcategoriaId)) {
+            throw new EntidadDuplicadaException("La subcategoría ya existe con ese nombre.");
+        }
         // Verificar espacios en blanco
         String nombre = modelDTO.getNombre().trim();
         if (nombre.isEmpty()) {

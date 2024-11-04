@@ -44,8 +44,18 @@ public class MarcaService implements IMarcaService {
 
     @Override
     public MarcaDTO guardar(MarcaDTO modelDTO) {
-        validarMarca(modelDTO);
-        Marca model = MarcaMapper.toEntity(modelDTO);
+        // Validar si existe una marca eliminada con el mismo nombre y recuperarla
+        Marca marcaExistente = validarMarca(modelDTO, modelDTO.getId());
+
+        // Si `validarMarca` encontró una marca eliminada, reutilizar esa entidad; si no, crear una nueva
+        Marca model = marcaExistente != null ? marcaExistente : MarcaMapper.toEntity(modelDTO);
+
+        // Actualizar los datos de la marca recuperada o de la nueva marca
+        model.setDenominacion(modelDTO.getDenominacion());
+        model.setObservaciones(modelDTO.getObservaciones());
+        // Asignar otros atributos que necesites de `modelDTO` a `model`
+
+        // Guardar y devolver la marca
         return MarcaMapper.toDTO(modelRepository.save(model));
     }
 
@@ -55,7 +65,7 @@ public class MarcaService implements IMarcaService {
                 .filter(existingMarca -> existingMarca.getEliminado() == Marca.NO)
                 .map(existingMarca -> {
                     // Validar la marca utilizando el DTO
-                    validarMarca(MarcaMapper.toDTO(marca));
+                    validarMarca(MarcaMapper.toDTO(marca),id);
 
                     // Validar los campos que se están actualizando
                     if (marca.getDenominacion() != null) {
@@ -113,30 +123,39 @@ public class MarcaService implements IMarcaService {
         return modelRepository.findById(id);
     }
 
-    private void validarMarca(MarcaDTO modelDTO) {
-        // Verificar si la marca ya existe
-        if (modelRepository.existsByDenominacionIgnoreCase(modelDTO.getDenominacion())) {
-            throw new EntidadDuplicadaException("La marca ya existe.");
+    private Marca validarMarca(MarcaDTO modelDTO, Integer marcaId) {
+        // Buscar marca existente con la misma denominación, ignorando mayúsculas
+        Optional<Marca> marcaExistente = modelRepository.findByDenominacionIgnoreCase(modelDTO.getDenominacion());
+
+        if (marcaExistente.isPresent()) {
+            Marca marca = marcaExistente.get();
+
+            // Verificar si la marca existente tiene el mismo ID
+            if (!marca.getId().equals(marcaId)) {
+                if (marca.getEliminado() == 1) {
+                    // Recuperar y retornar la marca eliminada
+                    return recuperarMarcaEliminada(marca.getId());
+                } else {
+                    throw new EntidadDuplicadaException("La marca ya existe con ese nombre.");
+                }
+            }
         }
 
-        // Verificar si la denominación es nula
+        // Validaciones adicionales de formato de nombre
         if (modelDTO.getDenominacion() == null) {
             throw new EntidadFormatoInvalidoException("El nombre de la marca no puede estar vacío.");
         }
 
-        // Verificar espacios en blanco
         String nombre = modelDTO.getDenominacion().trim();
         if (nombre.isEmpty()) {
             throw new EntidadFormatoInvalidoException("El nombre de la marca no puede estar vacío.");
         }
-
-        // Verificar espacios al principio o al final
         if (!modelDTO.getDenominacion().equals(nombre)) {
             throw new EntidadFormatoInvalidoException("El nombre de la marca no puede tener espacios al principio o al final.");
         }
 
-        // Convertir a formato correcto (primer letra mayúscula)
         modelDTO.setDenominacion(capitalizar(nombre));
+        return null; // Retornar `null` si no hay una marca eliminada a recuperar
     }
 
     private String capitalizar(String nombre) {

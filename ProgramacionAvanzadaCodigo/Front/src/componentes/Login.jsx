@@ -53,7 +53,7 @@ function Login({ isVisible, onClose }) {
             if (rolId === 2) {
                 window.location.reload(); // Recarga la página si rolId es 2
             } else if (rolId === 1) {
-                navigate('/administracion/productos'); // Redirige a /adminproductos si rolId es 1
+                navigate('/administracion'); // Redirige a /adminproductos si rolId es 1
             }
 
         } catch (err) {

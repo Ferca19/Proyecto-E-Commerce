@@ -1,9 +1,11 @@
 package programacion.ejemplo.repository;
 
 import org.springframework.stereotype.Repository;
+import programacion.ejemplo.model.Categoria;
 import programacion.ejemplo.model.Subcategoria;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SubcategoriaRepository extends JpaRepository  <Subcategoria,Integer>{
@@ -16,4 +18,5 @@ public interface SubcategoriaRepository extends JpaRepository  <Subcategoria,Int
 
     boolean existsByNombreIgnoreCase(String nombre);
 
+    Optional<Subcategoria> findByNombreIgnoreCase(String nombre);
 }

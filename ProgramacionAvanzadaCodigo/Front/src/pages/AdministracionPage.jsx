@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion'
 import GestionProductos from '../componentes/GestionProductos';
+import GestionCategorias from '../componentes/GestionCategorias';
+import GestionSubcategorias from '../componentes/GestionSubcategorias';
+import GestionMarcas from '../componentes/GestionMarcas';
 import Navbar from '../componentes/Navbar';
 import { Layers, ShoppingBag, Tag, Grid, BarChart2, Users, Settings } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "../componentes/ui/card"
 import { Button } from "../componentes/ui/button"
 
 // Placeholder components - replace these with your actual components
-const GestionCategorias = () => <div>Gestión de Categorías</div>
-const GestionMarcas = () => <div>Gestión de Marcas</div>
-const GestionSubcategorias = () => <div>Gestión de Subcategorías</div>
+//const GestionCategorias = () => <div>Gestión de Categorías</div>
+//const GestionMarcas = () => <div>Gestión de Marcas</div>
+//const GestionSubcategorias = () => <div>Gestión de Subcategorías</div>
 
 export default function AdministracionPage() {
   const [activeSection, setActiveSection] = useState('productos')

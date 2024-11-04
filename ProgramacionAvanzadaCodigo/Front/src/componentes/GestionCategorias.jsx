@@ -1,147 +1,159 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Dialog, DialogTitle, Transition } from '@headlessui/react';
+import { PencilIcon, TrashIcon } from 'lucide-react';
 
-function GestionCategorias() {
-    const url = "http://localhost:8080/categorias";
-    const [categorias, setCategorias] = useState([]);
-    const [nombre, setNombre] = useState("");
-    const [descripcion, setCategoria] = useState("");
-    const [error, setError] = useState(null);
+const GestionCategorias = () => {
+  const [categorias, setCategorias] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentCategoria, setCurrentCategoria] = useState(null);
+  const [confirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
+  const [categoriaToDelete, setCategoriaToDelete] = useState(null);
 
-    useEffect(() => {
-        getCategorias();
-    }, []);
+  // Fetch categorias
+  const fetchCategorias = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/categorias/public');
+      setCategorias(response.data);
+    } catch (error) {
+      console.error('Error al obtener categorías:', error);
+    }
+  };
 
-    const getCategorias = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(url+"/public", {
-                headers: {
-                    'Authorization': `Bearer ${token}`  // Enviar el token en las cabeceras
-                }
-            });
-            setCategorias(response.data);
-        } catch (error) {
-            console.error("Error al obtener categorias", error);
-            setError("Error al cargar categorias");
-        }
+  useEffect(() => {
+    fetchCategorias();
+  }, []);
+
+  // Handle create/update
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    const categoriaData = {
+      nombre: formData.get('nombre') || '',
+      descripcion: formData.get('descripcion') || '',
     };
 
-    const eliminar = async (id) => {
-        try {
-            const token = localStorage.getItem('token');
-            await axios.delete(`${url}/admin/${id}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`  // Enviar el token en las cabeceras
-                }
-            });
-            setCategorias(categorias.filter((categoria) => categoria.id !== id));
-        } catch (error) {
-            console.error("Error al eliminar la categoria", error);
-        }
-    };
+    try {
+      if (currentCategoria) {
+        await axios.put(`http://localhost:8080/categorias/admin/${currentCategoria.id}`, categoriaData);
+      } else {
+        await axios.post('http://localhost:8080/categorias/admin', categoriaData);
+      }
+      fetchCategorias();
+      closeModal();
+    } catch (error) {
+      console.error('Error al guardar la categoría:', error.response?.data || error.message);
+    }
+  };
 
-    const agregarCategoria = async (e) => {
-        e.preventDefault();
-        try {
-            const token = localStorage.getItem('token');
-            const nuevaCategoria = { nombre, descripcion };
-            const response = await axios.post(url+"/admin", nuevaCategoria, {
-                headers: {
-                    'Authorization': `Bearer ${token}`  // Enviar el token en las cabeceras
-                }
-            });
-            setCategorias([...categorias, response.data]);
-            setNombre("");
-            setCategoria("");
-        } catch (error) {
-            console.error("Error al agregar la categoria", error);
-            setError("Error al agregar la categoria");
-        }
-    };
+  const handleEdit = (categoria) => {
+    setCurrentCategoria(categoria);
+    setIsModalOpen(true);
+  };
 
-    if (error) return <div>{error}</div>;
+  const handleDelete = (categoria) => {
+    setCategoriaToDelete(categoria);
+    setConfirmDeleteModalOpen(true);
+  };
 
-    return (
-        <div className="container">
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/categorias/admin/${categoriaToDelete.id}`);
+      fetchCategorias();
+      setConfirmDeleteModalOpen(false);
+    } catch (error) {
+      console.error('Error al eliminar la categoría:', error.response?.data || error.message);
+    }
+  };
 
-            {/* Formulario para agregar nueva categoria */}
-            <div className="card p-4 mb-4 shadow">
-                <div className="text-center my-4">
-                    <h2>Agregar Nueva Categoria</h2>
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setCurrentCategoria(null);
+  };
+
+  return (
+    <div>
+      <button onClick={() => setIsModalOpen(true)} className="bg-blue-500 text-white px-4 py-2 rounded mb-4">
+        Crear Nueva Categoría
+      </button>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {categorias.map((categoria) => (
+          <div key={categoria.id} className="border p-4 rounded">
+            <h2 className="text-xl font-semibold">{categoria.nombre}</h2>
+            <p>{categoria.descripcion}</p>
+            <div className="mt-2">
+              <button onClick={() => handleEdit(categoria)} className="bg-yellow-500 text-white px-2 py-1 rounded mr-2">
+                <PencilIcon className="h-4 w-4" />
+              </button>
+              <button onClick={() => handleDelete(categoria)} className="bg-red-500 text-white px-2 py-1 rounded">
+                <TrashIcon className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <Transition show={isModalOpen} as={React.Fragment}>
+        <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" onClose={closeModal}>
+          <div className="min-h-screen px-4 text-center">
+            <div className="fixed inset-0 bg-black opacity-30" />
+            <span className="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
+            <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+              <DialogTitle as="h3" className="text-lg font-medium leading-6 text-gray-900">
+                {currentCategoria ? 'Editar Categoría' : 'Crear Nueva Categoría'}
+              </DialogTitle>
+              <form onSubmit={handleSubmit} className="mt-4">
+                <div className="mb-4">
+                  <label className="block mb-1">Nombre de la categoría</label>
+                  <input
+                    name="nombre"
+                    defaultValue={currentCategoria?.nombre || ''}
+                    placeholder="Nombre de la categoría"
+                    className="w-full p-2 border rounded"
+                    required
+                  />
                 </div>
-                <form onSubmit={agregarCategoria}>
-                    <div className="mb-3">
-                        <label htmlFor="nombre" className="form-label">Nombre</label>
-                        <input
-                            type="text"
-                            id="nombre"
-                            className="form-control"
-                            value={nombre}
-                            onChange={(e) => setNombre(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="descripcion" className="form-label">Descripción</label>
-                        <input
-                            type="text"
-                            id="descripcion"
-                            className="form-control"
-                            value={descripcion}
-                            onChange={(e) => setCategoria(e.target.value)}
-                        />
-                    </div>
-                    <button type="submit" className="btn btn-success mb-3">Guardar</button>
-                </form>
-            </div>
-
-            <div className="text-center my-4">
-                <h2>Listado de Categorias</h2>
-            </div>
-
-            {/* Botón para actualizar la tabla */}
-            <div className="mb-4 text-center">
-                <button
-                    onClick={getCategorias}
-                    className="btn btn-primary btn-lg"
-                >
-                    Actualizar Tabla
+                <div className="mb-4">
+                  <label className="block mb-1">Descripción</label>
+                  <textarea
+                    name="descripcion"
+                    defaultValue={currentCategoria?.descripcion || ''}
+                    placeholder="Descripción"
+                    className="w-full p-2 border rounded"
+                    required
+                  />
+                </div>
+                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+                  {currentCategoria ? 'Guardar Cambios' : 'Crear Categoría'}
                 </button>
+              </form>
             </div>
+          </div>
+        </Dialog>
+      </Transition>
 
-            {/* Tabla de categorias */}
-            <div className="table-responsive">
-                <table className="table table-striped table-hover shadow">
-                    <thead className="table-dark">
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Denominación</th>
-                        <th scope="col">Categoria</th>
-                        <th scope="col">Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {categorias.map((categoria, indice) => (
-                        <tr key={indice}>
-                            <th scope="row">{categoria.id}</th>
-                            <td>{categoria.nombre}</td>
-                            <td>{categoria.descripcion}</td>
-                            <td className="text-center">
-                                <button
-                                    onClick={() => eliminar(categoria.id)}
-                                    className="btn btn-danger btn-sm"
-                                >
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+      {/* Modal de confirmación de eliminación */}
+      <Transition show={confirmDeleteModalOpen} as={React.Fragment}>
+        <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" onClose={() => setConfirmDeleteModalOpen(false)}>
+          <div className="min-h-screen px-4 text-center">
+            <div className="fixed inset-0 bg-black opacity-30" />
+            <span className="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
+            <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+              <DialogTitle as="h3" className="text-lg font-medium leading-6 text-gray-900">
+                Confirmar Eliminación
+              </DialogTitle>
+              <p>¿Estás seguro de que deseas eliminar esta categoría?</p>
+              <button onClick={confirmDelete} className="bg-red-500 text-white px-4 py-2 rounded mt-4">
+                Eliminar
+              </button>
             </div>
-        </div>
-    );
-}
+          </div>
+        </Dialog>
+      </Transition>
+    </div>
+  );
+};
 
 export default GestionCategorias;

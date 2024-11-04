@@ -45,7 +45,7 @@ public class CategoriaService implements ICategoriaService {
     @Override
     public CategoriaDTO guardar(CategoriaDTO modelDTO) {
 
-        validarCategoria(modelDTO);
+        validarCategoria(modelDTO,modelDTO.getId());
 
         Categoria model = CategoriaMapper.toEntity(modelDTO);
         return CategoriaMapper.toDTO(modelRepository.save(model));
@@ -120,7 +120,7 @@ public class CategoriaService implements ICategoriaService {
 
 
         // Validaciones
-        validarCategoria(CategoriaMapper.toDTO(categoria)); // Llamar al método de validación
+        validarCategoria(CategoriaMapper.toDTO(categoria), id); // Llamar al método de validación
 
         if (categoria.getNombre() != null) {
             categoriaExistente.setNombre(categoria.getNombre());
@@ -137,10 +137,12 @@ public class CategoriaService implements ICategoriaService {
         return modelRepository.findById(id);
     }
 
-    private void validarCategoria(CategoriaDTO modelDTO) {
-        // Verificar si la categoría ya existe
-        if (modelRepository.existsByNombreIgnoreCase(modelDTO.getNombre())) { // Asumiendo que tienes este método en el repositorio
-            throw new EntidadDuplicadaException("La categoría ya existe.");
+    private void validarCategoria(CategoriaDTO modelDTO, Integer categoriaId) {
+        // Verificar si el nombre de la categoría ya existe en otra categoría
+        Optional<Categoria> categoriaExistente = modelRepository.findByNombreIgnoreCase(modelDTO.getNombre());
+
+        if (categoriaExistente.isPresent() && !categoriaExistente.get().getId().equals(categoriaId)) {
+            throw new EntidadDuplicadaException("La categoría ya existe con ese nombre.");
         }
 
         // Verificar espacios en blanco
