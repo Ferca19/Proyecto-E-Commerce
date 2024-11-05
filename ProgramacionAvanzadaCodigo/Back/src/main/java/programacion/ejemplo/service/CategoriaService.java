@@ -138,10 +138,10 @@ public class CategoriaService implements ICategoriaService {
     }
 
     private void validarCategoria(CategoriaDTO modelDTO, Integer categoriaId) {
-        // Verificar si el nombre de la categoría ya existe en otra categoría
         Optional<Categoria> categoriaExistente = modelRepository.findByNombreIgnoreCase(modelDTO.getNombre());
 
-        if (categoriaExistente.isPresent() && !categoriaExistente.get().getId().equals(categoriaId)) {
+        // Si la categoría existe y no es la misma (si estamos actualizando)
+        if (categoriaExistente.isPresent() && (categoriaId == null || !categoriaExistente.get().getId().equals(categoriaId))) {
             throw new EntidadDuplicadaException("La categoría ya existe con ese nombre.");
         }
 
