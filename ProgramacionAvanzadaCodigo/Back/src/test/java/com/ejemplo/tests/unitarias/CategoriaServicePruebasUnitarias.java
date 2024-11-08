@@ -15,21 +15,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import programacion.ejemplo.DTO.CategoriaDTO;
+import programacion.ejemplo.EjemploApplication;
+import programacion.ejemplo.EjemploApplicationPruebas;
 import programacion.ejemplo.exception.EntidadDuplicadaException;
 import programacion.ejemplo.repository.CategoriaRepository;
 import programacion.ejemplo.service.CategoriaService;
 import programacion.ejemplo.service.IProductoService;
 
 @CucumberContextConfiguration
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = EjemploApplicationPruebas.class)
 @ExtendWith(MockitoExtension.class)
 public class CategoriaServicePruebasUnitarias {
 
     @Mock
     private CategoriaRepository categoriaRepository;
-
-    @Mock
-    private IProductoService productoService;
 
     @InjectMocks
     private CategoriaService categoriaService;

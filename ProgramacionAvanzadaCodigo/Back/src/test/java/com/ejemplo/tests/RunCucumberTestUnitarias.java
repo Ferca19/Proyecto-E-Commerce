@@ -11,6 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
         glue = "com.ejemplo.tests.unitarias", // Paquete donde están las Step Definitions
         plugin = {"pretty", "html:target/cucumber-reports"} // Para generar reportes
 )
-@SpringBootTest(classes = com.ejemplo.Aplicacion.class) // Clase principal de la aplicación
+@SpringBootTest(classes = programacion.ejemplo.EjemploApplicationPruebas.class) // Clase principal de la aplicación
 public class RunCucumberTestUnitarias {
 }

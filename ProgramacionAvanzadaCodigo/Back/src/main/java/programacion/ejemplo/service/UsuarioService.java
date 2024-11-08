@@ -19,12 +19,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-
 public class UsuarioService implements IUsuarioService {
 
 
     @Autowired
-    @Lazy
     private IPedidoService pedidoService;
 
     @Autowired
@@ -44,7 +42,12 @@ public class UsuarioService implements IUsuarioService {
 
     @Transactional
     public PedidoDTO crearPedido(Integer usuarioId, List<DetallePedidoDTO> detallesPedidoDTO) {
-        Pedido pedido = pedidoService.crearPedido(usuarioId, detallesPedidoDTO);
+
+        // Convertir el usuario DTO a la entidad Usuario y asignarlo al pedido
+        UsuarioDTO usuarioDTO = obtenerPorId(usuarioId);
+        Usuario usuario = UsuarioMapper.toEntity(usuarioDTO);
+
+        Pedido pedido = pedidoService.crearPedido(usuario, detallesPedidoDTO);
         return PedidoMapper.toDTO(pedido);
     }
 

@@ -5,6 +5,6 @@ Feature: Creación de Pedidos
     And los detalles del pedido son:
       | productoId | cantidad |
       | 1          | 2        |
-    When se crea un pedido con el usuario ID y los detalles del pedido
+    When se crea un pedido con el usuario y los detalles del pedido
     Then el pedido debe ser creado con estado inicial
     And el importe total del pedido debe estar calculado

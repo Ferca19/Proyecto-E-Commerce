@@ -1,15 +1,12 @@
 package com.ejemplo.tests;
 
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.ContextConfiguration;
+import programacion.ejemplo.EjemploApplicationPruebas;
 
 @TestConfiguration
+@ContextConfiguration(classes =  EjemploApplicationPruebas.class) // Incluye tu clase principal para asegurarte de que cargue todo correctamente
 public class CucumberTestConfig {
 
-    @Bean
-    public TestRestTemplate testRestTemplate() {
-        return new TestRestTemplate(); // Puedes personalizar la configuración si es necesario
-    }
 }
 

@@ -14,6 +14,7 @@ import programacion.ejemplo.Mapper.UsuarioMapper;
 import programacion.ejemplo.model.DetallePedido;
 import programacion.ejemplo.model.Pedido;
 import programacion.ejemplo.model.Producto;
+import programacion.ejemplo.model.Usuario;
 import programacion.ejemplo.repository.PedidoRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +30,6 @@ public class PedidoService implements IPedidoService {
 
     @Autowired
     private PedidoRepository modelRepository;
-
-    @Autowired
-    @Lazy
-    private IUsuarioService usuarioService;
 
     @Autowired
     private IEstadoService estadoService;
@@ -56,14 +53,13 @@ public class PedidoService implements IPedidoService {
     }
 
     @Transactional
-    public Pedido crearPedido(Integer usuarioId, List<DetallePedidoDTO> detallesPedidoDTO) {
+    public Pedido crearPedido(Usuario usuario, List<DetallePedidoDTO> detallesPedidoDTO) {
 
         Pedido nuevoPedido = new Pedido();
         nuevoPedido.setFechaYHora(new Date());
 
-        // Convertir el usuario DTO a la entidad Usuario y asignarlo al pedido
-        UsuarioDTO usuarioDTO = usuarioService.obtenerPorId(usuarioId);
-        nuevoPedido.setUsuario(UsuarioMapper.toEntity(usuarioDTO));
+        // Asigna el usuario al pedido
+        nuevoPedido.setUsuario(usuario);
 
         // Obtener el estado inicial del pedido
         nuevoPedido.setEstado(estadoService.obtenerEstadoInicial());

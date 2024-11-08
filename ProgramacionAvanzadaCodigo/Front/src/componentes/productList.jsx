@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import FiltroProductos from './FiltroProductos';
 
 export default function ProductList() {
   const [products, setProducts] = useState([]); // Estado para almacenar los productos
@@ -33,28 +34,39 @@ export default function ProductList() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {products.map((product) => (
-        <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-          <img
-            src={product.imagen ? `http://localhost:8080/Imagenes/${product.imagen}` : '/placeholder.svg?height=200&width=200'}
-            alt={product.nombre}
-            className="w-full h-48 object-cover"
-          />
-          <div className="p-4 flex flex-col justify-between h-40"> {/* Contenedor ajustado */}
-            <h3 className="text-lg font-semibold mb-2 truncate" style={{ maxHeight: '3rem', overflow: 'hidden' }}>
-              {product.nombre}
-            </h3>
-            <p className="text-gray-600 mb-2">${product.precio.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-            <Link 
-              to={`/productos/${product.id}`} 
-              className="block w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
-            >
-              Ver Detalles
-            </Link>
-          </div>
+    <div className="px-4 sm:px-6 lg:px-8"> {/* Padding en los laterales */}
+      <h2 className="text-3xl font-semibold mb-8 text-center text-gray-800">Nuestros Productos</h2>
+      
+      <div className="flex w-full space-x-4"> {/* Contenedor flexible de ancho completo */}
+        
+        <div className="w-1/9"> {/* Ajuste de ancho para ocupar una quinta parte */}
+          <FiltroProductos />
         </div>
-      ))}
+        
+        <div className="w-4/1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-cols-4 gap-6"> {/* Ajuste de ancho para ocupar el resto */}
+          {products.map((product) => (
+            <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+              <img
+                src={product.imagen ? `http://localhost:8080/Imagenes/${product.imagen}` : '/placeholder.svg?height=200&width=200'}
+                alt={product.nombre}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4 flex flex-col justify-between h-40">
+                <h3 className="text-lg font-semibold mb-2 truncate" style={{ maxHeight: '3rem', overflow: 'hidden' }}>
+                  {product.nombre}
+                </h3>
+                <p className="text-gray-600 mb-2">${product.precio.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                <Link 
+                  to={`/productos/${product.id}`} 
+                  className="block w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
+                >
+                  Ver Detalles
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
