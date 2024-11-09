@@ -50,6 +50,11 @@ public class DetallePedidoService implements IDetallePedidoService {
                 throw new EntityNotFoundException("Producto no encontrado con ID: " + detallePedidoDTO.getProductoId());
             }
 
+            // Verificar que la cantidad no sea cero o negativa
+            if (detallePedidoDTO.getCantidad() <= 0) {
+                throw new IllegalArgumentException("La cantidad del producto no puede ser 0 o negativa");
+            }
+
             // Verificar si el stock del producto es suficiente
             if (productoDTO.getStock() < detallePedidoDTO.getCantidad()) {
                 throw new IllegalArgumentException("Stock insuficiente para el producto con ID: " + detallePedidoDTO.getProductoId());

@@ -40,6 +40,10 @@ public class PedidoService implements IPedidoService {
     @Autowired
     private IDetallePedidoService detallePedidoService;
 
+    // Constructor con EstadoService para permitir la inyección en pruebas
+    public PedidoService(EstadoService estadoService) {
+        this.estadoService = estadoService;
+    }
 
     public List<PedidoDTO> getAllPedidos() {
         // Obtener todos los pedidos
@@ -55,6 +59,16 @@ public class PedidoService implements IPedidoService {
     @Transactional
     public Pedido crearPedido(Usuario usuario, List<DetallePedidoDTO> detallesPedidoDTO) {
 
+        // Verificar si el usuario existe
+        if (usuario == null) {
+            throw new RuntimeException("Usuario no encontrado");
+        }
+
+        // Verificar si la lista de detalles está vacía
+        if (detallesPedidoDTO == null || detallesPedidoDTO.isEmpty()) {
+            throw new IllegalArgumentException("El pedido debe contener al menos un detalle de producto.");
+        }
+
         Pedido nuevoPedido = new Pedido();
         nuevoPedido.setFechaYHora(new Date());
 
@@ -62,7 +76,11 @@ public class PedidoService implements IPedidoService {
         nuevoPedido.setUsuario(usuario);
 
         // Obtener el estado inicial del pedido
-        nuevoPedido.setEstado(estadoService.obtenerEstadoInicial());
+        try {
+            nuevoPedido.setEstado(estadoService.obtenerEstadoInicial());
+        } catch (Exception e) {
+            throw new RuntimeException("No se pudo obtener el estado inicial del pedido.");
+        }
 
         // Guardar el pedido sin el importe total aún
         Pedido pedidoGuardado = modelRepository.save(nuevoPedido);
