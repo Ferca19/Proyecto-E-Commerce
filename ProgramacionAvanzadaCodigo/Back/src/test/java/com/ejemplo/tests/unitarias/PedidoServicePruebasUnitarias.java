@@ -32,23 +32,15 @@ public class PedidoServicePruebasUnitarias {
     private PedidoService pedidoService;
 
 
-    @Mock
-    private EstadoService estadoService;
-
     private List<DetallePedidoDTO> detallesPedido;
     private Pedido pedidoCreado;
     private Usuario usuario;
     private Usuario usuarioNulo;
     private Exception exception;
 
-    // Agrega un bloque BeforeEach para inicializar los mocks
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
 
-    //Scenario: Crear pedido con un usuario ID válido y detalles no vacíos
+    //====================== Scenario: Crear pedido con un usuario ID válido y detalles no vacíos ======================
 
     @Given("un usuario con ID {int} existe")
     public void un_usuario_con_ID_existe(Integer id) {
@@ -100,7 +92,7 @@ public class PedidoServicePruebasUnitarias {
         assertEquals(100000.0, pedidoCreado.getImporteTotal());
     }
 
-    //Scenario: Crear un pedido con usuario nulo
+    //====================== Scenario: Crear un pedido con usuario nulo ======================
 
     @Given("un usuario nulo existe")
     public void un_usuario_nulo_existe() {
@@ -108,7 +100,7 @@ public class PedidoServicePruebasUnitarias {
         usuarioNulo = null;
     }
 
-    // Este paso ya existe por lo que lo reutilizamos: @Given("los detalles del pedido son:")
+    // Este paso ya existe por lo que lo reutilizamos: Given los detalles del pedido son:
 
 
     @When("se intenta crear un pedido con un usuario nulo y los detalles del pedido")
@@ -124,7 +116,7 @@ public class PedidoServicePruebasUnitarias {
         assertEquals(mensajeEsperado, exception.getMessage());
     }
 
-    //Scenario: Crear pedido con un usuario ID válido y lista de detalles vacía
+    //====================== Scenario: Crear pedido con un usuario ID válido y lista de detalles vacía ======================
 
     @Given("una lista de detalles de pedido vacía")
     public void una_lista_de_detalles_de_pedido_vacía() {
@@ -143,7 +135,7 @@ public class PedidoServicePruebasUnitarias {
 
     // Este paso ya existe por lo que lo reutilizamos: @Then("se debe lanzar una excepción indicando {string}")
 
-    //Scenario: Crear pedido con un usuario válido y detalle de producto con cantidad cero
+    //====================== Scenario: Crear pedido con un usuario válido y detalle de producto con cantidad cero ======================
 
     // Este paso ya existe por lo que lo reutilizamos: Given un usuario con ID 3 existe
 
@@ -179,26 +171,17 @@ public class PedidoServicePruebasUnitarias {
     // Este paso ya existe por lo que lo reutilizamos: @Then("se debe lanzar una excepción indicando {string}")
 
 
-    //Scenario: Crear pedido con un estado inicial no encontrado
+    //====================== Scenario: Scenario: Crear pedido con un pedido con un producto no disponible ======================
 
     // Este paso ya existe por lo que lo reutilizamos: Given un usuario con ID 3 existe
     // Este paso ya existe por lo que lo reutilizamos: And los detalles del pedido son:
 
-    @When("se intenta crear un pedido con el usuario y la lista de detalles pero sin el estado inicial")
-    public void se_intenta_crear_un_pedido_con_el_usuario_y_la_lista_de_detalles_pero_sin_el_estado_inicial() {
-
-        // Crear un spy sobre la instancia inyectada de PedidoService
-        PedidoService pedidoServiceSpy = spy(pedidoService);
-
-        // Simular que el estado inicial no se encuentra
-        when(estadoService.obtenerEstadoInicial()).thenThrow(new RuntimeException("No se pudo obtener el estado inicial del pedido."));
-
-        // Ejecutar el método en el spy y capturar la excepción
-        try {
-            pedidoServiceSpy.crearPedido(usuario, detallesPedido);
-        } catch (Exception e) {
-            exception = e;
-        }
+    @When("se intenta crear un pedido con el usuario y la lista de detalles pero con un producto no disponible")
+    public void se_intenta_crear_un_pedido_con_el_usuario_y_la_lista_de_detalles_pero_con_un_producto_no_disponible() {
+        exception = assertThrows(
+                RuntimeException.class,
+                () -> pedidoService.crearPedido(usuario, detallesPedido)
+        );
     }
 
     // Este paso ya existe por lo que lo reutilizamos: @Then("se debe lanzar una excepción indicando {string}")

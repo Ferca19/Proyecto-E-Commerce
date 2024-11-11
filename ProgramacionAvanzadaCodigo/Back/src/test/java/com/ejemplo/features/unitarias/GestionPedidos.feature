@@ -32,11 +32,11 @@ Feature: Creación de Pedidos
     When se intenta crear un pedido con el usuario y el detalle de pedido con cantidad 0
     Then se debe lanzar una excepción indicando "La cantidad del producto no puede ser 0 o negativa"
 
-  Scenario: Crear pedido con un estado inicial no encontrado
+  Scenario: Crear pedido con un pedido con un producto no disponible
     Given un usuario con ID 3 existe
     And los detalles del pedido son:
       | productoId | cantidad |
-      | 1          | 2        |
-    When se intenta crear un pedido con el usuario y la lista de detalles pero sin el estado inicial
-    Then se debe lanzar una excepción indicando "No se pudo obtener el estado inicial del pedido."
+      | 99999999   | 2        |
+    When se intenta crear un pedido con el usuario y la lista de detalles pero con un producto no disponible
+    Then se debe lanzar una excepción indicando "Producto no encontrado"
 

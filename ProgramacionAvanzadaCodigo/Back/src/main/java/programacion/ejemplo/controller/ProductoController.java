@@ -16,10 +16,14 @@ import programacion.ejemplo.model.Categoria;
 import programacion.ejemplo.model.Producto;
 import programacion.ejemplo.service.IProductoService;
 import org.springframework.beans.factory.annotation.Value;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/productos")
@@ -39,6 +43,22 @@ public class ProductoController {
     public ResponseEntity<List<ProductoDTO>> listar() {
         List<ProductoDTO> productos = modelService.listar();
         return ResponseEntity.ok(productos);
+    }
+
+    @GetMapping("/public/imagenes/banner")
+    public List<String> listarImagenesDeBanner() {
+        try {
+            // Usamos Files.walk para obtener todos los archivos en el directorio
+            return Files.walk(Paths.get(baseImagePath), 1) // Profundidad 1 para evitar recorrer subdirectorios
+                    .filter(Files::isRegularFile) // Filtra solo archivos
+                    .map(Path::getFileName) // Obtiene solo el nombre del archivo
+                    .map(Path::toString) // Convierte Path a String
+                    .filter(nombre -> nombre.contains("banner")) // Filtra los archivos que contienen "banner"
+                    .collect(Collectors.toList()); // Colecciona los nombres de archivos en una lista
+        } catch (IOException e) {
+            e.printStackTrace();
+            return List.of(); // Devuelve una lista vacía si ocurre un error
+        }
     }
 
     @PostMapping("/admin")

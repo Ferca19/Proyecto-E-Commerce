@@ -17,7 +17,8 @@ export default function ImageSlider() {
       setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length)
     }
   
-    // Fetch de productos al montar el componente
+    // ========================================= Mostrar imagenes de los productos en el banner =========================================
+    /*
     useEffect(() => {
       const fetchImages = async () => {
         try {
@@ -38,7 +39,34 @@ export default function ImageSlider() {
   
       fetchImages()
     }, [])
-  
+
+    */
+
+    // ========================================= Mostrar imagenes especificas para el banner =========================================
+
+    useEffect(() => {
+      const fetchBannerImages = async () => {
+        try {
+          // Petición a la ruta que devuelve la lista de archivos de banners
+          const response = await axios.get('http://localhost:8080/productos/public/imagenes/banner')
+          const files = response.data
+      
+          // Mapea los nombres de archivo a URLs completas
+          const bannerImages = files.map(file => ({
+            src: `http://localhost:8080/Imagenes/${file}`,
+            alt: `Banner ${file}`,
+          }))
+      
+          setImages(bannerImages)
+        } catch (error) {
+          console.error('Error al obtener las imágenes de banners:', error)
+        }
+      }
+    
+      fetchBannerImages()
+    }, [])
+
+
     // Auto-slide cada 5 segundos
     useEffect(() => {
       const interval = setInterval(nextSlide, 5000)
