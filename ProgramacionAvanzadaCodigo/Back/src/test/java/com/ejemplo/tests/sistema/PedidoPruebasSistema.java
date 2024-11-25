@@ -1,30 +1,32 @@
 package com.ejemplo.tests.sistema;
 
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import programacion.ejemplo.DTO.DetallePedidoDTO;
-import programacion.ejemplo.DTO.ProductoDTO;
 import programacion.ejemplo.EjemploApplicationPruebas;
+import programacion.ejemplo.model.DetallePedido;
 import programacion.ejemplo.model.Estado;
 import programacion.ejemplo.model.Pedido;
 import programacion.ejemplo.model.Usuario;
+import programacion.ejemplo.repository.DetallePedidoRepository;
 import programacion.ejemplo.repository.PedidoRepository;
 import programacion.ejemplo.service.DetallePedidoService;
 import programacion.ejemplo.service.EstadoService;
 import programacion.ejemplo.service.PedidoService;
-import programacion.ejemplo.service.ProductoService;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -40,20 +42,24 @@ public class PedidoPruebasSistema {
     private PedidoRepository pedidoRepository;
 
     @Autowired
-    private EstadoService estadoService;
-
-    @Autowired
-    private DetallePedidoService detallePedidoService;
+    private DetallePedidoRepository detallePedidoRepository;
 
     private Usuario usuario;
     private List<DetallePedidoDTO> detallesPedido;
     private Pedido pedidoCreado;
+    private Pedido pedidoRecuperado;
+    private int numPedidos = 100;
+    private long tiempoEjecucion;
 
-    @Given("un usuario con ID {int} y nombre {string} existe en el sistema")
-    public void un_usuario_con_ID_y_nombre_existe_en_el_sistema(Integer id, String nombre) {
+
+
+    //====================== Scenario: Crear un pedido con usuario y detalles de pedido ======================
+
+    @Given("un usuario con ID {int} existe")
+    public void un_usuario_con_ID_existe(Integer id) {
         usuario = new Usuario();
         usuario.setId(id);
-        usuario.setNombre(nombre);
+        usuario.setNombre("Juan Perez");
     }
 
     @Given("los detalles del pedido son:")
@@ -74,15 +80,10 @@ public class PedidoPruebasSistema {
 
     @When("se crea un pedido con el usuario y los detalles del pedido")
     public void se_crea_un_pedido_con_el_usuario_y_los_detalles_del_pedido() {
-        // Obtenemos el estado inicial desde el servicio
-        Estado estadoPendiente = estadoService.obtenerEstadoInicial();
 
         // Creamos el pedido
         pedidoCreado = pedidoService.crearPedido(usuario, detallesPedido);
-        pedidoCreado.setEstado(estadoPendiente);
 
-        // Guardamos el pedido en el repositorio
-        pedidoRepository.save(pedidoCreado);
     }
 
     @Then("el pedido debe ser creado con el usuario asignado")
@@ -98,11 +99,6 @@ public class PedidoPruebasSistema {
         assertEquals(estadoEsperado, pedidoCreado.getEstado().getNombre());
     }
 
-    @Then("el importe total del pedido debe estar calculado correctamente")
-    public void el_importe_total_del_pedido_debe_estar_calculado_correctamente() {
-        // Aseguramos que el importe total sea el esperado (ajustar según la lógica del cálculo)
-        assertEquals(140000.0, pedidoCreado.getImporteTotal(),0.01);
-    }
 
     @Then("el pedido debe estar almacenado en el repositorio")
     public void el_pedido_debe_estar_almacenado_en_el_repositorio() {
@@ -115,9 +111,106 @@ public class PedidoPruebasSistema {
         assertEquals(pedidoCreado.getImporteTotal(), pedidoAlmacenado.getImporteTotal(), 0.01);
     }
 
-    private void assertNotNull(Pedido pedido) {
-        if (pedido == null) {
-            throw new AssertionError("El pedido es nulo");
+
+    //====================== Scenario: Verificar que los cambios en la base de datos se reflejan correctamente después de la creación del pedido ======================
+
+    // Este paso ya existe por lo que lo reutilizamos: Given un usuario con ID 3 existe
+    // Este paso ya existe por lo que lo reutilizamos: And los detalles del pedido son:
+    // Este paso ya existe por lo que lo reutilizamos: When se crea un pedido con el usuario y los detalles del pedido
+
+    @Then("el pedido debe estar almacenado en la base de datos")
+    public void el_pedido_debe_estar_almacenado_en_la_base_de_datos() {
+        assertNotNull(pedidoCreado, "El pedido debería haberse creado correctamente.");
+        assertNotNull(pedidoCreado.getId(), "El pedido debería tener un ID asignado.");
+    }
+
+    @And("el pedido almacenado debe ser consultable por su ID")
+    public void el_pedido_almacenado_debe_ser_consultable_por_su_id() {
+        pedidoRecuperado = pedidoRepository.findById(pedidoCreado.getId())
+                .orElse(null);
+
+        assertNotNull(pedidoRecuperado, "El pedido debería ser recuperable por su ID.");
+        assertEquals(pedidoCreado.getId(), pedidoRecuperado.getId());
+        Assertions.assertEquals(pedidoCreado.getUsuario().getId(), pedidoRecuperado.getUsuario().getId(), "El usuario del pedido debería coincidir.");
+        Assertions.assertEquals(pedidoCreado.getDetallesPedido().size(), pedidoRecuperado.getDetallesPedido().size(), "Los detalles del pedido deberían coincidir.");
+        Assertions.assertEquals(pedidoCreado.getImporteTotal(), pedidoRecuperado.getImporteTotal(), "El importe total debe coincidir");
+    }
+
+
+    //====================== Scenario: Verificar el cálculo del importe total y los detalles del pedido después de su creación ======================
+
+    // Este paso ya existe por lo que lo reutilizamos: Given un usuario con ID 3 existe
+    // Este paso ya existe por lo que lo reutilizamos: And los detalles del pedido son:
+    // Este paso ya existe por lo que lo reutilizamos: When se crea un pedido con el usuario y los detalles del pedido
+
+    @Then("el importe total del pedido debe estar calculado correctamente, siendo {double}")
+    public void el_importe_total_del_pedido_debe_estar_calculado_correctamente(double importeEsperado) {
+        // Aseguramos que el importe total sea el esperado (ajustar según la lógica del cálculo)
+        assertEquals(importeEsperado, pedidoCreado.getImporteTotal(),0.01);
+    }
+
+    @And("los detalles del pedido deben estar almacenados en la base de datos")
+    public void los_detalles_del_pedido_deben_estar_almacenados_en_la_base_de_datos() {
+        List<DetallePedido> detallesGuardados = detallePedidoRepository.findByPedidoId(pedidoCreado.getId());
+        assertNotNull(detallesGuardados, "Los detalles del pedido deberían haberse almacenado.");
+        Assertions.assertEquals(detallesPedido.size(), detallesGuardados.size(), "El número de detalles guardados no coincide.");
+    }
+
+
+    //====================== Scenario: Evaluar el rendimiento del sistema al manejar múltiples pedidos simultáneamente ======================
+    // Este paso ya existe por lo que lo reutilizamos: Given un usuario con ID 3 existe
+    // Este paso ya existe por lo que lo reutilizamos: And los detalles del pedido son:
+
+    @When("se crean múltiples pedidos simultáneamente")
+    public void se_crean_multiples_pedidos_simultaneamente() throws InterruptedException {
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        List<Callable<Boolean>> tareas = new ArrayList<>();
+
+        for (int i = 0; i < numPedidos; i++) {
+            tareas.add(() -> {
+                try {
+                    pedidoService.crearPedido(usuario, detallesPedido);
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace(); // Loguea la excepción para depurar
+                    return false;
+                }
+            });
+        }
+
+        // Medir el tiempo de ejecución
+        long inicio = System.currentTimeMillis();
+        List<Future<Boolean>> resultados = executor.invokeAll(tareas);
+        long fin = System.currentTimeMillis();
+        executor.shutdown();
+
+        tiempoEjecucion = fin - inicio;
+
+        // Verificar que todos los pedidos se crean exitosamente
+        for (Future<Boolean> resultado : resultados) {
+            try {
+                Assertions.assertTrue(resultado.get(), "Un pedido no se creó correctamente.");
+            } catch (ExecutionException e) {
+                // Loguea la excepción de ejecución
+                e.printStackTrace();
+                Assertions.fail("Ocurrió un error durante la creación del pedido: " + e.getMessage());
+            }
         }
     }
+
+    @Then("todos los pedidos deben ser creados exitosamente")
+    public void todos_los_pedidos_deben_ser_creados_exitosamente() {
+        // La verificación de éxito ya se realizó durante la creación de los pedidos
+        // Esto asegura que ningún pedido haya fallado
+        Assertions.assertTrue(true, "Todos los pedidos se crearon exitosamente.");
+    }
+
+    @Then("el tiempo de ejecución debe estar dentro de los límites aceptables")
+    public void el_tiempo_de_ejecucion_debe_estar_dentro_de_los_limites_aceptables() {
+        System.out.println("Tiempo total de ejecución: " + tiempoEjecucion + " ms");
+        Assertions.assertTrue(tiempoEjecucion < 5000, "El tiempo de ejecución fue demasiado alto.");
+    }
+
+
+
 }

@@ -1,18 +1,12 @@
 package com.ejemplo.tests.unitarias;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.lang.reflect.Field;
 import java.util.*;
 
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.*;
-import org.junit.jupiter.api.BeforeEach;
+import io.cucumber.spring.CucumberContextConfiguration;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +17,7 @@ import programacion.ejemplo.model.Pedido;
 import programacion.ejemplo.model.Usuario;
 import programacion.ejemplo.service.*;
 
-
+@CucumberContextConfiguration
 @SpringBootTest(classes = EjemploApplicationPruebas.class)
 @ExtendWith(MockitoExtension.class)
 public class PedidoServicePruebasUnitarias {
