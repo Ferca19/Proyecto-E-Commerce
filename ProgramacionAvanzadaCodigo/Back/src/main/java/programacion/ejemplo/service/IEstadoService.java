@@ -6,15 +6,15 @@ import programacion.ejemplo.model.Estado;
 import java.util.List;
 
 public interface IEstadoService {
-    public List<EstadoDTO> listar();
+    List<EstadoDTO> listar();
 
-    public Estado buscarPorId(Integer id);
+    Estado buscarPorId(Integer id);
 
-    public EstadoDTO guardar(EstadoDTO model);
+    EstadoDTO guardar(EstadoDTO model);
 
-    public Estado actualizarEstado (Integer id,Estado model);
+    Estado actualizarEstado (Integer id,Estado model);
 
-    public void eliminar(Integer Estado);
+    void eliminar(Integer Estado);
 
     List<Estado> listarEstadosEliminados();
 
