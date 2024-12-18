@@ -8,6 +8,7 @@ import Navbar from '../componentes/Navbar';
 import { Layers, ShoppingBag, Tag, Grid, BarChart2, Users, Settings } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "../componentes/ui/card"
 import { Button } from "../componentes/ui/button"
+import InformeDashboard from '../componentes/Informes';
 
 // Placeholder components - replace these with your actual components
 //const GestionCategorias = () => <div>Gestión de Categorías</div>
@@ -27,6 +28,8 @@ export default function AdministracionPage() {
         return <GestionMarcas />
       case 'subcategorias':
         return <GestionSubcategorias />
+      case 'Informes':
+        return <InformeDashboard/>; 
       default:
         return <GestionProductos />
     }
@@ -45,7 +48,7 @@ export default function AdministracionPage() {
         >
           <nav className="p-4">
             <ul className="space-y-2">
-              {['productos', 'categorias', 'marcas', 'subcategorias'].map((section) => (
+              {['productos', 'categorias', 'marcas', 'subcategorias', 'Informes'].map((section) => (
                 <li key={section}>
                   <Button
                     variant={activeSection === section ? "default" : "outline"}
@@ -56,6 +59,7 @@ export default function AdministracionPage() {
                     {section === 'categorias' && <Layers className="mr-2 h-4 w-4" />}
                     {section === 'marcas' && <Tag className="mr-2 h-4 w-4" />}
                     {section === 'subcategorias' && <Grid className="mr-2 h-4 w-4" />}
+                    {section === 'Informes' && <BarChart2 className="mr-2 h-4 w-4" />}
                     {section}
                   </Button>
                 </li>
@@ -75,33 +79,7 @@ export default function AdministracionPage() {
             Panel de Administración
           </h1>
           
-          {/* Dashboard Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-            {[
-              { title: 'Productos Totales', value: '1,234', change: '+20% desde el último mes', icon: ShoppingBag },
-              { title: 'Ventas Totales', value: '$12,345', change: '+15% desde la semana pasada', icon: BarChart2 },
-              { title: 'Usuarios Activos', value: '573', change: '+5% desde ayer', icon: Users },
-              { title: 'Categorías', value: '25', change: '3 nuevas esta semana', icon: Layers },
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 * index }}
-              >
-                <Card className="bg-gradient-to-br from-white to-blue-50 border-none shadow-md hover:shadow-lg transition-shadow duration-300">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-600">{item.title}</CardTitle>
-                    <item.icon className="h-4 w-4 text-indigo-600" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-gray-900">{item.value}</div>
-                    <p className="text-xs text-green-600">{item.change}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+          
 
           {/* Active Section Content */}
           <motion.div

@@ -142,7 +142,7 @@ public class ProductoService implements IProductoService {
     @Override
     public ProductoDTO obtenerPorId(Integer id) {
         Producto producto = modelRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
         return productoMapper.toDto(producto);
     }
 

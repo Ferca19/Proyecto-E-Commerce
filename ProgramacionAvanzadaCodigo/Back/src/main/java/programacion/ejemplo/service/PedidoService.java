@@ -5,12 +5,15 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Propagation;
 import programacion.ejemplo.DTO.DetallePedidoDTO;
 import programacion.ejemplo.DTO.PedidoDTO;
 import programacion.ejemplo.DTO.UsuarioDTO;
 import programacion.ejemplo.Mapper.PedidoMapper;
 import programacion.ejemplo.Mapper.ProductoMapper;
 import programacion.ejemplo.Mapper.UsuarioMapper;
+import java.util.LinkedHashMap;
+
 import programacion.ejemplo.model.DetallePedido;
 import programacion.ejemplo.model.Pedido;
 import programacion.ejemplo.model.Producto;
@@ -19,7 +22,9 @@ import programacion.ejemplo.repository.PedidoRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,7 +61,7 @@ public class PedidoService implements IPedidoService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Pedido crearPedido(Usuario usuario, List<DetallePedidoDTO> detallesPedidoDTO) {
 
         // Verificar si el usuario existe
@@ -150,6 +155,35 @@ public class PedidoService implements IPedidoService {
     @Override
     public boolean existePorEstadoId(Integer estadoId) {
         return modelRepository.existsByEstadoId(estadoId);
+    }
+
+    @Override
+    public Map<String, Object> generarInforme() {
+        Map<String, Object> informe = new HashMap<>();
+
+        // Total de pedidos
+        long totalPedidos = modelRepository.count();
+        informe.put("totalPedidos", totalPedidos);
+
+        // Productos más vendidos
+        List<DetallePedido> detalles = detallePedidoService.obtenerTodosDetalles();
+        Map<String, Long> productosVendidos = detalles.stream()
+                .collect(Collectors.groupingBy(detalle -> detalle.getProducto().getNombre(), Collectors.summingLong(DetallePedido::getCantidad)));
+
+        // Ordenar por cantidad vendida y tomar los más vendidos
+        Map<String, Long> productosMasVendidos = productosVendidos.entrySet().stream()
+                .sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
+                .limit(10)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+
+        informe.put("productosMasVendidos", productosMasVendidos);
+
+        return informe;
     }
 
 

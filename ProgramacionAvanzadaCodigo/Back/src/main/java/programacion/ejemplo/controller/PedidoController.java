@@ -12,6 +12,7 @@ import programacion.ejemplo.DTO.PedidoDTO;
 import programacion.ejemplo.service.IPedidoService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("pedidos")
@@ -28,5 +29,11 @@ public class PedidoController {
     public ResponseEntity<List<PedidoDTO>> listarTodosLosPedidos() {
         List<PedidoDTO> pedidos = pedidoService.getAllPedidos();
         return ResponseEntity.ok(pedidos);
+    }
+
+    @GetMapping("/informe")
+    public ResponseEntity<Map<String, Object>> obtenerInforme() {
+        Map<String, Object> informe = pedidoService.generarInforme();
+        return ResponseEntity.ok(informe);
     }
 }

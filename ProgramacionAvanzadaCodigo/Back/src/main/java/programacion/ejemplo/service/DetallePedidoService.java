@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import programacion.ejemplo.model.Categoria;
 import programacion.ejemplo.model.Subcategoria;
 import programacion.ejemplo.model.Marca;
+import programacion.ejemplo.repository.ProductoRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +37,8 @@ public class DetallePedidoService implements IDetallePedidoService {
 
     @Autowired
     private ProductoMapper productoMapper;
+    @Autowired
+    private ProductoRepository productoRepository;
 
     @Transactional
     public double crearDetallePedido(Pedido pedido, List<DetallePedidoDTO> detallesPedidoDTO) {
@@ -46,8 +49,9 @@ public class DetallePedidoService implements IDetallePedidoService {
         for (DetallePedidoDTO detallePedidoDTO : detallesPedidoDTO) {
             ProductoDTO productoDTO = productoService.obtenerPorId(detallePedidoDTO.getProductoId());
 
-            if (productoDTO == null) {
-                throw new EntityNotFoundException("Producto no encontrado con ID: " + detallePedidoDTO.getProductoId());
+            // Verificar si el producto existe
+            if (productoDTO == null || productoRepository.findByIdAndEliminado(detallePedidoDTO.getProductoId(), 0) == null) {
+                throw new IllegalArgumentException("Producto no encontrado con ID: " + detallePedidoDTO.getProductoId());
             }
 
             // Verificar que la cantidad no sea cero o negativa
@@ -81,6 +85,12 @@ public class DetallePedidoService implements IDetallePedidoService {
         pedido.setDetallesPedido(listaDetalles);
 
         return importeTotal;
+    }
+
+    @Override
+    public List<DetallePedido> obtenerTodosDetalles() {
+        // Retorna todos los detalles de pedido
+        return modelRepository.findAll();
     }
 
 

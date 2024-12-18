@@ -6,6 +6,7 @@ import programacion.ejemplo.model.Pedido;
 import programacion.ejemplo.model.Usuario;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IPedidoService {
     List<PedidoDTO> getAllPedidos();
@@ -16,4 +17,6 @@ public interface IPedidoService {
     void recuperarPedido(Integer pedidoId);
 
     boolean existePorEstadoId(Integer estadoId);
+
+    Map<String, Object> generarInforme();
 }

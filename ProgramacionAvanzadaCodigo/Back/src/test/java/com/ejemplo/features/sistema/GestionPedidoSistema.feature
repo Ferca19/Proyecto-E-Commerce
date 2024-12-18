@@ -41,3 +41,10 @@ Feature: Flujo Completo de Creación de Pedido
     When se crean múltiples pedidos simultáneamente
     Then todos los pedidos deben ser creados exitosamente
     And el tiempo de ejecución debe estar dentro de los límites aceptables
+
+
+  Scenario: Intento de crear pedido sin autenticación
+    When el usuario intenta crear un pedido con los detalles:
+      | productoId | cantidad |
+      | 2          | 2        |
+    Then el sistema debe responder con un mensaje de error indicando que la autenticación es requerida

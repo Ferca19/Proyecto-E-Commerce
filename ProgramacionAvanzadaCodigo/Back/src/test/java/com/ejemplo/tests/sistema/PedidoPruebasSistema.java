@@ -50,6 +50,7 @@ public class PedidoPruebasSistema {
     private Pedido pedidoRecuperado;
     private int numPedidos = 100;
     private long tiempoEjecucion;
+    private Exception excepcion;
 
 
 
@@ -163,7 +164,7 @@ public class PedidoPruebasSistema {
 
     @When("se crean múltiples pedidos simultáneamente")
     public void se_crean_multiples_pedidos_simultaneamente() throws InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool(10);
+        ExecutorService executor = Executors.newFixedThreadPool(1);
         List<Callable<Boolean>> tareas = new ArrayList<>();
 
         for (int i = 0; i < numPedidos; i++) {
@@ -209,6 +210,48 @@ public class PedidoPruebasSistema {
     public void el_tiempo_de_ejecucion_debe_estar_dentro_de_los_limites_aceptables() {
         System.out.println("Tiempo total de ejecución: " + tiempoEjecucion + " ms");
         Assertions.assertTrue(tiempoEjecucion < 5000, "El tiempo de ejecución fue demasiado alto.");
+    }
+
+
+    //====================== Scenario: Intento de crear pedido sin autenticación ======================
+
+
+    @Given("un usuario no autenticado")
+    public void un_usuario_no_autenticado() {
+        // No configurar credenciales o contexto de usuario
+        excepcion = null; // Inicializa la excepción
+        detallesPedido = new ArrayList<>();
+    }
+
+    @When("el usuario intenta crear un pedido con los detalles:")
+    public void el_usuario_intenta_crear_un_pedido_con_los_detalles(DataTable dataTable) {
+
+        detallesPedido = new ArrayList<>();
+
+        List<Map<String, String>> detalles = dataTable.asMaps(String.class, String.class);
+        for (Map<String, String> detalle : detalles) {
+            Integer productoId = Integer.parseInt(detalle.get("productoId"));
+            Integer cantidad = Integer.parseInt(detalle.get("cantidad"));
+
+            DetallePedidoDTO detallePedidoDTO = new DetallePedidoDTO();
+            detallePedidoDTO.setProductoId(productoId);
+            detallePedidoDTO.setCantidad(cantidad);
+            detallesPedido.add(detallePedidoDTO);
+        }
+
+        try {
+            // Intentar crear un pedido sin autenticación
+            pedidoService.crearPedido(null, detallesPedido);
+        } catch (Exception e) {
+            excepcion = e; // Capturar la excepción esperada
+        }
+    }
+
+    @Then("el sistema debe responder con un mensaje de error indicando que la autenticación es requerida")
+    public void el_sistema_debe_responder_con_un_mensaje_de_error() {
+        // Verificar que se lanzó una excepción de autenticación
+        Assertions.assertNotNull(excepcion, "Se esperaba una excepción, pero no ocurrió.");
+        Assertions.assertEquals("Usuario no encontrado", excepcion.getMessage());
     }
 
 

@@ -17,7 +17,7 @@ import programacion.ejemplo.model.Pedido;
 import programacion.ejemplo.model.Usuario;
 import programacion.ejemplo.service.*;
 
-@CucumberContextConfiguration
+
 @SpringBootTest(classes = EjemploApplicationPruebas.class)
 @ExtendWith(MockitoExtension.class)
 public class PedidoServicePruebasUnitarias {
